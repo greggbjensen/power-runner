@@ -2,7 +2,7 @@
   "name": "power-runner",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

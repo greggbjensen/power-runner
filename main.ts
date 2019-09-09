@@ -1,13 +1,13 @@
-const { app, BrowserWindow } = require('electron');
+import { app, BrowserWindow } from 'electron';
 
 // SourceRef: https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
 
 let win;
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 600, 
+    width: 600,
     height: 600,
     backgroundColor: '#ffffff',
     icon: `file://${__dirname}/dist/assets/logo.png`
@@ -20,8 +20,8 @@ function createWindow () {
   // win.webContents.openDevTools()
 
   // Event when the window is closed.
-  win.on('closed', function () {
-    win = null
+  win.on('closed', () => {
+    win = null;
   });
 }
 
@@ -29,17 +29,17 @@ function createWindow () {
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
 
   // On macOS specific close process
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
 });
 
-app.on('activate', function () {
+app.on('activate', () => {
   // macOS specific close process
   if (win === null) {
-    createWindow()
+    createWindow();
   }
 });
