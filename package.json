@@ -2,7 +2,6 @@
   "name": "power-runner",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "main.ts",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -10,8 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron": "electron .",
-    "electron-build": "ng build --prod && electron ."
+    "electron": "ng build --base-href ./ && tsc --p electron && electron electron/dist/main.js"
   },
   "private": true,
   "dependencies": {

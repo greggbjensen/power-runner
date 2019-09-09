@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { FileService } from './core/services';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'pru-root',
@@ -7,4 +9,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'power-runner';
+
+  files$: Observable<string[]>;
+
+  constructor(
+    private _fileService: FileService
+  ) {
+    this.files$ = _fileService.getFiles$();
+  }
 }
