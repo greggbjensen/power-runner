@@ -1,10 +1,13 @@
 {
-  "extends": "tslint:recommended",
+  "defaultSeverity": "warning",
+  "extends": [
+    "tslint:recommended",
+    "tslint-consistent-codestyle"
+  ],
   "rules": {
-    "array-type": false,
     "arrow-parens": false,
     "deprecation": {
-      "severity": "warning"
+      "severity": "warn"
     },
     "component-class-suffix": true,
     "contextual-lifecycle": true,
@@ -12,13 +15,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "pru",
+      "exp",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "pru",
+      "exp",
       "kebab-case"
     ],
     "import-blacklist": [
@@ -31,32 +34,23 @@
       true,
       140
     ],
-    "member-access": false,
     "member-ordering": [
       true,
       {
-        "order": [
-          "static-field",
-          "instance-field",
-          "static-method",
-          "instance-method"
-        ]
+        "order": "fields-first"
       }
     ],
     "no-consecutive-blank-lines": false,
     "no-console": [
       true,
       "debug",
-      "info",
+      "log",
       "time",
       "timeEnd",
       "trace"
     ],
     "no-empty": false,
-    "no-inferrable-types": [
-      true,
-      "ignore-params"
-    ],
+    "no-inferrable-types": false,
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
@@ -67,7 +61,6 @@
       "as-needed"
     ],
     "object-literal-sort-keys": false,
-    "ordered-imports": false,
     "quotemark": [
       true,
       "single"
@@ -84,9 +77,55 @@
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
-    "use-pipe-transform-interface": true
+    "use-pipe-transform-interface": true,
+    "no-unused-variable": true,
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock",
+      "check-postbrace"
+    ],
+    "indent": [true, "spaces", 2],
+    "typedef": [
+      true,
+      "call-signature",
+      "property-declaration"
+    ],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ],
+    "naming-convention": [
+      true,
+      {"type": "functionVariable", "modifiers": ["const"], "format": ["camelCase"] },
+      {"type": "default", "format": "camelCase", "leadingUnderscore": "forbid", "trailingUnderscore": "forbid"},
+      {"type": "parameter", "modifiers": "private", "leadingUnderscore": "require"},
+      {"type": "member", "modifiers": ["private", "static", "readonly"], "format": "PascalCase", "leadingUnderscore": "forbid"},
+      {"type": "member", "modifiers": ["public", "static", "readonly"], "format": "PascalCase", "leadingUnderscore": "forbid"},
+      {"type": "member", "modifiers": "private", "leadingUnderscore": "require"},
+      {"type": "method", "modifiers": "private", "leadingUnderscore": "forbid"},
+      {"type": "type", "format": "PascalCase"},
+      {"type": "interface", "prefix": "I"},
+      {"type": "genericTypeParameter", "prefix": "T"},
+      {"type": "enumMember", "format": "PascalCase"},
+      {"type": "variable", "modifiers": ["const"], "format": ["camelCase"]}
+    ]
   },
   "rulesDirectory": [
     "codelyzer"
-  ]
+  ],
+  "linterOptions": {
+    "format": "vso"
+  }
 }

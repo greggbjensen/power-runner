@@ -1,0 +1,1 @@
+Write-Host "NoParams script ran."

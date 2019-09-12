@@ -1,5 +1,5 @@
-<ul *ngIf="files$ | async as files">
-  <li *ngFor="let file of files">{{file}}</li>
+<ul *ngIf="scripts$ | async as scripts">
+  <li *ngFor="let script of scripts">{{script.name}}</li>
 </ul>
 
 

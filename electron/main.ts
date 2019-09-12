@@ -1,15 +1,21 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import * as fs from 'fs';
+import { NodeScriptService } from './services';
 
 // SourceRef: https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron
 
 let win: BrowserWindow;
 
-function createWindow() {
-  win = new BrowserWindow({ width: 800, height: 600 });
+function createWindow(): void {
+  win = new BrowserWindow({
+      width: 800,
+      height: 600,
+      webPreferences: {
+        nodeIntegration: true
+      }
+    });
 
   win.loadURL(
     url.format({
@@ -43,39 +49,15 @@ app.on('window-all-closed', () => {
   }
 });
 
-function getImages() {
-  const cwd = process.cwd();
-  fs.readdir('.', {withFileTypes: true}, (err, files) => {
-      if (!err) {
-          const re = /(?:\.([^.]+))?$/;
-          const images = files
-            .filter(file => file.isFile() && ['jpg', 'png'].includes(re.exec(file.name)[1]))
-            .map(file => `file://${cwd}/${file.name}`);
-          win.webContents.send('getImagesResponse', images);
-      }
+function bindService(service: object): void {
+  const serviceName = service.constructor.name;
+  const operations = Object.keys(service).filter(key => typeof service[key] === 'function');
+  operations.forEach(operation => {
+    ipcMain.on(`${serviceName}.${operation}`, (event, ...args) => {
+      const result = service[operation].call(service, args);
+      event.reply(result);
+    });
   });
 }
 
-function isRoot() {
-    return path.parse(process.cwd()).root == process.cwd();
-}
-
-function getDirectory() {
-  fs.readdir('.', {withFileTypes: true}, (err, files) => {
-      if (!err) {
-          const directories = files
-            .filter(file => file.isDirectory())
-            .map(file => file.name);
-          if (!isRoot()) {
-              directories.unshift('..');
-          }
-          win.webContents.send('getDirectoryResponse', directories);
-      }
-  });
-}
-
-ipcMain.on('navigateDirectory', (event, path) => {
-  process.chdir(path);
-  getImages();
-  getDirectory();
-});
+bindService(new NodeScriptService());

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { FileService } from './core/services';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { IScript } from './core/models';
+import { ScriptService } from './core/services';
 
 @Component({
   selector: 'pru-root',
@@ -8,13 +9,16 @@ import { Observable } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'power-runner';
-
-  files$: Observable<string[]>;
+  public title = 'power-runner';
+  public scripts$: Observable<IScript[]>;
+  private _scripts = new BehaviorSubject<IScript[]>([]);
 
   constructor(
-    private _fileService: FileService
+    private _scriptService: ScriptService
   ) {
-    this.files$ = _fileService.getFiles$();
+    this.scripts$ = this._scripts.asObservable();
+    this._scriptService.listAsync(['D:\\Dev\\GitHub\\power-runner\\samples']).then((scripts) => {
+      this._scripts.next(scripts);
+    });
   }
 }

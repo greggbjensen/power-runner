@@ -1,10 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FileService } from './services';
+import { NgModule } from '@angular/core';
+import { ScriptService } from './services';
+import { NodeProxyFactory } from './services/node-proxy.factory';
 
 @NgModule({
   providers: [
-    FileService
+    ScriptService,
+    NodeProxyFactory
   ],
   declarations: [],
   imports: [
