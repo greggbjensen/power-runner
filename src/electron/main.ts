@@ -11,8 +11,9 @@ let win: BrowserWindow;
 
 function createWindow(): void {
   win = new BrowserWindow({
-      width: 800,
-      height: 600,
+      width: 1024,
+      height: 768,
+      darkTheme: true,
       webPreferences: {
         nodeIntegration: true,
         nodeIntegrationInWorker: true
@@ -51,13 +52,19 @@ app.on('window-all-closed', () => {
   }
 });
 
+const services = new Map<string, object>();
+
 function bindService(service: object): void {
+  const servicePrototype = Object.getPrototypeOf(service);
   const serviceName = service.constructor.name;
-  const operations = Object.keys(service).filter(key => typeof service[key] === 'function');
+  services.set(serviceName, service);
+
+  const operations = Object.getOwnPropertyNames(servicePrototype)
+    .filter(key => typeof service[key] === 'function' && key !== 'constructor');
   operations.forEach(operation => {
     ipcMain.on(`${serviceName}.${operation}`, (event, ...args) => {
       const result = service[operation].call(service, args);
-      event.reply(result);
+      event.reply(`${serviceName}.${operation}:reply`, result);
     });
   });
 }
