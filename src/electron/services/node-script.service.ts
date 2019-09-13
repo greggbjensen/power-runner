@@ -1,6 +1,6 @@
 import * as globby from 'globby';
 import * as path from 'path';
-import { IScript } from '../../src/app/core/models';
+import { IScript } from '../../app/core/models';
 
 export class NodeScriptService {
 

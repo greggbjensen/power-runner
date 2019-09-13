@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IpcRenderer } from 'electron';
 import { NodeProxy } from '../models';
 import { IResolvable } from '../models/iresolvable';
+const electron = (window as any).require('electron');
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +12,7 @@ export class NodeProxyFactory {
   private _ipcRenderer: IpcRenderer | undefined;
 
   constructor() {
-
-    // SourceRef: https://dev.to/michaeljota/integrating-an-angular-cli-application-with-electron---the-ipc-4m18
-    const windowAccessor = window as any;
-    if (windowAccessor.require) {
-      try {
-        this._ipcRenderer = windowAccessor.require('electron').ipcRenderer;
-      } catch (e) {
-        throw e;
-      }
-    } else {
-      console.warn('Electron\'s IPC was not loaded');
-    }
+    this._ipcRenderer = electron.ipcRenderer;
   }
 
   public create(serviceName: string, ...functionNames: string[]): NodeProxy {

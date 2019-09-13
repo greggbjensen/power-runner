@@ -2,7 +2,7 @@
 
 # compiled output
 /electron/dist
-/dist
+**/dist
 /tmp
 /out-tsc
 # Only exists if Bazel was run

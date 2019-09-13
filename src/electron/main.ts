@@ -5,6 +5,7 @@ import { NodeScriptService } from './services';
 
 // SourceRef: https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron
+// SourceRef: https://medium.com/@midsever/getting-started-with-angular-in-electron-296d13f59e5e
 
 let win: BrowserWindow;
 
@@ -13,7 +14,8 @@ function createWindow(): void {
       width: 800,
       height: 600,
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: true,
+        nodeIntegrationInWorker: true
       }
     });
 

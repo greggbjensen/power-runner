@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron": "ng build --base-href ./ && tsc --p electron && electron electron/dist/main.js"
+    "electron": "tsc -p tsconfig.electron.json && ng build --base-href ./ && electron ./dist/electron/main.js"
   },
   "private": true,
   "dependencies": {
