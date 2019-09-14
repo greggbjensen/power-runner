@@ -4,13 +4,18 @@ import { IScript } from '../../app/core/models';
 
 export class NodeScriptService {
 
-    public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
-        const files = await globby(fileGlobs);
-        const scripts = files.map<IScript>(s => ({
-            module: path.dirname(s),
-            name: path.basename(s)
-        }));
+  public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
 
-        return scripts;
-    }
+    const files = await globby(fileGlobs);
+    const scripts = files.map<IScript>(s => {
+      const directory = path.dirname(s);
+      return {
+        directory,
+        module: path.basename(directory),
+        name: path.basename(s)
+      };
+    });
+
+    return scripts;
+  }
 }

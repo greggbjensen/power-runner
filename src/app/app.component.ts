@@ -17,7 +17,7 @@ export class AppComponent {
     private _scriptService: ScriptService
   ) {
     this.scripts$ = this._scripts.asObservable();
-    this._scriptService.listAsync(['D:\\Dev\\GitHub\\power-runner\\samples']).then((scripts) => {
+    this._scriptService.listAsync(['D:/Dev/GitHub/power-runner/samples/**/*.ps1']).then((scripts) => {
       this._scripts.next(scripts);
     });
   }

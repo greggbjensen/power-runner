@@ -63,8 +63,11 @@ function bindService(service: object): void {
     .filter(key => typeof service[key] === 'function' && key !== 'constructor');
   operations.forEach(operation => {
     ipcMain.on(`${serviceName}.${operation}`, (event, ...args) => {
-      const result = service[operation].call(service, args);
-      event.reply(`${serviceName}.${operation}:reply`, result);
+      service[operation].call(service, ...args).then(result =>
+        event.reply(`${serviceName}.${operation}:resolve`, result)
+      , error => {
+        event.reply(`${serviceName}.${operation}:reject`, error);
+      });
     });
   });
 }

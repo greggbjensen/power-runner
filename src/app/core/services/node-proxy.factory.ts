@@ -26,8 +26,12 @@ export class NodeProxyFactory {
 
   public createCall(serviceName: string, functionName: string): (...args: any[]) => Promise<any> {
     const resolveable = { } as IResolvable;
-    this._ipcRenderer.on(`${serviceName}.${functionName}:reply`, (event, result) => {
+    this._ipcRenderer.on(`${serviceName}.${functionName}:resolve`, (event, result) => {
       resolveable.resolve(result);
+    });
+
+    this._ipcRenderer.on(`${serviceName}.${functionName}:reject`, (event, error) => {
+      resolveable.reject(error);
     });
 
     return (...args: any[]) => {
