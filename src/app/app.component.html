@@ -1,5 +1,7 @@
-<ul *ngIf="scripts$ | async as scripts">
-  <li *ngFor="let script of scripts">{{script.name}}</li>
-</ul>
+<div *ngIf="nodes$ | async as nodes">
+  <pru-script-tree [nodes]="nodes">
+  </pru-script-tree>
+</div>
+
 <button mat-raised-button color="primary">Hello</button>
 
