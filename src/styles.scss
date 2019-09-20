@@ -1,5 +1,6 @@
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 @import "./styles/variables";
+@import "./styles/mat-tree";
 
 html { 
   font-size: 62.5%; // 10px;
@@ -7,6 +8,10 @@ html {
 
 body {
   background-color: $gray-800;
-  color: $white-100;
-  font-family: Roboto,"Helvetica Neue",sans-serif
+  color: $white-200;
+  font-family: $font-family-body;
+  font-size: $font-size-13;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
 }

@@ -1,7 +1,12 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import * as electronReload from 'electron-reload';
 import * as path from 'path';
 import * as url from 'url';
 import { NodeScriptService } from './services';
+
+electronReload(path.resolve(__dirname, '../../src'), {
+  electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
+});
 
 // SourceRef: https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron

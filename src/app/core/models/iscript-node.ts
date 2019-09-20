@@ -1,6 +1,7 @@
 import { IScript } from './iscript';
 
 export interface IScriptNode {
-  module: string;
-  scripts: IScript[];
+  name: string;
+  children?: IScriptNode[];
+  script?: IScript;
 }

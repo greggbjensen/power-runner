@@ -1,7 +1,14 @@
-<div *ngIf="nodes$ | async as nodes">
-  <pru-script-tree [nodes]="nodes">
-  </pru-script-tree>
-</div>
+
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+    <div *ngIf="nodes$ | async as nodes">
+      <pru-script-tree [nodes]="nodes">
+      </pru-script-tree>
+    </div>    
+  </mat-drawer>
+  <mat-drawer-content>Main content</mat-drawer-content>
+</mat-drawer-container>
+
 
 <button mat-raised-button color="primary">Hello</button>
 

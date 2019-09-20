@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as _ from 'underscore';
 import { IScript, IScriptNode } from './core/models';
@@ -11,6 +11,7 @@ import { ScriptService } from './core/services';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  @HostBinding('class.pru') public className = true;
   public title = 'power-runner';
   public nodes$: Observable<IScriptNode[]>;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
@@ -27,8 +28,11 @@ export class AppComponent {
   private nodeTransform(scripts: IScript[]): IScriptNode[] {
     const grouped = _.groupBy(scripts, s => s.module);
     return _.keys(grouped).map(key => ({
-      module: key,
-      scripts: grouped[key]
+      name: key,
+      children: grouped[key].map(s => ({
+        name: s.name,
+        script: s
+      }))
     } as IScriptNode));
   }
 }
