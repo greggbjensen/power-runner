@@ -1,1 +1,1 @@
-Write-Host "NoParams script ran."
+Write-Host "NoParams script ran." -ForegroundColor Red

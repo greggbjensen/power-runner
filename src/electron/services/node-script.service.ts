@@ -1,6 +1,7 @@
 import * as globby from 'globby';
 import * as path from 'path';
-import { IScript } from '../../app/core/models';
+import { IScript, IScriptParams } from '../../app/core/models';
+import { spawn } from 'child_process';
 
 export class NodeScriptService {
 
@@ -17,5 +18,30 @@ export class NodeScriptService {
     });
 
     return scripts;
+  }
+
+  public async runAsync(script: IScript, params: IScriptParams): Promise<number>  {
+
+    return new Promise((resolve, reject) => {
+      const child = spawn('PowerShell', [`.\\${script.name}`], {
+        cwd: script.directory
+      });
+      child.stdout.on('data', (data) => {
+          console.log('Powershell Data: ' + data);
+      });
+      child.stderr.on('data', (data) => {
+          console.log('Powershell Errors: ' + data);
+      });
+      child.on('exit', (exitCode) => {
+        if (exitCode === 0) {
+          resolve(exitCode);
+        }
+        else {
+          reject(exitCode);
+        }
+        console.log("Powershell Script finished");
+      });
+      child.stdin.end();
+    });
   }
 }

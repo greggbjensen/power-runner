@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, HostBinding } from '@angular/core';
-import { IScript } from 'src/app/core/models';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { IScript, IScriptParams } from 'src/app/core/models';
+import { ScriptService } from 'src/app/core/services';
 
 @Component({
   selector: 'pru-script-form',
@@ -11,9 +12,15 @@ export class ScriptFormComponent implements OnInit {
 
   @Input() public script: IScript;
 
-  constructor() { }
+  constructor(
+    private _scriptService: ScriptService
+  ) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
+  public run(): void {
+    const params: IScriptParams = { };
+    this._scriptService.runAsync(this.script, params);
+  }
 }
