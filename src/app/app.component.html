@@ -1,14 +1,12 @@
 
 <mat-drawer-container class="example-container">
-  <mat-drawer mode="side" opened>
+  <mat-drawer id="script-tree-drawer" mode="side" opened>
     <div *ngIf="nodes$ | async as nodes">
       <pru-script-tree [nodes]="nodes">
       </pru-script-tree>
     </div>    
   </mat-drawer>
-  <mat-drawer-content>Main content</mat-drawer-content>
+  <mat-drawer-content id="main-content">
+    <pru-script-form></pru-script-form>
+  </mat-drawer-content>
 </mat-drawer-container>
-
-
-<button mat-raised-button color="primary">Hello</button>
-

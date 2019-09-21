@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { IScriptNode } from 'src/app/core/models';
+import { IScript, IScriptNode } from 'src/app/core/models';
 
 @Component({
   selector: 'pru-script-tree',
@@ -9,6 +9,8 @@ import { IScriptNode } from 'src/app/core/models';
   styleUrls: ['./script-tree.component.scss']
 })
 export class ScriptTreeComponent implements OnInit {
+
+  @Output() public scriptSelected = new EventEmitter<IScript>();
 
   public get nodes(): IScriptNode[] {
     return this.dataSource.data;
@@ -25,6 +27,6 @@ export class ScriptTreeComponent implements OnInit {
 
   public ngOnInit(): void {
   }
-
+  
   public hasChild = (index: number, node: IScriptNode) => !!node.children && node.children.length > 0;
 }

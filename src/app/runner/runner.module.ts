@@ -1,16 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { ScriptTreeComponent } from './components/script-tree/script-tree.component';
+import { ScriptFormComponent, ScriptTreeComponent } from './components';
 
 @NgModule({
-  declarations: [ScriptTreeComponent],
+  declarations: [
+    ScriptTreeComponent,
+    ScriptFormComponent
+  ],
   imports: [
     CommonModule,
     SharedModule
   ],
   exports: [
-    ScriptTreeComponent
+    ScriptTreeComponent,
+    ScriptFormComponent
   ]
 })
 export class RunnerModule { }

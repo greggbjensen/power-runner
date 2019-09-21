@@ -1,0 +1,17 @@
+@import "../styles/variables";
+
+.pru {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#script-tree-drawer {
+  width: 29rem;
+  background: $gray-700;
+}
+
+#main-content {
+  width: 29rem;
+  background: $gray-900;
+}
