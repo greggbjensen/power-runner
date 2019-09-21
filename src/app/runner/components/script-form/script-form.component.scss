@@ -1,0 +1,23 @@
+@import "../../../../styles/variables";
+
+.script-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.script-form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;  
+  padding: 0 $space-25 $space-25 $space-25;
+}
+
+.script-form-form {
+  flex: 1;
+}
+
+.script-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}

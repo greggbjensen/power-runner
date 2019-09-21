@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostBinding } from '@angular/core';
 import { IScript } from 'src/app/core/models';
 
 @Component({
@@ -7,6 +7,7 @@ import { IScript } from 'src/app/core/models';
   styleUrls: ['./script-form.component.scss']
 })
 export class ScriptFormComponent implements OnInit {
+  @HostBinding('class.script-form') public className = true;
 
   @Input() public script: IScript;
 

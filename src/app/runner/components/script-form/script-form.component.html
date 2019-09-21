@@ -1,1 +1,11 @@
-<h1>{{script.name}}</h1>
+<div *ngIf="script" class="script-form-container">
+  <h1>{{script.name}}</h1>
+  <form class="script-form-form">
+    <mat-form-field>
+      <input matInput placeholder="Favorite food" value="Sushi">
+    </mat-form-field>
+  </form>
+  <div class="script-form-actions">
+    <button mat-raised-button color="primary">Run</button>
+  </div>
+</div>

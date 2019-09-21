@@ -14,6 +14,7 @@ export class AppComponent {
   @HostBinding('class.pru') public className = true;
   public title = 'power-runner';
   public nodes$: Observable<IScriptNode[]>;
+  public selectedScript: IScript;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
 
   constructor(
@@ -23,6 +24,10 @@ export class AppComponent {
     this._scriptService.listAsync(['D:/Dev/GitHub/power-runner/samples/**/*.ps1']).then((scripts) => {
       this._nodes.next(this.nodeTransform(scripts));
     });
+  }
+
+  public onSelectionChanged(script: IScript): void {
+    this.selectedScript = script;
   }
 
   private nodeTransform(scripts: IScript[]): IScriptNode[] {
