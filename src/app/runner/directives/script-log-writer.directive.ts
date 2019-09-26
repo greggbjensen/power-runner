@@ -54,7 +54,6 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   }
 
   private addLine(line: string, isError: boolean = false): void {
-    console.log('EL', line);
     const lineElement = this._renderer.createElement('li');
     this._renderer.addClass(lineElement, 'log-line');
     if (isError) {

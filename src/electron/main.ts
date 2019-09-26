@@ -12,10 +12,10 @@ electronReload(path.resolve(__dirname, '../../src'), {
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron
 // SourceRef: https://medium.com/@midsever/getting-started-with-angular-in-electron-296d13f59e5e
 
-let win: BrowserWindow;
+let browserWindow: BrowserWindow;
 
 function createWindow(): void {
-  win = new BrowserWindow({
+  browserWindow = new BrowserWindow({
       width: 1024,
       height: 768,
       darkTheme: true,
@@ -25,7 +25,7 @@ function createWindow(): void {
       }
     });
 
-  win.loadURL(
+  browserWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, `/../../dist/power-runner/index.html`),
       protocol: 'file:',
@@ -33,17 +33,19 @@ function createWindow(): void {
     })
   );
 
-  win.webContents.openDevTools();
+  browserWindow.webContents.openDevTools();
 
-  win.on('closed', () => {
-    win = null;
+  browserWindow.on('closed', () => {
+    browserWindow = null;
   });
+
+  bindService(new NodeScriptService(browserWindow));
 }
 
 app.on('ready', createWindow);
 
 app.on('activate', () => {
-  if (win === null) {
+  if (browserWindow === null) {
     createWindow();
   }
 });
@@ -76,5 +78,3 @@ function bindService(service: object): void {
     });
   });
 }
-
-bindService(new NodeScriptService());

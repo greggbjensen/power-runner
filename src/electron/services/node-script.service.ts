@@ -1,14 +1,18 @@
 import { ChildProcess, spawn } from 'child_process';
+import { BrowserWindow } from 'electron';
 import * as globby from 'globby';
 import * as path from 'path';
-import { IScript, IScriptParams, IScriptRun } from '../../app/core/models';
-import { ipcMain } from 'electron';
+import { IScript, IScriptRun } from '../../app/core/models';
 
 export class NodeScriptService {
 
   private static readonly FileExtensionRegex = /.ps1$/i;
 
   private _childProcesses = new Map<string, ChildProcess>();
+
+  constructor(
+    private _browserWindow: BrowserWindow
+  ) { }
 
   public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
 
@@ -39,19 +43,18 @@ export class NodeScriptService {
         this._childProcesses.set(scriptChannel, child);
 
         child.stdout.on('data', (data: string) => {
-          ipcMain.emit(`${scriptChannel}:stdout`, data);
+          this._browserWindow.webContents.send(`${scriptChannel}:stdout`, data);
         });
         child.stderr.on('data', (data: string) => {
-          ipcMain.emit(`${scriptChannel}:stderr`, data);
+          this._browserWindow.webContents.send(`${scriptChannel}:stderr`, data);
         });
         child.on('exit', (exitCode) => {
-          ipcMain.emit(`${scriptChannel}:exit`, exitCode);
+          this._browserWindow.webContents.send(`${scriptChannel}:exit`, exitCode);
           this._childProcesses.delete(scriptChannel);
         });
         child.stdin.end();
 
         // Replay with a channel to listen on for stdout, stderr, and exit.
-        console.log('START RUN', scriptChannel);
         resolve(scriptChannel);
       } catch (err) {
         console.error(err);

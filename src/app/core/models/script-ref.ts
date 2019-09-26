@@ -21,7 +21,6 @@ export class ScriptRef {
 
     this._ipcRenderer.on(`${this._scriptChannel}:stderr`, (event, exitCode: number) => {
       this.exit.emit(exitCode);
-      console.log("Powershell Script finished");
     });
   }
 }
