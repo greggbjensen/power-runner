@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IpcRenderer } from 'electron';
-import { NodeProxy } from '../models';
+import { NodeProxy, ScriptRef } from '../models';
 import { IResolvable } from '../models/iresolvable';
 const electron = (window as any).require('electron');
 
@@ -22,6 +22,10 @@ export class NodeProxyFactory {
     });
 
     return proxy;
+  }
+
+  public createScriptRef(scriptChannel: string): ScriptRef {
+    return new ScriptRef(this._ipcRenderer, scriptChannel);
   }
 
   public createCall(serviceName: string, functionName: string): (...args: any[]) => Promise<any> {

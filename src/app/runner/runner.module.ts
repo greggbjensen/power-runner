@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { ScriptFormComponent, ScriptTreeComponent } from './components';
+import { ScriptFormComponent, ScriptLogComponent, ScriptTreeComponent } from './components';
+import { ScriptLogWriterDirective } from './directives/script-log-writer.directive';
 
 @NgModule({
   declarations: [
     ScriptTreeComponent,
-    ScriptFormComponent
+    ScriptFormComponent,
+    ScriptLogComponent,
+    ScriptLogWriterDirective
   ],
   imports: [
     CommonModule,
@@ -14,7 +17,8 @@ import { ScriptFormComponent, ScriptTreeComponent } from './components';
   ],
   exports: [
     ScriptTreeComponent,
-    ScriptFormComponent
+    ScriptFormComponent,
+    ScriptLogComponent
   ]
 })
 export class RunnerModule { }

@@ -1,12 +1,13 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, EventEmitter, Input, OnInit, Output, HostBinding } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, HostBinding, ViewEncapsulation } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { IScript, IScriptNode } from 'src/app/core/models';
 
 @Component({
   selector: 'pru-script-tree',
   templateUrl: './script-tree.component.html',
-  styleUrls: ['./script-tree.component.scss']
+  styleUrls: ['./script-tree.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ScriptTreeComponent implements OnInit {
   @HostBinding('class.script-tree') public className = true;

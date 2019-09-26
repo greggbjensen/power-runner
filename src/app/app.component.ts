@@ -1,24 +1,27 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as _ from 'underscore';
-import { IScript, IScriptNode } from './core/models';
-import { ScriptService } from './core/services';
+import { IScript, IScriptNode, IScriptRun, ScriptRef } from './core/models';
+import { NodeProxyFactory, ScriptService } from './core/services';
 
 
 @Component({
   selector: 'pru-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   @HostBinding('class.pru') public className = true;
   public title = 'power-runner';
   public nodes$: Observable<IScriptNode[]>;
   public selectedScript: IScript;
+  public scriptRef: ScriptRef;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
 
   constructor(
-    private _scriptService: ScriptService
+    private _scriptService: ScriptService,
+    private _nodeProxyFactory: NodeProxyFactory
   ) {
     this.nodes$ = this._nodes.asObservable();
     this._scriptService.listAsync(['D:/Dev/GitHub/power-runner/samples/**/*.ps1']).then((scripts) => {
@@ -28,6 +31,12 @@ export class AppComponent {
 
   public onSelectionChanged(script: IScript): void {
     this.selectedScript = script;
+  }
+
+  public startRun(scriptRun: IScriptRun): void {
+    this._scriptService.runAsync(scriptRun).then((scriptChannel: string) => {
+      this.scriptRef = this._nodeProxyFactory.createScriptRef(scriptChannel);
+    });
   }
 
   private nodeTransform(scripts: IScript[]): IScriptNode[] {

@@ -1,9 +1,14 @@
+import { ChildProcess, spawn } from 'child_process';
 import * as globby from 'globby';
 import * as path from 'path';
-import { IScript, IScriptParams } from '../../app/core/models';
-import { spawn } from 'child_process';
+import { IScript, IScriptParams, IScriptRun } from '../../app/core/models';
+import { ipcMain } from 'electron';
 
 export class NodeScriptService {
+
+  private static readonly FileExtensionRegex = /.ps1$/i;
+
+  private _childProcesses = new Map<string, ChildProcess>();
 
   public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
 
@@ -20,28 +25,31 @@ export class NodeScriptService {
     return scripts;
   }
 
-  public async runAsync(script: IScript, params: IScriptParams): Promise<number>  {
+  public runAsync(scriptRun: IScriptRun): Promise<string>  {
 
     return new Promise((resolve, reject) => {
-      const child = spawn('PowerShell', [`.\\${script.name}`], {
-        cwd: script.directory
+      const child = spawn('PowerShell', [`.\\${scriptRun.script.name}`], {
+        cwd: scriptRun.script.directory
       });
-      child.stdout.on('data', (data) => {
-          console.log('Powershell Data: ' + data);
+
+      const name = scriptRun.script.name.replace(NodeScriptService.FileExtensionRegex, '');
+      const scriptChannel = `${scriptRun.script.module}_${name}`;
+      this._childProcesses.set(scriptChannel, child);
+
+      process.stdout.on('data', (data: string) => {
+        ipcMain.emit(`${scriptChannel}:stdout`, data);
       });
-      child.stderr.on('data', (data) => {
-          console.log('Powershell Errors: ' + data);
+      process.stderr.on('data', (data: string) => {
+        ipcMain.emit(`${scriptChannel}:stderr`, data);
       });
-      child.on('exit', (exitCode) => {
-        if (exitCode === 0) {
-          resolve(exitCode);
-        }
-        else {
-          reject(exitCode);
-        }
-        console.log("Powershell Script finished");
+      process.on('exit', (exitCode) => {
+        ipcMain.emit(`${scriptChannel}:exit`, exitCode);
+        this._childProcesses.delete(scriptChannel);
       });
-      child.stdin.end();
+      process.stdin.end();
+
+      // Replay with a channel to listen on for stdout, stderr, and exit.
+      resolve(scriptChannel);
     });
   }
 }

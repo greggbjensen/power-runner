@@ -1,16 +1,20 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { IScript, IScriptParams } from 'src/app/core/models';
+import { Component, HostBinding, Input, OnInit, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { IScript, IScriptRun } from 'src/app/core/models';
 import { ScriptService } from 'src/app/core/services';
+
 
 @Component({
   selector: 'pru-script-form',
   templateUrl: './script-form.component.html',
-  styleUrls: ['./script-form.component.scss']
+  styleUrls: ['./script-form.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ScriptFormComponent implements OnInit {
   @HostBinding('class.script-form') public className = true;
 
   @Input() public script: IScript;
+
+  @Output() public run = new EventEmitter<IScriptRun>();
 
   constructor(
     private _scriptService: ScriptService
@@ -19,8 +23,11 @@ export class ScriptFormComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public run(): void {
-    const params: IScriptParams = { };
-    this._scriptService.runAsync(this.script, params);
+  public startRun(): void {
+    const scriptRun: IScriptRun = {
+      script: this.script,
+      params: { }
+    };
+    this.run.emit(scriptRun);
   }
 }

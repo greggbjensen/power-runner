@@ -7,6 +7,7 @@
     </div>    
   </mat-drawer>
   <mat-drawer-content id="main-content">
-    <pru-script-form [script]="selectedScript"></pru-script-form>
+    <pru-script-form [script]="selectedScript" (run)="startRun($event)"></pru-script-form>
+    <pru-script-log [scriptRef]="scriptRef"></pru-script-log>
   </mat-drawer-content>
 </mat-drawer-container>

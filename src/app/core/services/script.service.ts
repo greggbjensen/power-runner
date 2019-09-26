@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IScript, IScriptParams, NodeProxy } from '../models';
+import { IScript, IScriptRun, NodeProxy, ScriptRef } from '../models';
 import { NodeProxyFactory } from './node-proxy.factory';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class ScriptService {
     return this._proxy.invoke('listAsync', fileGlobs);
   }
 
-  public async runAsync(script: IScript, params: IScriptParams): Promise<number> {
-    return this._proxy.invoke('runAsync', script, params);
+  public async runAsync(scriptRun: IScriptRun): Promise<string> {
+    return this._proxy.invoke('runAsync', scriptRun);
   }
 }
