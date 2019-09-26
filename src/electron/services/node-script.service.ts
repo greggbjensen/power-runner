@@ -28,28 +28,35 @@ export class NodeScriptService {
   public runAsync(scriptRun: IScriptRun): Promise<string>  {
 
     return new Promise((resolve, reject) => {
-      const child = spawn('PowerShell', [`.\\${scriptRun.script.name}`], {
-        cwd: scriptRun.script.directory
-      });
 
-      const name = scriptRun.script.name.replace(NodeScriptService.FileExtensionRegex, '');
-      const scriptChannel = `${scriptRun.script.module}_${name}`;
-      this._childProcesses.set(scriptChannel, child);
+      try {
+        const child = spawn('PowerShell', [`.\\${scriptRun.script.name}`], {
+          cwd: scriptRun.script.directory
+        });
 
-      process.stdout.on('data', (data: string) => {
-        ipcMain.emit(`${scriptChannel}:stdout`, data);
-      });
-      process.stderr.on('data', (data: string) => {
-        ipcMain.emit(`${scriptChannel}:stderr`, data);
-      });
-      process.on('exit', (exitCode) => {
-        ipcMain.emit(`${scriptChannel}:exit`, exitCode);
-        this._childProcesses.delete(scriptChannel);
-      });
-      process.stdin.end();
+        const name = scriptRun.script.name.replace(NodeScriptService.FileExtensionRegex, '');
+        const scriptChannel = `${scriptRun.script.module}_${name}`;
+        this._childProcesses.set(scriptChannel, child);
 
-      // Replay with a channel to listen on for stdout, stderr, and exit.
-      resolve(scriptChannel);
+        child.stdout.on('data', (data: string) => {
+          ipcMain.emit(`${scriptChannel}:stdout`, data);
+        });
+        child.stderr.on('data', (data: string) => {
+          ipcMain.emit(`${scriptChannel}:stderr`, data);
+        });
+        child.on('exit', (exitCode) => {
+          ipcMain.emit(`${scriptChannel}:exit`, exitCode);
+          this._childProcesses.delete(scriptChannel);
+        });
+        child.stdin.end();
+
+        // Replay with a channel to listen on for stdout, stderr, and exit.
+        console.log('START RUN', scriptChannel);
+        resolve(scriptChannel);
+      } catch (err) {
+        console.error(err);
+        reject(err);
+      }
     });
   }
 }
