@@ -15,13 +15,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "exp",
+      "pru",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "exp",
+      "pru",
       "kebab-case"
     ],
     "import-blacklist": [

@@ -16,12 +16,10 @@ export class AppComponent {
   public title = 'power-runner';
   public nodes$: Observable<IScriptNode[]>;
   public selectedScript: IScript;
-  public scriptRef: ScriptRef;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
 
   constructor(
-    private _scriptService: ScriptService,
-    private _nodeProxyFactory: NodeProxyFactory
+    private _scriptService: ScriptService
   ) {
     this.nodes$ = this._nodes.asObservable();
     this._scriptService.listAsync(['D:/Dev/GitHub/power-runner/samples/**/*.ps1']).then((scripts) => {
@@ -31,12 +29,6 @@ export class AppComponent {
 
   public onSelectionChanged(script: IScript): void {
     this.selectedScript = script;
-  }
-
-  public startRun(scriptRun: IScriptRun): void {
-    this._scriptService.runAsync(scriptRun).then((scriptChannel: string) => {
-      this.scriptRef = this._nodeProxyFactory.createScriptRef(scriptChannel);
-    });
   }
 
   private nodeTransform(scripts: IScript[]): IScriptNode[] {

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { AngularSplitModule } from 'angular-split';
 import { SharedModule } from '../shared/shared.module';
-import { ScriptFormComponent, ScriptLogComponent, ScriptTreeComponent } from './components';
+import { ScriptFormComponent, ScriptLogComponent, ScriptPageComponent, ScriptTreeComponent } from './components';
 import { ScriptLogWriterDirective } from './directives/script-log-writer.directive';
 
 @NgModule({
@@ -9,16 +10,19 @@ import { ScriptLogWriterDirective } from './directives/script-log-writer.directi
     ScriptTreeComponent,
     ScriptFormComponent,
     ScriptLogComponent,
-    ScriptLogWriterDirective
+    ScriptLogWriterDirective,
+    ScriptPageComponent
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    AngularSplitModule.forChild()
   ],
   exports: [
     ScriptTreeComponent,
     ScriptFormComponent,
-    ScriptLogComponent
+    ScriptLogComponent,
+    ScriptPageComponent
   ]
 })
 export class RunnerModule { }

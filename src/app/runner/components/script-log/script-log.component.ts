@@ -9,7 +9,7 @@ import { ScriptRef } from 'src/app/core/models';
 })
 export class ScriptLogComponent implements OnInit {
 
-  @HostBinding('class.script-form') public className = true;
+  @HostBinding('class.script-log') public className = true;
 
   @Input() public scriptRef: ScriptRef;
 

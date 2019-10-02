@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularSplitModule } from 'angular-split';
 
 @NgModule({
   declarations: [],
@@ -22,7 +23,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatSelectModule,
     MatTreeModule,
     MatIconModule,
-    MatSidenavModule
+    MatSidenavModule,
+    AngularSplitModule.forChild()
   ],
   exports: [
     MatButtonModule,

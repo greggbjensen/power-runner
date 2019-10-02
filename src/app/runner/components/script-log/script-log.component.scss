@@ -1,7 +1,20 @@
+@import "../../../../styles/variables";
+
 .script-log {
   flex: 1;
 }
 
 .script-output {
   list-style: none;
+  margin: $space-15;
+  padding: 0;
+}
+
+.script-log-title {
+  font-size: $font-size-11;
+  color: $white-200;
+  font-weight: normal;
+  text-transform: uppercase;
+  margin: $space-10 $space-15 $space-15 $space-15;
+  padding: 0;
 }
