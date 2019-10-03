@@ -24,6 +24,9 @@ export class AppComponent {
     this.nodes$ = this._nodes.asObservable();
     this._scriptService.listAsync(['D:/Dev/GitHub/power-runner/samples/**/*.ps1']).then((scripts) => {
       this._nodes.next(this.nodeTransform(scripts));
+      if (scripts.length > 0) {
+        this.selectedScript = scripts[0];
+      }
     });
   }
 

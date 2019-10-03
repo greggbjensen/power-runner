@@ -14,6 +14,7 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
 
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
+    this._element.nativeElement.innerHTML = '';
 
     this._scriptRef = value;
 

@@ -1,6 +1,5 @@
-import { Component, HostBinding, Input, OnInit, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { IScript, IScriptRun } from 'src/app/core/models';
-import { ScriptService } from 'src/app/core/services';
 
 
 @Component({
@@ -17,7 +16,6 @@ export class ScriptFormComponent implements OnInit {
   @Output() public run = new EventEmitter<IScriptRun>();
 
   constructor(
-    private _scriptService: ScriptService
   ) { }
 
   public ngOnInit(): void {

@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from 'child_process';
 import { BrowserWindow } from 'electron';
+import * as fs from 'fs';
 import * as globby from 'globby';
 import * as path from 'path';
 import { IScript, IScriptRun } from '../../app/core/models';
@@ -7,6 +8,7 @@ import { IScript, IScriptRun } from '../../app/core/models';
 export class NodeScriptService {
 
   private static readonly FileExtensionRegex = /.ps1$/i;
+  private static readonly ScriptParamRegex = /^\s*param\s*\((.*[^\]])\)/is;
 
   private _childProcesses = new Map<string, ChildProcess>();
 
@@ -14,17 +16,22 @@ export class NodeScriptService {
     private _browserWindow: BrowserWindow
   ) { }
 
+  private static readFile(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
   public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
 
     const files = await globby(fileGlobs);
-    const scripts = files.map<IScript>(s => {
-      const directory = path.dirname(s);
-      return {
-        directory,
-        module: path.basename(directory),
-        name: path.basename(s)
-      };
-    });
+    const scripts = await Promise.all(files.map(f => this.parseScript(f)));
 
     return scripts;
   }
@@ -61,5 +68,25 @@ export class NodeScriptService {
         reject(err);
       }
     });
+  }
+
+  private async parseScript(filePath: string): Promise<IScript> {
+
+    const content = await NodeScriptService.readFile(filePath);
+    const match = NodeScriptService.ScriptParamRegex.exec(content);
+    if (match) {
+      console.log(match[1]);
+    } else {
+      console.log('No params');
+    }
+
+    const directory = path.dirname(filePath);
+    const script: IScript = {
+      directory,
+      module: path.basename(directory),
+      name: path.basename(filePath)
+    };
+
+    return script;
   }
 }
