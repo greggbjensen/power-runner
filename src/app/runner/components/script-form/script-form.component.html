@@ -1,8 +1,8 @@
 <div *ngIf="script" class="script-form-container">
   <h1>{{script.name}}</h1>
-  <form class="script-form-form">
-    <mat-form-field>
-      <input matInput placeholder="Favorite food" value="Sushi">
+  <form class="script-form-form" [formGroup]="form">
+    <mat-form-field *ngFor="let param of script.params">
+      <input matInput [placeholder]="param.name" [formControlName]="param.name">
     </mat-form-field>
   </form>
   <div class="script-form-actions">

@@ -1,5 +1,6 @@
 param (
-    [string]$name
+    [string]$name = 'Jim',
+    [string]$action = 'Runs'
 )
 
-Write-Host "Hello $name"
+Write-Host "$name $action"

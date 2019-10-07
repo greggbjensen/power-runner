@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as electronReload from 'electron-reload';
 import * as path from 'path';
 import * as url from 'url';
-import { NodeScriptService } from './services';
+import { NodeScriptService, ScriptParser } from './services';
 
 electronReload(path.resolve(__dirname, '../../src'), {
   electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
@@ -39,7 +39,8 @@ function createWindow(): void {
     browserWindow = null;
   });
 
-  bindService(new NodeScriptService(browserWindow));
+  const scriptParser = new ScriptParser();
+  bindService(new NodeScriptService(browserWindow, scriptParser));
 }
 
 app.on('ready', createWindow);

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularSplitModule } from 'angular-split';
 import { AppComponent } from './app.component';
@@ -15,6 +16,7 @@ import { SharedModule } from './shared/shared.module';
     CoreModule,
     SharedModule,
     RunnerModule,
+    ReactiveFormsModule,
     AngularSplitModule.forRoot(),
   ],
   providers: [],

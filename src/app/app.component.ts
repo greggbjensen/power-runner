@@ -1,8 +1,8 @@
 import { Component, HostBinding, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as _ from 'underscore';
-import { IScript, IScriptNode, IScriptRun, ScriptRef } from './core/models';
-import { NodeProxyFactory, ScriptService } from './core/services';
+import { IScript, IScriptNode } from './core/models';
+import { ScriptService } from './core/services';
 
 
 @Component({
