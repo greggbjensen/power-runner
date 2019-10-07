@@ -1,0 +1,16 @@
+import { Injectable } from '@angular/core';
+import { BrowserWindow } from 'electron';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class NodeSettingsService {
+
+  constructor(
+    private _browserWindow: BrowserWindow
+  ) { }
+
+  public openModal(): void {
+    this._browserWindow.webContents.send('settings:open');
+  }
+}

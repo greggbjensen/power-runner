@@ -5,6 +5,7 @@ import { AngularSplitModule } from 'angular-split';
 import { SharedModule } from '../shared/shared.module';
 import { ScriptFormComponent, ScriptLogComponent, ScriptPageComponent, ScriptTreeComponent } from './components';
 import { ScriptLogWriterDirective } from './directives/script-log-writer.directive';
+import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { ScriptLogWriterDirective } from './directives/script-log-writer.directi
     ScriptFormComponent,
     ScriptLogComponent,
     ScriptLogWriterDirective,
-    ScriptPageComponent
+    ScriptPageComponent,
+    SettingsDialogComponent
   ],
   imports: [
     CommonModule,

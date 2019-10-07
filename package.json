@@ -26,6 +26,7 @@
     "@types/underscore": "^1.9.2",
     "angular-split": "^3.0.2",
     "hammerjs": "^2.0.8",
+    "js-yaml": "^3.13.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "underscore": "^1.9.1",

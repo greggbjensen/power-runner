@@ -1,8 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import * as electronReload from 'electron-reload';
 import * as path from 'path';
 import * as url from 'url';
-import { NodeScriptService, ScriptParser } from './services';
+import { NodeScriptService, NodeSettingsService, ScriptParser } from './services';
 
 electronReload(path.resolve(__dirname, '../../src'), {
   electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
@@ -11,6 +11,30 @@ electronReload(path.resolve(__dirname, '../../src'), {
 // SourceRef: https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron
 // SourceRef: https://medium.com/@midsever/getting-started-with-angular-in-electron-296d13f59e5e
+
+let settingsService: NodeSettingsService;
+const menuTemplate: MenuItem[] = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Settings',
+        click: () => {
+          settingsService.openModal();
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'quit'
+      }
+    ]
+  }
+] as any;
+
+const menu = Menu.buildFromTemplate(menuTemplate);
+Menu.setApplicationMenu(menu);
 
 let browserWindow: BrowserWindow;
 
@@ -40,6 +64,8 @@ function createWindow(): void {
   });
 
   const scriptParser = new ScriptParser();
+  settingsService = new NodeSettingsService(browserWindow);
+  bindService(settingsService);
   bindService(new NodeScriptService(browserWindow, scriptParser));
 }
 
