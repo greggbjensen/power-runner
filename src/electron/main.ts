@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as electronReload from 'electron-reload';
 import * as path from 'path';
 import * as url from 'url';
@@ -12,37 +12,15 @@ electronReload(path.resolve(__dirname, '../../src'), {
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron
 // SourceRef: https://medium.com/@midsever/getting-started-with-angular-in-electron-296d13f59e5e
 
-let settingsService: NodeSettingsService;
-const menuTemplate: MenuItem[] = [
-  {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Settings',
-        click: () => {
-          settingsService.openModal();
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'quit'
-      }
-    ]
-  }
-] as any;
-
-const menu = Menu.buildFromTemplate(menuTemplate);
-Menu.setApplicationMenu(menu);
-
 let browserWindow: BrowserWindow;
+let settingsService: NodeSettingsService;
 
 function createWindow(): void {
   browserWindow = new BrowserWindow({
       width: 1024,
       height: 768,
       darkTheme: true,
+      frame: false,
       webPreferences: {
         nodeIntegration: true,
         nodeIntegrationInWorker: true
@@ -61,6 +39,10 @@ function createWindow(): void {
 
   browserWindow.on('closed', () => {
     browserWindow = null;
+  });
+
+  browserWindow.webContents.on('devtools-opened', () => {
+    setImmediate(() => browserWindow.focus());
   });
 
   const scriptParser = new ScriptParser();
@@ -85,6 +67,8 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+ipcMain.on('file:exit', () => app.quit());
 
 const services = new Map<string, object>();
 

@@ -1,6 +1,13 @@
+<mat-toolbar id="main-toolbar">
+  <button mat-button [matMenuTriggerFor]="menu">File</button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="settings()">Settings</button>
+    <button mat-menu-item (click)="exit()">Exit</button>
+  </mat-menu>
+</mat-toolbar>
 
 <mat-drawer-container class="app-container">
-  <mat-drawer id="script-tree-drawer" mode="side" opened>
+  <mat-drawer id="script-tree-drawer" mode="side" position="start" opened>
     <div *ngIf="nodes$ | async as nodes">
       <pru-script-tree [nodes]="nodes" (selectionChanged)="onSelectionChanged($event)">
       </pru-script-tree>
@@ -11,4 +18,7 @@
       <pru-script-page [script]="selectedScript"></pru-script-page>
     </mat-drawer-container>
   </mat-drawer-content>
+  <mat-drawer id="settings-drawer" mode="over" position="end"  [(opened)]="showSettings" (closed)="showSettings = false">
+    <pru-settings-pane></pru-settings-pane>
+  </mat-drawer>  
 </mat-drawer-container>

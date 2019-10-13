@@ -16,9 +16,14 @@ export class ScriptFormComponent implements OnInit {
   @Input() public set script(value: IScript) {
 
     // Create a copy to modify.
-    this._script = Object.assign({ }, value);
-    this._script.params = value.params.map(p => Object.assign({ }, p));
-    this.form = this.createFormGroup(this._script.params);
+    if (value) {
+      this._script = Object.assign({ }, value);
+      this._script.params = value.params.map(p => Object.assign({ }, p));
+      this.form = this.createFormGroup(this._script.params);
+    } else {
+      this._script = null;
+      this.form = null;
+    }
   }
 
   public get script(): IScript {

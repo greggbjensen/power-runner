@@ -1,3 +1,4 @@
+export { SettingsPaneComponent } from './settings-pane/settings-pane.component';
 export { ScriptPageComponent } from './script-page/script-page.component';
 export { ScriptLogComponent } from './script-log/script-log.component';
 export { ScriptFormComponent } from './script-form/script-form.component';

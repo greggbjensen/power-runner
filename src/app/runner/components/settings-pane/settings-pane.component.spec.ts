@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SettingsDialogComponent } from './settings-dialog.component';
+import { SettingsPaneComponent } from './settings-pane.component';
 
-describe('SettingsDialogComponent', () => {
-  let component: SettingsDialogComponent;
-  let fixture: ComponentFixture<SettingsDialogComponent>;
+describe('SettingsPaneComponent', () => {
+  let component: SettingsPaneComponent;
+  let fixture: ComponentFixture<SettingsPaneComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SettingsDialogComponent ]
+      declarations: [ SettingsPaneComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SettingsDialogComponent);
+    fixture = TestBed.createComponent(SettingsPaneComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

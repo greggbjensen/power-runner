@@ -3,9 +3,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import { SharedModule } from '../shared/shared.module';
-import { ScriptFormComponent, ScriptLogComponent, ScriptPageComponent, ScriptTreeComponent } from './components';
+import { ScriptFormComponent, ScriptLogComponent, ScriptPageComponent, ScriptTreeComponent, SettingsPaneComponent } from './components';
 import { ScriptLogWriterDirective } from './directives/script-log-writer.directive';
-import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +13,7 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
     ScriptLogComponent,
     ScriptLogWriterDirective,
     ScriptPageComponent,
-    SettingsDialogComponent
+    SettingsPaneComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +25,8 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
     ScriptTreeComponent,
     ScriptFormComponent,
     ScriptLogComponent,
-    ScriptPageComponent
+    ScriptPageComponent,
+    SettingsPaneComponent
   ]
 })
 export class RunnerModule { }

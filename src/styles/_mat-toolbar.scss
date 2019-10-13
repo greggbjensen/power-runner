@@ -1,0 +1,15 @@
+@import "variables";
+
+.pru {
+
+  .mat-toolbar {
+    .mat-button {
+      font-size: $font-size-13;
+    }
+  }
+
+  .mat-toolbar-row, .mat-toolbar-single-row {
+    height: auto;
+  }
+
+}

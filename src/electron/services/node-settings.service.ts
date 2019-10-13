@@ -11,6 +11,8 @@ export class NodeSettingsService {
   ) { }
 
   public openModal(): void {
-    this._browserWindow.webContents.send('settings:open');
+    console.log('SEND MODAL');
+    this._browserWindow.webContents.focus();
+    this._browserWindow.webContents.send('settings:open', null);
   }
 }
