@@ -18,7 +18,7 @@ export class AppComponent {
   @HostBinding('class.pru') public className = true;
   public title = 'power-runner';
   public nodes$: Observable<IScriptNode[]>;
-  public selectedScript: IScript;
+  public openScripts: IScript[] = [];
   public showSettings = false;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
   private _ipcRenderer: IpcRenderer | undefined;
@@ -31,16 +31,13 @@ export class AppComponent {
     this.nodes$ = this._nodes.asObservable();
     this._scriptService.listAsync(['D:/Dev/GitHub/power-runner/samples/**/*.ps1']).then((scripts) => {
       this._nodes.next(this.nodeTransform(scripts));
-      if (scripts.length > 0) {
-        this.selectedScript = scripts[0];
-      }
     });
 
     this._ipcRenderer = electron.ipcRenderer;
   }
 
-  public onSelectionChanged(script: IScript): void {
-    this.selectedScript = script;
+  public scriptOpened(script: IScript): void {
+    this.openScripts.push(script);
   }
 
   public settings(): void {

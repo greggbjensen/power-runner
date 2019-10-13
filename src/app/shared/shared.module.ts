@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
 
@@ -30,6 +31,7 @@ import { AngularSplitModule } from 'angular-split';
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,
+    MatTabsModule,
     AngularSplitModule.forChild()
   ],
   exports: [
@@ -43,7 +45,8 @@ import { AngularSplitModule } from 'angular-split';
     MatSidenavModule,
     MatDialogModule,
     MatMenuModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatTabsModule
   ]
 })
 export class SharedModule { }

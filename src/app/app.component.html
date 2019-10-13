@@ -9,13 +9,17 @@
 <mat-drawer-container class="app-container">
   <mat-drawer id="script-tree-drawer" mode="side" position="start" opened>
     <div *ngIf="nodes$ | async as nodes">
-      <pru-script-tree [nodes]="nodes" (selectionChanged)="onSelectionChanged($event)">
+      <pru-script-tree [nodes]="nodes" (scriptOpened)="scriptOpened($event)">
       </pru-script-tree>
     </div>    
   </mat-drawer>
   <mat-drawer-content id="main-content">
     <mat-drawer-container class="main-container">
-      <pru-script-page [script]="selectedScript"></pru-script-page>
+      <mat-tab-group>
+        <mat-tab *ngFor="let script of openScripts" [label]="script.name">
+            <pru-script-page [script]="script"></pru-script-page>
+        </mat-tab>
+      </mat-tab-group>
     </mat-drawer-container>
   </mat-drawer-content>
   <mat-drawer id="settings-drawer" mode="over" position="end"  [(opened)]="showSettings" (closed)="showSettings = false">

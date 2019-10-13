@@ -12,7 +12,7 @@ import { IScript, IScriptNode } from 'src/app/core/models';
 export class ScriptTreeComponent implements OnInit {
   @HostBinding('class.script-tree') public className = true;
 
-  @Output() public selectionChanged = new EventEmitter<IScript>();
+  @Output() public scriptOpened = new EventEmitter<IScript>();
 
   public get nodes(): IScriptNode[] {
     return this.dataSource.data;
