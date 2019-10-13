@@ -4,20 +4,20 @@
 
   .script-form {
     flex: 1;
-    background-color: $gray-800;
   }
 
   .script-form-area {
     display: flex;
+    background-color: $gray-800;
   }
 
   .script-log {
     height: 23rem;
-    background-color: $gray-800;
   }  
 
   .script-log-area {
     display: flex;
     flex-direction: column;
+    background-color: $gray-800;
   }  
 }

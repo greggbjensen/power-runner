@@ -1,11 +1,19 @@
 <div *ngIf="script" class="script-form-container">
-  <h1>{{script.name}}</h1>
   <form class="script-form-form" *ngIf="form" [formGroup]="form">
+    <div class="script-form-header">
+      <mat-form-field class="script-profile" appearance="standard">
+        <mat-label>Profile</mat-label>
+        <mat-select [value]="selectedProfile">
+          <mat-option *ngFor="let profile of profiles" [value]="profile.name">
+            {{profile.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>    
+      <button class="script-run" mat-raised-button color="primary" (click)="startRun()">Run</button>
+    </div>
     <mat-form-field *ngFor="let param of script.params; let i = index">
-      <input matInput [placeholder]="param.name" [formControlName]="param.name">
+      <mat-label>{{param.name}}</mat-label>
+      <input matInput [formControlName]="param.name">
     </mat-form-field>
   </form>
-  <div class="script-form-actions">
-    <button mat-raised-button color="primary" (click)="startRun()">Run</button>
-  </div>
 </div>

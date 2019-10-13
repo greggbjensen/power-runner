@@ -5,3 +5,4 @@ export { IScript } from './iscript';
 export { IResolvable } from './iresolvable';
 export { IScriptNode } from './iscript-node';
 export { IScriptParam } from './iscript-param';
+export { IScriptProfile } from './iscript-profile';

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IScript, IScriptParam } from 'src/app/core/models';
+import { IScript, IScriptParam, IScriptProfile } from 'src/app/core/models';
 
 
 @Component({
@@ -12,6 +12,21 @@ import { IScript, IScriptParam } from 'src/app/core/models';
 export class ScriptFormComponent implements OnInit {
   @HostBinding('class.script-form') public className = true;
   public form: FormGroup;
+  public selectedProfile: string;
+  public profiles: IScriptProfile[] = [
+    {
+      name: 'Default',
+      params: {
+        name: 'Test'
+      },
+    },
+    {
+      name: 'Last Run',
+      params: {
+        name: 'Test'
+      }
+    }
+  ];
 
   @Input() public set script(value: IScript) {
 
@@ -35,7 +50,9 @@ export class ScriptFormComponent implements OnInit {
   private _script: IScript;
 
   constructor(
-  ) { }
+  ) {
+    this.selectedProfile = this.profiles[0].name;
+  }
 
   public ngOnInit(): void {
   }
