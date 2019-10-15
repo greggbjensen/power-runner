@@ -1,1 +1,17 @@
-<p>settings-pane works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <h2>Settings</h2>
+  <mat-form-field>
+    <mat-label>Base Path</mat-label>
+    <input id="settings-base-path" matInput formControlName="basePath" />
+  </mat-form-field>  
+
+  <mat-form-field>
+    <mat-label>Search Paths</mat-label>
+    <textarea id="settings-search-paths" matInput placeholder="Minimatch path patterns separated by newlines." formControlName="searchPaths"></textarea>
+  </mat-form-field>
+
+  <div class="form-actions">
+    <button mat-raised-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit">Save</button>
+  </div>
+</form>

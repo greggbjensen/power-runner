@@ -1,8 +1,16 @@
 @import "variables";
 
 .pru {
-  .mat-form-field {
-    min-width: 34.4rem;
-    margin-left: $space-15;
+
+  .form-actions {
+    text-align: center;
+
+    button {
+      margin-left: $space-15;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
   }
 }

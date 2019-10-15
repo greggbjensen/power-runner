@@ -1,0 +1,15 @@
+@import "../../../../styles/variables";
+
+.settings-pane {
+  display: block;
+  width: 40rem;
+  padding: $space-15;
+
+  .mat-form-field {
+    display: block;
+  }
+}
+
+#settings-search-paths {
+  min-height: 20rem;
+}
