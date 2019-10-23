@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -14,9 +15,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
+import { BrowseDirectoryFieldComponent } from './components';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    BrowseDirectoryFieldComponent
+  ],
   imports: [
     CommonModule,
     BrowserAnimationsModule,
@@ -32,6 +36,7 @@ import { AngularSplitModule } from 'angular-split';
     MatMenuModule,
     MatToolbarModule,
     MatTabsModule,
+    ReactiveFormsModule,
     AngularSplitModule.forChild()
   ],
   exports: [
@@ -46,7 +51,8 @@ import { AngularSplitModule } from 'angular-split';
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,
-    MatTabsModule
+    MatTabsModule,
+    BrowseDirectoryFieldComponent
   ]
 })
 export class SharedModule { }

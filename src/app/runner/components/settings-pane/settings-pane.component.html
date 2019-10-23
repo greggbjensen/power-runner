@@ -1,9 +1,6 @@
 <form [formGroup]="form" (submit)="save()">
   <h2>Settings</h2>
-  <mat-form-field>
-    <mat-label>Base Path</mat-label>
-    <input id="settings-base-path" matInput formControlName="basePath" />
-  </mat-form-field>  
+  <pru-browse-directory-field id="settings-base-path" label="Base Path" controlName="basePath"></pru-browse-directory-field>
 
   <mat-form-field>
     <mat-label>Search Paths</mat-label>

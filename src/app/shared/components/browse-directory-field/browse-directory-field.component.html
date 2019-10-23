@@ -1,0 +1,7 @@
+<div [formGroup]="form">
+  <mat-form-field>
+    <mat-label>{{label}}</mat-label>
+    <input matInput [formControlName]="controlName" />
+    <mat-icon class="browse-directory-icon" (click)="browseBasePath()" matSuffix>folder</mat-icon>
+  </mat-form-field>
+</div>

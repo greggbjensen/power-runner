@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ScriptService } from './services';
-import { NodeProxyFactory } from './services/node-proxy.factory';
+import { BrowseDialogService, NodeProxyFactory, ScriptService } from './services';
 
 @NgModule({
   providers: [
     ScriptService,
-    NodeProxyFactory
+    NodeProxyFactory,
+    BrowseDialogService
   ],
   declarations: [],
   imports: [
