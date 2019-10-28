@@ -6,6 +6,10 @@ export class NodeProxy {
         this._proxies.set(functionName, call);
     }
 
+    public has(functionName: string): boolean {
+      return this._proxies.has(functionName);
+    }
+
     public async invoke(functionName: string, ...args: any[]): Promise<any> {
         return this._proxies.get(functionName)(...args);
     }

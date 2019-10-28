@@ -1,3 +1,5 @@
+export { ProxyNodeService } from './proxy-node-service';
+export { AppService } from './app.service';
 export { BrowseDialogService } from './browse-dialog.service';
 export { SettingsService } from './settings.service';
 export { NodeProxyFactory } from './node-proxy.factory';

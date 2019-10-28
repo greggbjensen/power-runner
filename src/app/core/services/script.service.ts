@@ -1,25 +1,24 @@
 import { Injectable } from '@angular/core';
 import { IScript, NodeProxy } from '../models';
 import { NodeProxyFactory } from './node-proxy.factory';
+import { ProxyNodeService } from './proxy-node-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ScriptService {
-
-  private _proxy: NodeProxy;
+export class ScriptService extends ProxyNodeService {
 
   constructor(
-    private _proxyFactory: NodeProxyFactory
+    proxyFactory: NodeProxyFactory
   ) {
-    this._proxy = this._proxyFactory.create('NodeScriptService', 'listAsync', 'runAsync');
+    super('NodeScriptService', proxyFactory);
   }
 
   public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
-    return this._proxy.invoke('listAsync', fileGlobs);
+    return this.proxy.invoke('listAsync', fileGlobs);
   }
 
   public async runAsync(script: IScript): Promise<string> {
-    return this._proxy.invoke('runAsync', script);
+    return this.proxy.invoke('runAsync', script);
   }
 }

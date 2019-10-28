@@ -5,11 +5,15 @@ import { ProxyNodeService } from './proxy-node-service';
 @Injectable({
   providedIn: 'root'
 })
-export class SettingsService extends ProxyNodeService {
+export class AppService extends ProxyNodeService {
 
   constructor(
     proxyFactory: NodeProxyFactory
   ) {
-    super('NodeSettingsService', proxyFactory);
+    super('NodeAppService', proxyFactory);
+  }
+
+  public exitAsync(): Promise<void> {
+    return this.proxy.invoke('exitAsync');
   }
 }

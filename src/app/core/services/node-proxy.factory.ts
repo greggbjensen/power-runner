@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { IpcRenderer } from 'electron';
+import * as _ from 'underscore';
 import { NodeProxy, ScriptRef } from '../models';
 import { IResolvable } from '../models/iresolvable';
+import { ProxyNodeService } from './proxy-node-service';
 const electron = (window as any).require('electron');
 
 @Injectable({
@@ -15,11 +17,16 @@ export class NodeProxyFactory {
     this._ipcRenderer = electron.ipcRenderer;
   }
 
-  public create(serviceName: string, ...functionNames: string[]): NodeProxy {
+  public create(serviceName: string, proxyService: ProxyNodeService): NodeProxy {
     const proxy = new NodeProxy();
-    functionNames.forEach(functionName => {
-      proxy.add(functionName, this.createCall(serviceName, functionName));
-    });
+    // tslint:disable-next-line: forin
+    for (const key in proxyService) {
+      const field = proxyService[key];
+      if (typeof field === 'function' && !key.startsWith('_') && key !== 'constructor') {
+        console.log(serviceName + '.' + key);
+        proxy.add(key, this.createCall(serviceName, key));
+      }
+    }
 
     return proxy;
   }

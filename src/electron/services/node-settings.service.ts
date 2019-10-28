@@ -6,12 +6,8 @@ import { BrowserWindow } from 'electron';
 })
 export class NodeSettingsService {
 
-  constructor(
-    private _browserWindow: BrowserWindow
-  ) { }
+  constructor() { }
 
   public openModal(): void {
-    this._browserWindow.webContents.focus();
-    this._browserWindow.webContents.send('settings:open', null);
   }
 }

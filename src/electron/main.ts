@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as electronReload from 'electron-reload';
 import * as path from 'path';
 import * as url from 'url';
-import { NodeScriptService, NodeSettingsService, ScriptParser, NodeBrowseDialogService } from './services';
+import { NodeAppService, NodeBrowseDialogService, NodeScriptService, NodeSettingsService, ScriptParser } from './services';
 
 electronReload(path.resolve(__dirname, '../../src'), {
   electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
@@ -13,7 +13,6 @@ electronReload(path.resolve(__dirname, '../../src'), {
 // SourceRef: https://medium.com/@midsever/getting-started-with-angular-in-electron-296d13f59e5e
 
 let browserWindow: BrowserWindow;
-let settingsService: NodeSettingsService;
 
 function createWindow(): void {
   browserWindow = new BrowserWindow({
@@ -46,8 +45,9 @@ function createWindow(): void {
   });
 
   const scriptParser = new ScriptParser();
-  settingsService = new NodeSettingsService(browserWindow);
-  bindService(settingsService);
+
+  bindService(new NodeAppService());
+  bindService(new NodeSettingsService());
   bindService(new NodeScriptService(browserWindow, scriptParser));
   bindService(new NodeBrowseDialogService(browserWindow));
 }
@@ -68,8 +68,6 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-ipcMain.on('file:exit', () => app.quit());
 
 const services = new Map<string, object>();
 
