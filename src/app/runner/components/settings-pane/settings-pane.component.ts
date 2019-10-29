@@ -1,5 +1,7 @@
 import { Component, EventEmitter, HostBinding, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { SettingsService } from 'src/app/core/services';
+import { ISettings } from 'src/app/core/models';
 
 @Component({
   selector: 'pru-settings-pane',
@@ -16,7 +18,9 @@ export class SettingsPaneComponent implements OnInit {
 
   @Output() public closed = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(
+    private _settingsService: SettingsService
+  ) { }
 
   public ngOnInit(): void {
   }
@@ -26,6 +30,18 @@ export class SettingsPaneComponent implements OnInit {
   }
 
   public save(): void {
-    this.closed.emit();
+    if (this.form.invalid) {
+      return;
+    }
+
+    const value = this.form.value;
+    const settings: ISettings = {
+      basePath: value.basePath,
+      searchPaths: value.searchPaths.split('\n').map(s => s.trim())
+    };
+
+
+    this._settingsService.saveAsync(settings)
+      .then(() => this.closed.emit());
   }
 }

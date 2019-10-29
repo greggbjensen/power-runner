@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ISettings } from '../models';
 import { NodeProxyFactory } from './node-proxy.factory';
 import { ProxyNodeService } from './proxy-node-service';
 
@@ -11,5 +12,9 @@ export class SettingsService extends ProxyNodeService {
     proxyFactory: NodeProxyFactory
   ) {
     super('NodeSettingsService', proxyFactory);
+  }
+
+  public async saveAsync(settings: ISettings): Promise<void> {
+    return this.proxy.invoke('saveAsync', settings);
   }
 }
