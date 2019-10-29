@@ -20,4 +20,14 @@ export class NodeSettingsService {
     await fs.ensureDir(settingsDirectory);
     return await yaml.write(this._settingsFile, settings);
   }
+
+  public async readAsync(): Promise<ISettings> {
+    let settings: ISettings = null;
+    const hasSettings = await fs.pathExists(this._settingsFile);
+    if (hasSettings) {
+      settings = await yaml.read(this._settingsFile);
+    }
+
+    return settings;
+  }
 }

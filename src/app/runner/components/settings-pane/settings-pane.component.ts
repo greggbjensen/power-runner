@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, HostBinding, OnInit, Output, ViewEncapsulation, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SettingsService } from 'src/app/core/services';
 import { ISettings } from 'src/app/core/models';
@@ -17,6 +17,16 @@ export class SettingsPaneComponent implements OnInit {
   });
 
   @Output() public closed = new EventEmitter<any>();
+  @Input() public set settings(value: ISettings) {
+    if (this.settings) {
+      this.form.patchValue({
+        basePath: this.settings.basePath,
+        searchPaths: this.settings.searchPaths.join('\n')
+      });
+    } else {
+      this.form.reset();
+    }
+  }
 
   constructor(
     private _settingsService: SettingsService
@@ -39,7 +49,6 @@ export class SettingsPaneComponent implements OnInit {
       basePath: value.basePath,
       searchPaths: value.searchPaths.split('\n').map(s => s.trim())
     };
-
 
     this._settingsService.saveAsync(settings)
       .then(() => this.closed.emit());

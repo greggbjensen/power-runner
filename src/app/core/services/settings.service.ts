@@ -17,4 +17,8 @@ export class SettingsService extends ProxyNodeService {
   public async saveAsync(settings: ISettings): Promise<void> {
     return this.proxy.invoke('saveAsync', settings);
   }
+
+  public async readAsync(): Promise<ISettings> {
+    return this.proxy.invoke('readAsync');
+  }
 }

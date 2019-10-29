@@ -1,7 +1,7 @@
 <mat-toolbar id="main-toolbar">
   <button mat-button [matMenuTriggerFor]="menu">File</button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="settings()">Settings</button>
+    <button mat-menu-item (click)="toggleSettings()">Settings</button>
     <button mat-menu-item (click)="exit()">Exit</button>
   </mat-menu>
 </mat-toolbar>
@@ -22,7 +22,7 @@
       </mat-tab-group>
     </mat-drawer-container>
   </mat-drawer-content>
-  <mat-drawer id="settings-drawer" mode="over" position="end"  [(opened)]="showSettings" (closed)="showSettings = false">
-    <pru-settings-pane (closed)="showSettings = false"></pru-settings-pane>
+  <mat-drawer id="settings-drawer" mode="over" position="end" [(opened)]="showSettings" (closed)="showSettings = false">
+    <pru-settings-pane (closed)="showSettings = false" [settings]="settings"></pru-settings-pane>
   </mat-drawer>  
 </mat-drawer-container>
