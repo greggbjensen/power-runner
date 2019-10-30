@@ -1,6 +1,7 @@
 import { ChildProcess, spawn } from 'child_process';
 import { BrowserWindow } from 'electron';
 import * as globby from 'globby';
+import * as path from 'path';
 import { IScript } from '../../app/core/models';
 import { ScriptParser } from './script.parser';
 

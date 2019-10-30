@@ -46,7 +46,7 @@ function createWindow(): void {
 
   const scriptParser = new ScriptParser();
 
-  bindService(new NodeAppService());
+  bindService(new NodeAppService(browserWindow));
   bindService(new NodeSettingsService());
   bindService(new NodeScriptService(browserWindow, scriptParser));
   bindService(new NodeBrowseDialogService(browserWindow));

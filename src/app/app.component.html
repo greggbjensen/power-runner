@@ -2,6 +2,7 @@
   <button mat-button [matMenuTriggerFor]="menu">File</button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="toggleSettings()">Settings</button>
+    <button mat-menu-item (click)="reloadWindow()">Reload Window</button>
     <button mat-menu-item (click)="exit()">Exit</button>
   </mat-menu>
 </mat-toolbar>

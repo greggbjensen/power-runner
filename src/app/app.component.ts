@@ -37,15 +37,18 @@ export class AppComponent {
     this.showSettings = true;
   }
 
+  public reloadWindow(): void {
+    this._appService.reloadWindowAsync();
+  }
+
   public exit(): void {
     this._appService.exitAsync();
   }
 
   private async initialize(): Promise<void> {
     this.settings = await this._settingsService.readAsync();
-    console.log('SETTINGS', this.settings);
     if (this.settings && this.settings.basePath && this.settings.searchPaths && this.settings.searchPaths.length > 0) {
-      const fullPaths = this.settings.searchPaths.map(p => `${this.settings.basePath}/${p}`);
+      const fullPaths = this.settings.searchPaths.map(p => `${this.settings.basePath}/${p}`.replace(/\\/g, '/'));
       this._scriptService.listAsync(fullPaths).then((scripts) => {
         this._nodes.next(this.nodeTransform(scripts));
       });

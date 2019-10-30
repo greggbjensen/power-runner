@@ -13,6 +13,10 @@ export class AppService extends ProxyNodeService {
     super('NodeAppService', proxyFactory);
   }
 
+  public reloadWindowAsync(): Promise<void> {
+    return this.proxy.invoke('reloadWindowAsync');
+  }
+
   public exitAsync(): Promise<void> {
     return this.proxy.invoke('exitAsync');
   }
