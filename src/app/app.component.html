@@ -23,7 +23,7 @@
       </mat-tab-group>
     </mat-drawer-container>
   </mat-drawer-content>
-  <mat-drawer id="settings-drawer" mode="over" position="end" [(opened)]="showSettings" (closed)="showSettings = false">
-    <pru-settings-pane (closed)="showSettings = false" [settings]="settings"></pru-settings-pane>
+  <mat-drawer id="settings-drawer" mode="over" position="end" [(opened)]="showSettings" (closed)="settingsClosed($event)">
+    <pru-settings-pane (closed)="settingsClosed($event)" [settings]="settings"></pru-settings-pane>
   </mat-drawer>  
 </mat-drawer-container>

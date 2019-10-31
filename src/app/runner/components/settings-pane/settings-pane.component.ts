@@ -16,7 +16,7 @@ export class SettingsPaneComponent implements OnInit {
     searchPaths: new FormControl('', Validators.required)
   });
 
-  @Output() public closed = new EventEmitter<any>();
+  @Output() public closed = new EventEmitter<string>();
   @Input() public set settings(value: ISettings) {
     if (value) {
       this.form.patchValue({
@@ -51,6 +51,6 @@ export class SettingsPaneComponent implements OnInit {
     };
 
     this._settingsService.saveAsync(settings)
-      .then(() => this.closed.emit());
+      .then(() => this.closed.emit('saved'));
   }
 }

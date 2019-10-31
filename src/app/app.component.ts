@@ -45,6 +45,16 @@ export class AppComponent {
     this._appService.exitAsync();
   }
 
+  public settingsClosed(result: string): void {
+    this.showSettings = false;
+
+    if (result === 'saved') {
+
+      // Update loaded files.
+      this.initialize();
+    }
+  }
+
   private async initialize(): Promise<void> {
     this.settings = await this._settingsService.readAsync();
     if (this.settings && this.settings.basePath && this.settings.searchPaths && this.settings.searchPaths.length > 0) {
