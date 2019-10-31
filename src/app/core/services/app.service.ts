@@ -20,4 +20,16 @@ export class AppService extends ProxyNodeService {
   public exitAsync(): Promise<void> {
     return this.proxy.invoke('exitAsync');
   }
+
+  public minimizeAsync(): Promise<void> {
+    return this.proxy.invoke('minimizeAsync');
+  }
+
+  public maximizeAsync(): Promise<void> {
+    return this.proxy.invoke('maximizeAsync');
+  }
+
+  public restoreAsync(): Promise<void> {
+    return this.proxy.invoke('restoreAsync');
+  }
 }

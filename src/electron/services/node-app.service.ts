@@ -19,4 +19,19 @@ export class NodeAppService {
     app.quit();
     return Promise.resolve();
   }
+
+  public minimizeAsync(): Promise<void> {
+    this._browserWindow.minimize();
+    return Promise.resolve();
+  }
+
+  public maximizeAsync(): Promise<void> {
+    this._browserWindow.maximize();
+    return Promise.resolve();
+  }
+
+  public restoreAsync(): Promise<void> {
+    this._browserWindow.restore();
+    return Promise.resolve();
+  }
 }

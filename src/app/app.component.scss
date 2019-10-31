@@ -18,5 +18,21 @@
 }
 
 #main-toolbar {
+  display: flex;
   background: $gray-500;
+  -webkit-app-region: drag;
+
+  .mat-button {
+    -webkit-app-region: no-drag;
+  }
+
+  .main-window-actions {
+    margin-left: auto;
+    -webkit-app-region: no-drag;
+
+    .mat-icon {
+      font-size: $font-size-16;
+      color: $white-200;
+    }
+  }
 }

@@ -17,6 +17,7 @@ export class AppComponent {
   public nodes$: Observable<IScriptNode[]>;
   public openScripts: IScript[] = [];
   public showSettings = false;
+  public isMaximized = false;
   public settings: ISettings;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
 
@@ -43,6 +44,19 @@ export class AppComponent {
 
   public exit(): void {
     this._appService.exitAsync();
+  }
+
+  public minimize(): void {
+    this._appService.minimizeAsync();
+  }
+
+  public toggleMaximize(): void {
+    this.isMaximized = !this.isMaximized;
+    if (this.isMaximized) {
+      this._appService.maximizeAsync();
+    } else {
+      this._appService.restoreAsync();
+    }
   }
 
   public settingsClosed(result: string): void {
