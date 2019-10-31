@@ -1,10 +1,12 @@
 <mat-toolbar id="main-toolbar">
+  <mat-icon class="main-logo">exit_to_app</mat-icon>
   <button mat-button [matMenuTriggerFor]="menu">File</button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="toggleSettings()">Settings</button>
     <button mat-menu-item (click)="reloadWindow()">Reload Window</button>
     <button mat-menu-item (click)="exit()">Exit</button>
   </mat-menu>
+  <h1 id="main-title">PowerRunner</h1>
   <div class="main-window-actions">
     <button mat-icon-button (click)="minimize()"><mat-icon>maximize</mat-icon></button>
     <button mat-icon-button (click)="toggleMaximize()"><mat-icon>{{isMaximized ? 'crop_square' : 'filter_none'}}</mat-icon></button>
