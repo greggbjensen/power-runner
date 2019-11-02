@@ -1,7 +1,7 @@
 <mat-tab-group>
   <mat-tab *ngFor="let script of scripts">
       <ng-template mat-tab-label>
-        {{script.name}}
+        <span [title]="script.directory + '/' + script.name">{{script.name}}</span>
         <mat-icon class="script-tab-close" (click)="closeTab(script)">close</mat-icon>
       </ng-template>          
       <pru-script-page [script]="script"></pru-script-page>
