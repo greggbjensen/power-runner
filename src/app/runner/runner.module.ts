@@ -3,7 +3,15 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import { SharedModule } from '../shared/shared.module';
-import { ScriptFormComponent, ScriptLogComponent, ScriptPageComponent, ScriptTreeComponent, SettingsPaneComponent } from './components';
+import {
+  ScriptFormComponent,
+  ScriptLogComponent,
+  ScriptPageComponent,
+  ScriptTabsContainerComponent,
+  ScriptTreeComponent,
+  SettingsPaneComponent,
+  StatusBarComponent
+} from './components';
 import { ScriptLogWriterDirective } from './directives/script-log-writer.directive';
 
 @NgModule({
@@ -13,7 +21,9 @@ import { ScriptLogWriterDirective } from './directives/script-log-writer.directi
     ScriptLogComponent,
     ScriptLogWriterDirective,
     ScriptPageComponent,
-    SettingsPaneComponent
+    SettingsPaneComponent,
+    ScriptTabsContainerComponent,
+    StatusBarComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +36,9 @@ import { ScriptLogWriterDirective } from './directives/script-log-writer.directi
     ScriptFormComponent,
     ScriptLogComponent,
     ScriptPageComponent,
-    SettingsPaneComponent
+    SettingsPaneComponent,
+    ScriptTabsContainerComponent,
+    StatusBarComponent
   ]
 })
 export class RunnerModule { }

@@ -3,13 +3,15 @@
 .pru {
 
   .mat-toolbar {
+    color: $white-200;
+
     .mat-button {
       font-size: $font-size-13;
     }
   }
 
   .mat-toolbar-row, .mat-toolbar-single-row {
-    height: auto;
+    height: 3rem;
   }
 
 }

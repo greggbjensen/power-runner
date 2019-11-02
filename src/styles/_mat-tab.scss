@@ -1,7 +1,28 @@
+@import 'variables';
+
 .pru {
 
   .mat-tab-group {
     width: 100%;
+  }
+
+  .mat-tab-label {
+    height: 3.5rem;
+    display: flex;
+
+    &,
+    .mat-icon {
+      font-size: $font-size-13;
+    }
+
+    .mat-icon {
+      margin: $space-11 $space-2 0 0;
+    }
+  }
+
+  .mat-tab-label-active {
+    color: $white-100;
+    background-color: $gray-800;
   }
 
   .mat-tab-body-wrapper {

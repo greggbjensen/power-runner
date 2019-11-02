@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { IScript, IScriptParam, ParamType } from '../../app/core/models';
+import { Md5 } from 'ts-md5/dist/md5';
 
 export class ScriptParser {
   private static readonly ScriptParamsRegex = /^\s*param\s*\((.*[^\]])\)/is;
@@ -28,12 +29,13 @@ export class ScriptParser {
       const paramList = paramText.split(',');
       scriptParms = paramList.map(i => this.parseParam(i));
     } else {
-      console.log('No params');
       scriptParms = [];
     }
 
     const directory = path.dirname(filePath);
+    const id = Md5.hashStr(filePath) as string;
     const script: IScript = {
+      id,
       directory,
       module: path.basename(directory),
       name: path.basename(filePath),

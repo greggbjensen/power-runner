@@ -23,14 +23,12 @@
   </mat-drawer>
   <mat-drawer-content id="main-content">
     <mat-drawer-container class="main-container">
-      <mat-tab-group>
-        <mat-tab *ngFor="let script of openScripts" [label]="script.name">
-            <pru-script-page [script]="script"></pru-script-page>
-        </mat-tab>
-      </mat-tab-group>
+      <pru-script-tabs-container [scripts]="openScripts"></pru-script-tabs-container>
     </mat-drawer-container>
   </mat-drawer-content>
   <mat-drawer id="settings-drawer" mode="over" position="end" [(opened)]="showSettings" (closed)="settingsClosed($event)">
     <pru-settings-pane (closed)="settingsClosed($event)" [settings]="settings"></pru-settings-pane>
   </mat-drawer>  
 </mat-drawer-container>
+
+<pru-status-bar></pru-status-bar>

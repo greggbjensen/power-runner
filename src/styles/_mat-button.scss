@@ -1,0 +1,21 @@
+@import 'variables';
+
+.pru {
+
+  .mat-button,
+  .mat-raised-button,
+  .mat-icon-button,
+  .mat-stroked-button,
+  .mat-flat-button,
+  .mat-fab,
+  .mat-mini-fab {
+    font-size: $font-size-13;
+  }
+
+  .mat-button,
+  .mat-flat-button,
+  .mat-icon-button,
+  .mat-stroked-button {
+    line-height: 3rem;
+  } 
+}

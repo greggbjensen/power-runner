@@ -1,8 +1,9 @@
 import { IScriptParam } from './iscript-param';
 
 export interface IScript {
-    module: string;
-    name: string;
-    directory: string;
-    params: IScriptParam[];
+  id: string;
+  module: string;
+  name: string;
+  directory: string;
+  params: IScriptParam[];
 }

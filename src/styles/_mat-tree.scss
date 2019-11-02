@@ -3,16 +3,29 @@
 .pru {
   .mat-tree {
     background: $gray-700;
+
+    ul {
+      padding: 0;
+    }
   }
 
   .mat-tree-node {
     min-height: auto;
 
+    .mat-button {
+      width: 100%;
+      text-align: left;
+      line-height: 2.2rem;
+      padding-left: 3rem;
+    }
+
     > .mat-icon-button {
       height: 2.2rem;
+      width: 2.5rem;
+      font-weight: normal;
 
       .mat-icon {
-        line-height: 0.6rem;
+        line-height: 1.6rem;
       }
     }
   }
@@ -27,6 +40,7 @@
     background: $gray-600;
     text-transform: uppercase;
     font-size: $font-size-11;
+    font-weight: $font-weight-700;
   }
 
   .mat-tree-node-leaf {

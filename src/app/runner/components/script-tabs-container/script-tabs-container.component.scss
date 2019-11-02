@@ -1,0 +1,16 @@
+@import "../../../../styles/variables";
+
+.script-tabs-container {
+  display: flex;
+  width: 100%;
+
+  .mat-tab-label {
+    .script-tab-close {
+      visibility: hidden;
+    }
+  
+    &:hover .script-tab-close {
+      visibility: visible;
+    }
+  }
+}
