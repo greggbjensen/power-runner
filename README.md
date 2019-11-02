@@ -4,4 +4,15 @@ PowerShell Script runnner that loads scripts from paths using wildcards, parses 
 
 <br />
 
+``` PowerShell
+param (
+    [string]$name = 'Jim',
+    [string]$action = 'Runs'
+)
+
+Write-Host "$name $action"
+```
+
+<br>
+
 ![Overview](assets/overview.png)
