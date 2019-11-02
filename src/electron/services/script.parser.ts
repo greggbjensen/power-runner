@@ -50,6 +50,10 @@ export class ScriptParser {
     const match = ScriptParser.ScriptAttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
+      if (attributes) {
+        const attributesList = attributes.replace('[', '').split(']');
+        console.log(attributesList);
+      }
       const name = match[2];
       let value = match[3];
       if (value) {

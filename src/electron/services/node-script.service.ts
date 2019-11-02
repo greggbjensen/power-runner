@@ -29,7 +29,7 @@ export class NodeScriptService {
     return new Promise((resolve, reject) => {
 
       try {
-        const paramList = script.params.map(p => `-${p.name} '${p.value}'`).join(' ');
+        const paramList = script.params.map(p => p.value ? `-${p.name} '${p.value}'` : '').join(' ');
         const command = `.\\${script.name} ${paramList}`;
         const child = spawn('PowerShell', [command], {
           cwd: script.directory
