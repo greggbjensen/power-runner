@@ -95,10 +95,12 @@ export class ScriptParser {
           break;
       }
 
+      const defaultValue = value || '';
       param = {
         name,
         type: paramType || ParamType.String,
-        value: value || ''
+        value: defaultValue,
+        default: defaultValue
       };
     }
 

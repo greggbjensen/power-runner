@@ -67,7 +67,7 @@ export class NodeScriptService {
   private formatParam(param: IScriptParam): string {
     let paramText = '';
 
-    if (param.value !== '') {
+    if (param.value !== '' && param.value !== param.default) {
       console.log(param);
       switch (param.type) {
 
