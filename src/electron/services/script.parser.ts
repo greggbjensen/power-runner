@@ -30,7 +30,8 @@ export class ScriptParser {
       const match = XRegExp.matchRecursive(content, '\\(', '\\)');
       if (match && match[0]) {
         const paramText = match[0].trim();
-        const paramList = paramText.split(',');
+        const paramList = paramText.split(/,\s+[[$]/);
+        console.log(paramList);
         scriptParams = paramList.map(i => this.parseParam(i));
       } else {
         scriptParams = [];
@@ -55,37 +56,37 @@ export class ScriptParser {
 
   private parseParam(paramLine: string): IScriptParam {
     let param: IScriptParam = null;
-    let paramType: ParamType;
 
+    console.log(paramLine);
     const match = ScriptParser.ScriptAttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
+      const name = match[2];
+      let value: any = match[3];
+
+      param = {
+        name,
+        type: ParamType.String,
+      } as IScriptParam;
+
       if (attributes) {
         const attributesList = attributes.replace('[', '').split(']');
         attributesList.forEach(a => {
-          switch (a.toLowerCase()) {
-            case 'string':
-              paramType = ParamType.String;
-              break;
-
-            case 'switch':
-              paramType = ParamType.Switch;
-              break;
-
-            case 'bool':
-                paramType = ParamType.Boolean;
-                break;
+          console.log(a);
+          if (a.includes('(')) {
+            this.applyAttribute(param, a);
+          } else {
+            this.setParamType(param, a);
           }
         });
       }
-      const name = match[2];
-      let value: any = match[3];
+
       if (value) {
         value = value.trim().replace(/^['"]/, '').replace(/['"]$/, '');
       }
 
       // Normalize value.
-      switch (paramType) {
+      switch (param.type) {
         case ParamType.Switch:
         case ParamType.Boolean:
           value = value.toLowerCase() === '$true';
@@ -96,14 +97,33 @@ export class ScriptParser {
       }
 
       const defaultValue = value || '';
-      param = {
-        name,
-        type: paramType || ParamType.String,
-        value: defaultValue,
-        default: defaultValue
-      };
+      param.default = defaultValue;
+      param.value = defaultValue;
     }
 
     return param;
+  }
+
+  private setParamType(param: IScriptParam, attribute: string): void {
+    switch (attribute.toLowerCase()) {
+      case 'string':
+        param.type = ParamType.String;
+        break;
+
+      case 'switch':
+        param.type = ParamType.Switch;
+        break;
+
+      case 'bool':
+        param.type = ParamType.Boolean;
+        break;
+
+      case 'validateset':
+        break;
+    }
+  }
+
+  private applyAttribute(param: IScriptParam, attribute: string): void {
+    console.log('ATTR', param.name, attribute);
   }
 }
