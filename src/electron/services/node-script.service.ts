@@ -73,11 +73,14 @@ export class NodeScriptService {
 
         case ParamType.Switch:
           if (param.value) {
-            paramText = `-${param.name} ${param.value}`;
+            paramText = `-${param.name}`;
           }
           break;
 
         case ParamType.Boolean:
+          paramText = `-${param.name} $${param.value}`;
+          break;
+
         case ParamType.Number:
           paramText = `-${param.name} ${param.value}`;
           break;

@@ -71,6 +71,10 @@ export class ScriptParser {
             case 'switch':
               paramType = ParamType.Switch;
               break;
+
+            case 'bool':
+                paramType = ParamType.Boolean;
+                break;
           }
         });
       }
