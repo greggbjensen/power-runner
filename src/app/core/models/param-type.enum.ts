@@ -1,4 +1,8 @@
 export enum ParamType {
   String = 'String',
-  Number = 'Number'
+  Number = 'Number',
+  Switch = 'Switch',
+  Boolean = 'Boolean',
+  Directory = 'Directory',
+  File = 'File'
 }

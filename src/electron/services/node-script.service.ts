@@ -2,7 +2,7 @@ import { ChildProcess, spawn } from 'child_process';
 import { BrowserWindow } from 'electron';
 import * as globby from 'globby';
 import * as path from 'path';
-import { IScript } from '../../app/core/models';
+import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptParser } from './script.parser';
 
 export class NodeScriptService {
@@ -29,7 +29,7 @@ export class NodeScriptService {
     return new Promise((resolve, reject) => {
 
       try {
-        const paramList = script.params.map(p => p.value ? `-${p.name} '${p.value}'` : '').join(' ');
+        const paramList = script.params.map(p => this.formatParam(p)).join(' ');
         const command = `.\\${script.name} ${paramList}`;
         const child = spawn('PowerShell', [command], {
           cwd: script.directory
@@ -62,5 +62,32 @@ export class NodeScriptService {
         reject(err);
       }
     });
+  }
+
+  private formatParam(param: IScriptParam): string {
+    let paramText = '';
+
+    if (param.value !== '') {
+      console.log(param);
+      switch (param.type) {
+
+        case ParamType.Switch:
+          if (param.value) {
+            paramText = `-${param.name} ${param.value}`;
+          }
+          break;
+
+        case ParamType.Boolean:
+        case ParamType.Number:
+          paramText = `-${param.name} ${param.value}`;
+          break;
+
+        default: // ParamType.String, ParamType.File, ParamType.Directory
+          paramText = `-${param.name} '${param.value}'`;
+          break;
+      }
+    }
+
+    return paramText;
   }
 }

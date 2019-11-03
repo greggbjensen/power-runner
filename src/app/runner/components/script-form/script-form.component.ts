@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IScript, IScriptParam, IScriptProfile } from 'src/app/core/models';
+import { IScript, IScriptParam, IScriptProfile, ParamType } from 'src/app/core/models';
 
 
 @Component({
@@ -11,6 +11,8 @@ import { IScript, IScriptParam, IScriptProfile } from 'src/app/core/models';
 })
 export class ScriptFormComponent implements OnInit {
   @HostBinding('class.script-form') public className = true;
+  // tslint:disable-next-line: naming-convention
+  public ParamType = ParamType;
   public form: FormGroup;
   public selectedProfile: string;
   public profiles: IScriptProfile[] = [

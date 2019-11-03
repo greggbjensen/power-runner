@@ -55,22 +55,45 @@ export class ScriptParser {
 
   private parseParam(paramLine: string): IScriptParam {
     let param: IScriptParam = null;
+    let paramType: ParamType;
+
     const match = ScriptParser.ScriptAttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
       if (attributes) {
         const attributesList = attributes.replace('[', '').split(']');
-        console.log(attributesList);
+        attributesList.forEach(a => {
+          switch (a.toLowerCase()) {
+            case 'string':
+              paramType = ParamType.String;
+              break;
+
+            case 'switch':
+              paramType = ParamType.Switch;
+              break;
+          }
+        });
       }
       const name = match[2];
-      let value = match[3];
+      let value: any = match[3];
       if (value) {
         value = value.trim().replace(/^['"]/, '').replace(/['"]$/, '');
       }
 
+      // Normalize value.
+      switch (paramType) {
+        case ParamType.Switch:
+        case ParamType.Boolean:
+          value = value.toLowerCase() === '$true';
+          break;
+
+        default:
+          break;
+      }
+
       param = {
         name,
-        type: ParamType.String,
+        type: paramType || ParamType.String,
         value: value || ''
       };
     }
