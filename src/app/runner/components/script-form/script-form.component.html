@@ -23,7 +23,14 @@
         <mat-form-field *ngSwitchCase="ParamType.Number">
           <mat-label>{{param.name}}</mat-label>
           <input matInput type="number" [formControlName]="param.name">
-        </mat-form-field>       
+        </mat-form-field>   
+        
+        <mat-form-field *ngSwitchCase="ParamType.Set">
+          <mat-label>{{param.name}}</mat-label>
+          <mat-select [formControlName]="param.name">
+            <mat-option *ngFor="let item of param.validation.set" [value]="item">{{item}}</mat-option>
+          </mat-select>          
+        </mat-form-field>         
         
         <mat-checkbox *ngSwitchCase="ParamType.Switch" [formControlName]="param.name" value="true">{{param.name}}</mat-checkbox>
 

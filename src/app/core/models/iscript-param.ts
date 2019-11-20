@@ -5,4 +5,5 @@ export interface IScriptParam {
   type: ParamType;
   default: any;
   value: any;
+  validation?: any;
 }

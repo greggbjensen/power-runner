@@ -119,11 +119,25 @@ export class ScriptParser {
         break;
 
       case 'validateset':
+        param.type = ParamType.Set;
         break;
     }
   }
 
   private applyAttribute(param: IScriptParam, attribute: string): void {
-    console.log('ATTR', param.name, attribute);
+    const parts = attribute.split(/[()]/);
+    const type = parts[0].toLowerCase();
+    const params = parts[1].split(',');
+
+    switch (type) {
+      case 'validateset':
+        const set = params.map(p => p.replace(/^\s*["']/, '').replace(/["']\s*$/, ''));
+        param.type = ParamType.Set;
+        param.validation = { set };
+        break;
+
+      default:
+        break;
+    }
   }
 }
