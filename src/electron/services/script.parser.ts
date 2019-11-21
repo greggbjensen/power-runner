@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as XRegExp from 'xregexp';
 import { Md5 } from 'ts-md5/dist/md5';
+import * as XRegExp from 'xregexp';
 import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 
 export class ScriptParser {
 
-  private static readonly ScriptAttributesParamRegex = /^\s*(?:\[(.*)\])?\s*\$([\w]+)\s*(?:=(.+)\s*)?/is;
+  private static readonly ScriptAttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=(.+)\s*)?/is;
 
   private static readFile(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -31,7 +31,6 @@ export class ScriptParser {
       if (match && match[0]) {
         const paramText = match[0].trim();
         const paramList = paramText.split(/,\s+[[$]/);
-        console.log(paramList);
         scriptParams = paramList.map(i => this.parseParam(i));
       } else {
         scriptParams = [];
@@ -40,6 +39,8 @@ export class ScriptParser {
       console.error(err);
       scriptParams = [];
     }
+
+    console.log(scriptParams);
 
     const directory = path.dirname(filePath);
     const id = Md5.hashStr(filePath) as string;
@@ -57,7 +58,6 @@ export class ScriptParser {
   private parseParam(paramLine: string): IScriptParam {
     let param: IScriptParam = null;
 
-    console.log(paramLine);
     const match = ScriptParser.ScriptAttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
@@ -72,7 +72,6 @@ export class ScriptParser {
       if (attributes) {
         const attributesList = attributes.replace('[', '').split(']');
         attributesList.forEach(a => {
-          console.log(a);
           if (a.includes('(')) {
             this.applyAttribute(param, a);
           } else {
