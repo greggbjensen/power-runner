@@ -6,7 +6,7 @@ import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 
 export class ScriptParser {
 
-  private static readonly ScriptAttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=(.+)\s*)?/is;
+  private static readonly ScriptAttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=([^#]+)\s*)?/is;
 
   private static readFile(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -93,6 +93,10 @@ export class ScriptParser {
 
         default:
           break;
+      }
+
+      if (value && value.toLowerCase() === '$null') {
+        value = null;
       }
 
       const defaultValue = value || '';
