@@ -6,6 +6,7 @@ import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 
 export class ScriptParser {
 
+  // Handle # comments.
   private static readonly ScriptAttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=([^#]+)\s*)?/is;
 
   private static readFile(filePath: string): Promise<string> {
@@ -30,7 +31,8 @@ export class ScriptParser {
       const match = XRegExp.matchRecursive(content, '\\(', '\\)');
       if (match && match[0]) {
         const paramText = match[0].trim();
-        const paramList = paramText.split(/,\s+[[$]/);
+        const paramList = paramText.split(/,[^[]*/); // Trim out comments.
+        console.log('LIST', paramList);
         scriptParams = paramList.map(i => this.parseParam(i));
       } else {
         scriptParams = [];
@@ -57,12 +59,14 @@ export class ScriptParser {
 
   private parseParam(paramLine: string): IScriptParam {
     let param: IScriptParam = null;
+    console.log('LINE', paramLine);
 
     const match = ScriptParser.ScriptAttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
       const name = match[2];
       let value: any = match[3];
+      console.log('MATCH', attributes, name, value);
 
       param = {
         name,
