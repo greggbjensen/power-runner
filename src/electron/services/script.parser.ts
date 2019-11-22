@@ -84,27 +84,32 @@ export class ScriptParser {
         value = value.trim().replace(/^['"]/, '').replace(/['"]$/, '');
       }
 
-      // Normalize value.
-      switch (param.type) {
-        case ParamType.Switch:
-        case ParamType.Boolean:
-          value = value.toLowerCase() === '$true';
-          break;
-
-        default:
-          break;
-      }
-
-      if (value && value.toLowerCase() === '$null') {
-        value = null;
-      }
-
-      const defaultValue = value || '';
+      const defaultValue = this.normalizeValue(param, value);
       param.default = defaultValue;
       param.value = defaultValue;
     }
 
     return param;
+  }
+
+  private normalizeValue(param: IScriptParam, value: any): any {
+    let result = value;
+
+    if (result && result.toLowerCase() === '$null') {
+      result = null;
+    }
+
+    switch (param.type) {
+      case ParamType.Switch:
+      case ParamType.Boolean:
+        result = value.toLowerCase() === '$true';
+        break;
+
+      default:
+        break;
+    }
+
+    return result || '';
   }
 
   private setParamType(param: IScriptParam, attribute: string): void {
