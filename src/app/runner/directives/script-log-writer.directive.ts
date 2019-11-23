@@ -65,5 +65,15 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     this._renderer.appendChild(lineElement, lineText);
 
     this._renderer.appendChild(this._element.nativeElement, lineElement);
+
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+
+    // SourceRef: https://stackoverflow.com/questions/35232731/angular-2-scroll-to-bottom-chat-style
+    try {
+        this._element.nativeElement.scrollTop = this._element.nativeElement.scrollHeight;
+    } catch (err) { }
   }
 }
