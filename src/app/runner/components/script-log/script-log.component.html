@@ -1,3 +1,6 @@
-<h2 class="script-log-title">Output</h2>
+<form class="script-log-title" [formGroup]="formGroup">
+  <h2 class="script-log-title">Output</h2>
+  <mat-checkbox id="script-log-toggle-tail" (change)="toggleTail()" formControlName="tail">Tail</mat-checkbox>
+</form>
 <ul class="script-output" pruScriptLogWriter [scriptRef]="scriptRef">
 </ul>

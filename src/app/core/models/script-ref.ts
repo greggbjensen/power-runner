@@ -5,6 +5,7 @@ export class ScriptRef {
   public stdout = new EventEmitter<string>();
   public stderr = new EventEmitter<string>();
   public exit = new EventEmitter<number>();
+  public tail = true;
 
   constructor(
     private _ipcRenderer: IpcRenderer,

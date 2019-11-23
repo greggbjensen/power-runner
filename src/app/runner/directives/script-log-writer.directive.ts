@@ -7,11 +7,6 @@ import { ScriptRef } from 'src/app/core/models';
 })
 export class ScriptLogWriterDirective implements OnInit, OnDestroy {
 
-  private _scriptRef: ScriptRef;
-  private _stdoutSubscription: Subscription;
-  private _stderrorSubscription: Subscription;
-  private _exitSubscription: Subscription;
-
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
     this._element.nativeElement.innerHTML = '';
@@ -27,6 +22,11 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   public get scriptRef(): ScriptRef {
     return this._scriptRef;
   }
+
+  private _scriptRef: ScriptRef;
+  private _stdoutSubscription: Subscription;
+  private _stderrorSubscription: Subscription;
+  private _exitSubscription: Subscription;
 
   constructor(
     private _element: ElementRef,
@@ -66,7 +66,9 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
 
     this._renderer.appendChild(this._element.nativeElement, lineElement);
 
-    this.scrollToBottom();
+    if (this.scriptRef.tail) {
+      this.scrollToBottom();
+    }
   }
 
   private scrollToBottom(): void {
