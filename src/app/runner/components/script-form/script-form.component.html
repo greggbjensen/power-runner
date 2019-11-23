@@ -20,6 +20,11 @@
           <input matInput type="text" [formControlName]="param.name">
         </mat-form-field>
 
+        <mat-form-field *ngSwitchCase="ParamType.SecureString">
+          <mat-label>{{param.name}}</mat-label>
+          <input matInput type="password" [formControlName]="param.name">
+        </mat-form-field>        
+
         <mat-form-field *ngSwitchCase="ParamType.Number">
           <mat-label>{{param.name}}</mat-label>
           <input matInput type="number" [formControlName]="param.name">

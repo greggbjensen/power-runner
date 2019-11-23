@@ -68,7 +68,6 @@ export class NodeScriptService {
     let paramText = '';
 
     if (param.value !== '' && param.value !== param.default) {
-      console.log(param);
       switch (param.type) {
 
         case ParamType.Switch:
@@ -83,6 +82,10 @@ export class NodeScriptService {
 
         case ParamType.Number:
           paramText = `-${param.name} ${param.value}`;
+          break;
+
+        case ParamType.SecureString:
+          paramText = `-${param.name} (ConvertTo-SecureString ${param.value} -AsPlainText -Force)`;
           break;
 
         default: // ParamType.String, ParamType.File, ParamType.Directory

@@ -122,6 +122,10 @@ export class ScriptParser {
         param.type = ParamType.String;
         break;
 
+      case 'securestring':
+        param.type = ParamType.SecureString;
+        break;
+
       case 'switch':
         param.type = ParamType.Switch;
         break;

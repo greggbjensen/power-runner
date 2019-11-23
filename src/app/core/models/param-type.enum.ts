@@ -1,5 +1,6 @@
 export enum ParamType {
   String = 'String',
+  SecureString = 'SecureString',
   Number = 'Number',
   Switch = 'Switch',
   Set = 'Set',
