@@ -1,12 +1,16 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import * as electronReload from 'electron-reload';
 import * as path from 'path';
 import * as url from 'url';
 import { NodeAppService, NodeBrowseDialogService, NodeScriptService, NodeSettingsService, ScriptParser } from './services';
 
-electronReload(path.resolve(__dirname, '../../src'), {
-  electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
-});
+const isProduction = process.execPath.search('electron-prebuilt') === -1;
+
+if (!isProduction) {
+  const electronReload = require('electron-reload');
+  electronReload(path.resolve(__dirname, '../../src'), {
+    electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
+  });
+}
 
 // SourceRef: https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
 // SourceRef: https://developer.okta.com/blog/2019/03/20/build-desktop-app-with-angular-electron
@@ -22,19 +26,23 @@ function createWindow(): void {
       frame: false,
       webPreferences: {
         nodeIntegration: true,
-        nodeIntegrationInWorker: true
+        nodeIntegrationInWorker: true,
+        webSecurity: true
       }
     });
 
+  const appRoot = !isProduction ? 'dist' : 'app';
   browserWindow.loadURL(
     url.format({
-      pathname: path.join(__dirname, `/../../dist/power-runner/index.html`),
+      pathname: path.join(__dirname, `/../../${appRoot}/power-runner/index.html`),
       protocol: 'file:',
       slashes: true
     })
   );
 
-  browserWindow.webContents.openDevTools();
+  if (!isProduction) {
+    browserWindow.webContents.openDevTools();
+  }
 
   browserWindow.on('closed', () => {
     browserWindow = null;

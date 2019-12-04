@@ -34,4 +34,9 @@ export class NodeAppService {
     this._browserWindow.restore();
     return Promise.resolve();
   }
+
+  public toggleDeveloperToolsAsync(): Promise<void> {
+    this._browserWindow.webContents.openDevTools();
+    return Promise.resolve();
+  }
 }

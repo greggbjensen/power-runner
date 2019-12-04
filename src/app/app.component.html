@@ -1,10 +1,14 @@
 <mat-toolbar id="main-toolbar">
   <mat-icon class="main-logo">exit_to_app</mat-icon>
-  <button mat-button [matMenuTriggerFor]="menu">File</button>
-  <mat-menu #menu="matMenu">
+  <button mat-button [matMenuTriggerFor]="fileMenu">File</button>
+  <mat-menu #fileMenu="matMenu">
     <button mat-menu-item (click)="toggleSettings()">Settings</button>
     <button mat-menu-item (click)="reloadWindow()">Reload Window</button>
     <button mat-menu-item (click)="exit()">Exit</button>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="helpMenu">Help</button>
+  <mat-menu #helpMenu="matMenu">
+    <button mat-menu-item (click)="toggleDeveloperTools()">Toggle Developer Tools</button>
   </mat-menu>
   <h1 id="main-title">PowerRunner</h1>
   <div class="main-window-actions">
@@ -19,7 +23,7 @@
     <div *ngIf="nodes$ | async as nodes">
       <pru-script-tree [nodes]="nodes" (scriptOpened)="scriptOpened($event)">
       </pru-script-tree>
-    </div>    
+    </div>
   </mat-drawer>
   <mat-drawer-content id="main-content">
     <mat-drawer-container class="main-container">
@@ -28,7 +32,7 @@
   </mat-drawer-content>
   <mat-drawer id="settings-drawer" mode="over" position="end" [(opened)]="showSettings" (closed)="settingsClosed($event)">
     <pru-settings-pane (closed)="settingsClosed($event)" [settings]="settings"></pru-settings-pane>
-  </mat-drawer>  
+  </mat-drawer>
 </mat-drawer-container>
 
 <pru-status-bar></pru-status-bar>

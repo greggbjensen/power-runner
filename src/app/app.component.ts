@@ -59,6 +59,10 @@ export class AppComponent {
     }
   }
 
+  public toggleDeveloperTools(): void {
+    this._appService.toggleDeveloperToolsAsync();
+  }
+
   public settingsClosed(result: string): void {
     this.showSettings = false;
 
