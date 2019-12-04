@@ -13,7 +13,7 @@ import { AppService, ScriptService, SettingsService } from './core/services';
 })
 export class AppComponent {
   @HostBinding('class.pru') public className = true;
-  public title = 'power-runner';
+  public title = 'powerrunner';
   public nodes$: Observable<IScriptNode[]>;
   public openScripts: IScript[] = [];
   public showSettings = false;

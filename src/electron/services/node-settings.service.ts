@@ -12,7 +12,7 @@ export class NodeSettingsService {
   private _settingsFile: string;
 
   constructor() {
-    this._settingsFile = path.join(os.homedir(), '.power-runner', 'settings.yaml');
+    this._settingsFile = path.join(os.homedir(), '.powerrunner', 'settings.yaml');
   }
 
   public async saveAsync(settings: ISettings): Promise<void> {

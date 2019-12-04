@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
+import { AppService } from 'src/app/core/services';
 
 @Component({
   selector: 'pru-status-bar',
@@ -8,10 +9,14 @@ import { Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core
 })
 export class StatusBarComponent implements OnInit {
   @HostBinding('class.status-bar') public className = true;
+  public version: string = '';
 
-  constructor() { }
+  constructor(
+    private _appService: AppService
+  ) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
+    this._appService.getVersionAsync().then(version => this.version = version);
   }
 
 }

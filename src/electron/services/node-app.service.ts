@@ -6,9 +6,17 @@ import { app, BrowserWindow } from 'electron';
 })
 export class NodeAppService {
 
+  private _version: string;
+
   constructor(
-    private _browserWindow: BrowserWindow
-  ) { }
+    private _browserWindow: BrowserWindow,
+    isDev: boolean
+  ) {
+    const packageJsonPath = isDev
+    ? '../../../package.json'
+    : '../../package.json';
+    this._version = require(packageJsonPath).version;
+   }
 
   public reloadWindowAsync(): Promise<void> {
     this._browserWindow.reload();
@@ -38,5 +46,9 @@ export class NodeAppService {
   public toggleDeveloperToolsAsync(): Promise<void> {
     this._browserWindow.webContents.openDevTools();
     return Promise.resolve();
+  }
+
+  public getVersionAsync(): Promise<string> {
+    return Promise.resolve(this._version);
   }
 }

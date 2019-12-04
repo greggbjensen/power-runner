@@ -33,6 +33,10 @@ export class AppService extends ProxyNodeService {
     return this.proxy.invoke('restoreAsync');
   }
 
+  public getVersionAsync(): Promise<string> {
+    return this.proxy.invoke('getVersionAsync');
+  }
+
   public toggleDeveloperToolsAsync(): Promise<void> {
     return this.proxy.invoke('toggleDeveloperToolsAsync');
   }
