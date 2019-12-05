@@ -32,6 +32,7 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   private _stdoutSubscription: Subscription;
   private _stderrorSubscription: Subscription;
   private _exitSubscription: Subscription;
+  private _textDecoder = new TextDecoder('utf-8');
 
   constructor(
     private _element: ElementRef,
@@ -60,20 +61,27 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     }
   }
 
-  private addLine(line: string, isError: boolean = false): void {
+  private addLine(line: BufferSource, isError: boolean = false): void {
+
     const lineElement = this._renderer.createElement('li');
     this._renderer.addClass(lineElement, 'log-line');
     if (isError) {
       this._renderer.addClass(lineElement, 'log-line-error');
     }
 
-    const lineText = this._renderer.createText(line);
-    this._renderer.appendChild(lineElement, lineText);
+    try {
+      const text = this._textDecoder.decode(line)
+        .replace(/\n/g, '<br />')
+        .replace(/  /g, '&nbsp;&nbsp;');
+      this._renderer.setProperty(lineElement, 'innerHTML', text);
+      this._renderer.appendChild(this._element.nativeElement, lineElement);
 
-    this._renderer.appendChild(this._element.nativeElement, lineElement);
+      if (this.scriptRef.tail) {
+        this.scrollToBottom();
+      }
 
-    if (this.scriptRef.tail) {
-      this.scrollToBottom();
+    } catch (err) {
+      console.error(err);
     }
   }
 

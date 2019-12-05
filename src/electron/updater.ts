@@ -45,7 +45,7 @@ export class Updater {
           type: 'question',
           buttons: ['Update', 'Cancel'],
           defaultId: 0,
-          message: `Version ${releaseName} is available, do you want to install it now?`,
+          message: `Version ${releaseName} is ready, do you want to restart to load it?`,
           title: 'Update available'
         }).then(result => {
           if (result.response === 0) {

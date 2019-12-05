@@ -10,6 +10,7 @@ export class NodeScriptService {
   private static readonly FileExtensionRegex = /.ps1$/i;
 
   private _childProcesses = new Map<string, ChildProcess>();
+  private _textEncoder = new TextEncoder();
 
   constructor(
     private _browserWindow: BrowserWindow,
@@ -52,7 +53,7 @@ export class NodeScriptService {
         child.stdin.end();
 
         setTimeout(() => {
-          this._browserWindow.webContents.send(`${scriptChannel}:stdout`, command);
+          this._browserWindow.webContents.send(`${scriptChannel}:stdout`, this._textEncoder.encode(command));
         }, 1);
 
         // Reply with a channel to listen on for stdout, stderr, and exit.

@@ -1,7 +1,7 @@
 {
   "name": "powerrunner",
   "productName": "PowerRunner",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "main": "electron/main.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./node_modules/**/*.* ./dist",
     "package": "npm run copy-deps && npm run build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
+    "package-installer": "npm run package && npm run installer",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
