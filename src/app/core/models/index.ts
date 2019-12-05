@@ -7,3 +7,4 @@ export { IScriptNode } from './iscript-node';
 export { IScriptParam } from './iscript-param';
 export { IScriptProfile } from './iscript-profile';
 export { ISettings } from './isettings';
+export { IScriptExit } from './iscript-exit';

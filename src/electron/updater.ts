@@ -22,25 +22,25 @@ export class Updater {
   private initDarwinWin32(): void {
     autoUpdater.on(
       'error',
-      (err) => console.error(`Update error: ${err.message}`));
+      (err) => this.sendStatus(`Update error: ${err.message}`));
 
     autoUpdater.on(
       'checking-for-update',
-      () => console.info('Checking for update'));
+      () => this.sendStatus('Checking for update'));
 
     autoUpdater.on(
       'update-available',
-      () => console.info('Update available'));
+      () => this.sendStatus('Update available'));
 
     autoUpdater.on(
       'update-not-available',
-      () => console.info('No update available'));
+      () => this.sendStatus('No update available'));
 
     // Ask the user if update is available
     autoUpdater.on(
       'update-downloaded',
       (event, releaseNotes, releaseName) => {
-        console.info('Update downloaded');
+        this.sendStatus('Update downloaded');
         dialog.showMessageBox(this._browserWindow, {
           type: 'question',
           buttons: ['Update', 'Cancel'],
@@ -59,5 +59,9 @@ export class Updater {
       url: autoUpdateUrl
     });
     autoUpdater.checkForUpdates();
+  }
+
+  private sendStatus(message: string): void {
+    this._browserWindow.webContents.send('status:message', message);
   }
 }

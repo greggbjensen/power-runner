@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IScript, NodeProxy } from '../models';
 import { NodeProxyFactory } from './node-proxy.factory';
 import { ProxyNodeService } from './proxy-node-service';
+import { StatusService } from './status.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { ProxyNodeService } from './proxy-node-service';
 export class ScriptService extends ProxyNodeService {
 
   constructor(
-    proxyFactory: NodeProxyFactory
+    proxyFactory: NodeProxyFactory,
+    private _statusService: StatusService
   ) {
     super('NodeScriptService', proxyFactory);
   }
@@ -19,6 +21,7 @@ export class ScriptService extends ProxyNodeService {
   }
 
   public async runAsync(script: IScript): Promise<string> {
+    this._statusService.setStatus(`${script.module.toUpperCase()}/${script.name} running...`);
     return this.proxy.invoke('runAsync', script);
   }
 }

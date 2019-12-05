@@ -60,6 +60,9 @@ function createWindow(): void {
   if (isDev) {
     // Open the DevTools. No update call in dev !!!
     browserWindow.webContents.openDevTools();
+    browserWindow.webContents.once('did-finish-load', () => {
+      browserWindow.webContents.send('status:message', 'Ready');
+    });
   } else {
 
     // Handle squirrel event. Avoid calling for updates when install
@@ -76,7 +79,7 @@ function createWindow(): void {
     }
 
     // Check for updates !!!!!
-    browserWindow.webContents.once('did-frame-finish-load', () => {
+    browserWindow.webContents.once('did-finish-load', () => {
       updater = new Updater(browserWindow);
       updater.init();
     });

@@ -2,7 +2,7 @@ import { ChildProcess, spawn } from 'child_process';
 import { BrowserWindow } from 'electron';
 import * as globby from 'globby';
 import * as path from 'path';
-import { IScript, IScriptParam, ParamType } from '../../app/core/models';
+import { IScript, IScriptExit, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptParser } from './script.parser';
 
 export class NodeScriptService {
@@ -46,7 +46,7 @@ export class NodeScriptService {
           this._browserWindow.webContents.send(`${scriptChannel}:stderr`, data);
         });
         child.on('exit', (exitCode) => {
-          this._browserWindow.webContents.send(`${scriptChannel}:exit`, exitCode);
+          this._browserWindow.webContents.send(`${scriptChannel}:exit`, { scriptName: script.name, exitCode } as IScriptExit);
           this._childProcesses.delete(scriptChannel);
         });
         child.stdin.end();

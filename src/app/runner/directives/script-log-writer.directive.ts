@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ScriptRef } from 'src/app/core/models';
+import { ScriptRef, IScriptExit } from 'src/app/core/models';
+import { StatusService } from 'src/app/core/services';
 
 @Directive({
   selector: '[pruScriptLogWriter]'
@@ -16,6 +17,10 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     if (this._scriptRef) {
       this._stdoutSubscription = this._scriptRef.stdout.subscribe(line => this.addLine(line));
       this._stderrorSubscription = this._scriptRef.stderr.subscribe(line => this.addLine(line, true));
+      this._exitSubscription = this._scriptRef.exit.subscribe((scriptExit: IScriptExit) => {
+        const message = scriptExit.exitCode === 0 ? ' completed' : ` failed with exit code ${scriptExit.exitCode}`;
+        this._statusService.setStatus(`${this.scriptRef.script.module.toUpperCase()}/${this.scriptRef.script.name} ${message}`);
+      });
     }
   }
 
@@ -30,7 +35,8 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
 
   constructor(
     private _element: ElementRef,
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+    private _statusService: StatusService
   ) { }
 
   public ngOnInit(): void {

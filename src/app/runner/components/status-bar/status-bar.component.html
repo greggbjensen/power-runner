@@ -1,1 +1,2 @@
-v{{version}}
+<span id="status-bar-message" *ngIf="status$ | async as status">{{status}}</span>
+<span id="status-bar-version">v{{version}}</span>

@@ -23,7 +23,7 @@ export class ScriptPageComponent implements OnInit {
 
   public startRun(script: IScript): void {
     this._scriptService.runAsync(script).then((scriptChannel: string) => {
-      this.scriptRef = this._nodeProxyFactory.createScriptRef(scriptChannel);
+      this.scriptRef = this._nodeProxyFactory.createScriptRef(script, scriptChannel);
     });
   }
 }
