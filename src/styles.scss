@@ -7,10 +7,11 @@
 @import "./styles/mat-toolbar";
 @import "./styles/mat-tree";
 @import "./styles/as-split";
+@import "./styles/scrollbar";
 
-html { 
+html {
   font-size: 62.5%; // 10px;
-} 
+}
 
 body {
   background-color: $gray-800;
