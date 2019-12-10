@@ -7,7 +7,7 @@ import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 export class ScriptParser {
 
   private static readonly AttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=(.+)\s*)?/is;
-  private static readonly CommentsRegex = /#.*?(\n|$)/g;
+  private static readonly CommentsRegex = /#.*?(\r?\n|$)/g;
   private static readonly ParamSeparatorRetgex = /,\s*\[/g;
 
   private static readFile(filePath: string): Promise<string> {
