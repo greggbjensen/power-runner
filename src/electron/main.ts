@@ -22,8 +22,8 @@ let updater: Updater;
 function createWindow(): void {
 
   browserWindow = new BrowserWindow({
-      width: 1024,
-      height: 768,
+      width: 1280,
+      height: 800,
       darkTheme: true,
       frame: false,
       webPreferences: {

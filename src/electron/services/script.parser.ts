@@ -33,7 +33,7 @@ export class ScriptParser {
         const paramText = match[0].trim();
         const paramList = paramText.split(/,[^[]*/); // Trim out comments.
         console.log('LIST', paramList);
-        scriptParams = paramList.map(i => this.parseParam(i));
+        scriptParams = paramList.map(i => this.parseParam(i)).filter(p => !!p);
       } else {
         scriptParams = [];
       }
