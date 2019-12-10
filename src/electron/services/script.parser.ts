@@ -6,8 +6,9 @@ import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 
 export class ScriptParser {
 
-  // Handle # comments.
-  private static readonly ScriptAttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=([^#]+)\s*)?/is;
+  private static readonly AttributesParamRegex = /^\s*(?:\[?(.*)\])?\s*\$([\w]+)\s*(?:=(.+)\s*)?/is;
+  private static readonly CommentsRegex = /#.*?(\n|$)/g;
+  private static readonly ParamSeparatorRetgex = /,\s*\[/g;
 
   private static readFile(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -30,9 +31,11 @@ export class ScriptParser {
     try {
       const match = XRegExp.matchRecursive(content, '\\(', '\\)');
       if (match && match[0]) {
-        const paramText = match[0].trim();
-        const paramList = paramText.split(/,[^[]*/); // Trim out comments.
-        console.log('LIST', paramList);
+        let paramText = match[0].trim();
+        paramText = paramText.replace(ScriptParser.CommentsRegex, '');  // Trim out comments.
+        console.log('TEST', paramText);
+        const paramList = paramText.split(ScriptParser.ParamSeparatorRetgex);
+
         scriptParams = paramList.map(i => this.parseParam(i)).filter(p => !!p);
       } else {
         scriptParams = [];
@@ -61,7 +64,7 @@ export class ScriptParser {
     let param: IScriptParam = null;
     console.log('LINE', paramLine);
 
-    const match = ScriptParser.ScriptAttributesParamRegex.exec(paramLine);
+    const match = ScriptParser.AttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
       const name = match[2];

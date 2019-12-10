@@ -90,7 +90,7 @@ export class NodeScriptService {
           break;
 
         default: // ParamType.String, ParamType.File, ParamType.Directory
-          paramText = `-${param.name} '${param.value}'`;
+          paramText = `-${param.name} "${param.value}"`;
           break;
       }
     }
