@@ -46,6 +46,7 @@ export class Updater {
           buttons: ['Update', 'Cancel'],
           defaultId: 0,
           message: `Version ${releaseName} is ready, do you want to restart to load it?`,
+          detail: releaseNotes,
           title: 'Update available'
         }).then(result => {
           if (result.response === 0) {

@@ -11,6 +11,14 @@ export class ScriptTabsContainerComponent implements OnInit {
   @HostBinding('class.script-tabs-container') public className = true;
 
   @Input() public scripts: IScript[];
+  @Input() public set selectedScript(value: IScript) {
+    this._selectedScript = value;
+    this.selectedIndex = this.scripts.indexOf(this._selectedScript);
+  }
+
+  public selectedIndex = -1;
+
+  private _selectedScript: IScript;
 
   constructor() { }
 

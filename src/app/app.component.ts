@@ -16,6 +16,7 @@ export class AppComponent {
   public title = 'powerrunner';
   public nodes$: Observable<IScriptNode[]>;
   public openScripts: IScript[] = [];
+  public selectedScript: IScript;
   public showSettings = false;
   public isMaximized = false;
   public settings: ISettings;
@@ -31,6 +32,7 @@ export class AppComponent {
   }
 
   public scriptOpened(script: IScript): void {
+    this.selectedScript = script;
     this.openScripts.push(script);
   }
 

@@ -1,7 +1,6 @@
 import { ChildProcess, spawn } from 'child_process';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, shell } from 'electron';
 import * as globby from 'globby';
-import * as path from 'path';
 import { IScript, IScriptExit, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptParser } from './script.parser';
 
@@ -23,6 +22,17 @@ export class NodeScriptService {
     const scripts = await Promise.all(files.map(f => this._scriptParser.parseScript(f)));
 
     return scripts;
+  }
+
+  public editAsync(script: IScript): Promise<void>  {
+
+    spawn('Code.exe', [`${script.directory}/${script.name}`], {
+      cwd: `${process.env.LOCALAPPDATA}\\Programs\\Microsoft VS Code`, // TODO GBJ: Make compatible with Linux.
+      stdio: 'ignore',
+      detached: true
+    });
+
+    return Promise.resolve();
   }
 
   public runAsync(script: IScript): Promise<string>  {

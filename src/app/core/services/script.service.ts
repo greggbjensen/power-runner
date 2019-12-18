@@ -24,4 +24,8 @@ export class ScriptService extends ProxyNodeService {
     this._statusService.setStatus(`${script.module.toUpperCase()}/${script.name} running...`);
     return this.proxy.invoke('runAsync', script);
   }
+
+  public async editAsync(script: IScript): Promise<IScript[]> {
+    return this.proxy.invoke('editAsync', script);
+  }
 }

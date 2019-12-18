@@ -1,9 +1,9 @@
 
 <as-split unit="percent" direction="vertical">
   <as-split-area size="40" class="script-form-area">
-    <pru-script-form [script]="script" (run)="startRun($event)"></pru-script-form>
+    <pru-script-form [script]="script" (run)="startRun($event)" (edit)="startEdit($event)"></pru-script-form>
   </as-split-area>
-  
+
   <as-split-area size="60" class="script-log-area">
     <pru-script-log [scriptRef]="scriptRef"></pru-script-log>
   </as-split-area>

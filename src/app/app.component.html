@@ -27,7 +27,7 @@
   </mat-drawer>
   <mat-drawer-content id="main-content">
     <mat-drawer-container class="main-container">
-      <pru-script-tabs-container [scripts]="openScripts"></pru-script-tabs-container>
+      <pru-script-tabs-container [scripts]="openScripts" [selectedScript]="selectedScript"></pru-script-tabs-container>
     </mat-drawer-container>
   </mat-drawer-content>
   <mat-drawer id="settings-drawer" mode="over" position="end" [(opened)]="showSettings" (closed)="settingsClosed($event)">

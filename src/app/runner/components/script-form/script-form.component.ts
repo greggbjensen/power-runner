@@ -48,6 +48,7 @@ export class ScriptFormComponent implements OnInit {
   }
 
   @Output() public run = new EventEmitter<IScript>();
+  @Output() public edit = new EventEmitter<IScript>();
 
   private _script: IScript;
 
@@ -64,6 +65,10 @@ export class ScriptFormComponent implements OnInit {
       p.value = this.form.value[p.name];
     });
     this.run.emit(this.script);
+  }
+
+  public startEdit(): void {
+    this.edit.emit(this.script);
   }
 
   private createFormGroup(params: IScriptParam[]): FormGroup {

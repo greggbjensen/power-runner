@@ -26,4 +26,8 @@ export class ScriptPageComponent implements OnInit {
       this.scriptRef = this._nodeProxyFactory.createScriptRef(script, scriptChannel);
     });
   }
+
+  public startEdit(script: IScript): void {
+    this._scriptService.editAsync(script);
+  }
 }
