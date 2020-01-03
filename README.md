@@ -16,3 +16,11 @@ Write-Host "$name $action"
 <br>
 
 ![Overview](assets/overview.png)
+
+# Contributing
+
+You must run the following instead of npm install:
+
+```bash
+yarn
+```

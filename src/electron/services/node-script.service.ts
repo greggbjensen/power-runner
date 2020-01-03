@@ -13,6 +13,9 @@ export class NodeScriptService {
 
   private static readonly FileExtensionRegex = /.ps1$/i;
 
+  // TODO GBJ: Make compatible with Linux.
+  private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
+
   private _childProcesses = new Map<string, pty.IPty>();
 
   constructor(
@@ -44,9 +47,10 @@ export class NodeScriptService {
     return new Promise((resolve, reject) => {
 
       try {
+        console.log(`${script.directory} ${script.name} ${NodeScriptService.PowerShellPath} `);
         const paramList = script.params.map(p => this.formatParam(p)).join(' ');
         const command = `.\\${script.name} ${paramList}`;
-        const child = pty.spawn('PowerShell', [command], {
+        const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
           name: 'xterm-color',
           cols: 80,
           rows: 30,

@@ -16,7 +16,10 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     this._scriptRef = value;
 
     if (this._scriptRef) {
-      this._dataSubscription = this._scriptRef.data.subscribe(data => this._terminal.write(data));
+      this._dataSubscription = this._scriptRef.data.subscribe(data => {
+        this._terminal.write(data);
+        console.log(data);
+      });
       this._exitSubscription = this._scriptRef.exit.subscribe((scriptExit: IScriptExit) => {
         const message = scriptExit.exitCode === 0 ? ' completed' : ` failed with exit code ${scriptExit.exitCode}`;
         this._statusService.setStatus(`${this.scriptRef.script.module.toUpperCase()}/${this.scriptRef.script.name} ${message}`);
@@ -39,7 +42,8 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this._terminal = new Terminal(this._element.nativeElement);
+    this._terminal = new Terminal();
+    this._terminal.open(this._element.nativeElement);
   }
 
   public ngOnDestroy(): void {
