@@ -1,6 +1,7 @@
-import { Component, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { IScript, ScriptRef } from 'src/app/core/models';
 import { NodeProxyFactory, ScriptService } from 'src/app/core/services';
+import { ScriptLogComponent } from '../script-log/script-log.component';
 
 @Component({
   selector: 'pru-script-page',
@@ -11,6 +12,7 @@ import { NodeProxyFactory, ScriptService } from 'src/app/core/services';
 export class ScriptPageComponent implements OnInit {
   @HostBinding('class.script-page') public className = true;
   @Input() public script: IScript;
+  @ViewChild(ScriptLogComponent, { static: false }) public scriptLog: ScriptLogComponent;
   public scriptRef: ScriptRef;
 
   constructor(

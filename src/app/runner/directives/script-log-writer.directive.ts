@@ -1,22 +1,34 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ScriptRef, IScriptExit } from 'src/app/core/models';
+import { IScriptExit, ScriptRef } from 'src/app/core/models';
 import { StatusService } from 'src/app/core/services';
+import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import { SearchAddon } from 'xterm-addon-search';
+import { WebLinksAddon } from 'xterm-addon-web-links';
 
 @Directive({
-  selector: '[pruScriptLogWriter]'
+  selector: '[pruScriptLogWriter]',
+  exportAs: 'scriptLogWriter'
 })
-export class ScriptLogWriterDirective implements OnInit, OnDestroy {
+export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
+
+  private _scriptRef: ScriptRef;
+  private _dataSubscription: Subscription;
+  private _exitSubscription: Subscription;
+  private _terminal: Terminal;
+  private _fitAddon: FitAddon;
+  private _searchAddon: SearchAddon;
 
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
-    this._element.nativeElement.innerHTML = '';
-
     this._scriptRef = value;
+    this._terminal.clear();
 
     if (this._scriptRef) {
-      this._stdoutSubscription = this._scriptRef.stdout.subscribe(line => this.addLine(line));
-      this._stderrorSubscription = this._scriptRef.stderr.subscribe(line => this.addLine(line, true));
+      this._dataSubscription = this._scriptRef.data.subscribe(data => {
+        this._terminal.write(data);
+      });
       this._exitSubscription = this._scriptRef.exit.subscribe((scriptExit: IScriptExit) => {
         const message = scriptExit.exitCode === 0 ? ' completed' : ` failed with exit code ${scriptExit.exitCode}`;
         this._statusService.setStatus(`${this.scriptRef.script.module.toUpperCase()}/${this.scriptRef.script.name} ${message}`);
@@ -28,19 +40,44 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     return this._scriptRef;
   }
 
-  private _scriptRef: ScriptRef;
-  private _stdoutSubscription: Subscription;
-  private _stderrorSubscription: Subscription;
-  private _exitSubscription: Subscription;
-  private _textDecoder = new TextDecoder('utf-8');
-
   constructor(
     private _element: ElementRef,
-    private _renderer: Renderer2,
     private _statusService: StatusService
   ) { }
 
-  public ngOnInit(): void {
+  @HostListener('window:resize') public onResize(): void {
+    if (this._fitAddon) {
+      this._fitAddon.fit();
+    }
+  }
+
+  public searchNext(searchText: string): void {
+    if (this._searchAddon) {
+      this._searchAddon.findNext(searchText);
+    }
+  }
+
+  public searchPrevious(searchText: string): void {
+    if (this._searchAddon) {
+      this._searchAddon.findPrevious(searchText);
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    this._terminal = new Terminal({
+      theme: {
+        background: '#1e1e1e'
+      }
+    });
+    this._fitAddon = new FitAddon();
+    this._searchAddon = new SearchAddon();
+    this._terminal.loadAddon(new WebLinksAddon());
+    this._terminal.loadAddon(this._fitAddon);
+    this._terminal.loadAddon(this._searchAddon);
+    setTimeout(() => {
+      this._terminal.open(this._element.nativeElement);
+      this._fitAddon.fit();
+    }, 1);
   }
 
   public ngOnDestroy(): void {
@@ -48,40 +85,12 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   }
 
   private unsubscribeAll(): void {
-    if (this._stdoutSubscription) {
-      this._stdoutSubscription.unsubscribe();
-    }
-
-    if (this._stderrorSubscription) {
-      this._stdoutSubscription.unsubscribe();
+    if (this._dataSubscription) {
+      this._dataSubscription.unsubscribe();
     }
 
     if (this._exitSubscription) {
-      this._stdoutSubscription.unsubscribe();
-    }
-  }
-
-  private addLine(line: BufferSource, isError: boolean = false): void {
-
-    const lineElement = this._renderer.createElement('li');
-    this._renderer.addClass(lineElement, 'log-line');
-    if (isError) {
-      this._renderer.addClass(lineElement, 'log-line-error');
-    }
-
-    try {
-      const text = this._textDecoder.decode(line)
-        .replace(/\n/g, '<br />')
-        .replace(/  /g, '&nbsp;&nbsp;');
-      this._renderer.setProperty(lineElement, 'innerHTML', text);
-      this._renderer.appendChild(this._element.nativeElement, lineElement);
-
-      if (this.scriptRef.tail) {
-        this.scrollToBottom();
-      }
-
-    } catch (err) {
-      console.error(err);
+      this._dataSubscription.unsubscribe();
     }
   }
 

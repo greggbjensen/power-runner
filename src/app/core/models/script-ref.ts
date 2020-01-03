@@ -4,8 +4,7 @@ import { IScript } from './iscript';
 import { IScriptExit } from './iscript-exit';
 
 export class ScriptRef {
-  public stdout = new EventEmitter<string>();
-  public stderr = new EventEmitter<string>();
+  public data = new EventEmitter<any>();
   public exit = new EventEmitter<IScriptExit>();
   public tail = true;
 
@@ -15,12 +14,8 @@ export class ScriptRef {
     private _scriptChannel: string
   ) {
 
-    this._ipcRenderer.on(`${this._scriptChannel}:stdout`, (event, data: string) => {
-      this.stdout.emit(data);
-    });
-
-    this._ipcRenderer.on(`${this._scriptChannel}:stderr`, (event, data: string) => {
-      this.stdout.emit(data);
+    this._ipcRenderer.on(`${this._scriptChannel}:data`, (event, data: string) => {
+      this.data.emit(data);
     });
 
     this._ipcRenderer.on(`${this._scriptChannel}:exit`, (event, scriptExit: IScriptExit) => {

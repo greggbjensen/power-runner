@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Md5 } from 'ts-md5/dist/md5';
 import * as XRegExp from 'xregexp';
+import * as os from 'os';
 import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 
 export class ScriptParser {
@@ -47,7 +48,10 @@ export class ScriptParser {
 
     console.log(scriptParams);
 
-    const directory = path.dirname(filePath);
+    let directory = path.dirname(filePath);
+    if (os.platform() === 'win32') {
+      directory = directory.replace(/\//g, '\\');
+    }
     const id = Md5.hashStr(filePath) as string;
     const script: IScript = {
       id,

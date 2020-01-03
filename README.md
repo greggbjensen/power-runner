@@ -16,3 +16,16 @@ Write-Host "$name $action"
 <br>
 
 ![Overview](assets/overview.png)
+
+# Contributing
+
+Install Windows Build Tools
+```bash
+npm install --global --production windows-build-tools
+```
+
+You must run the following instead of npm install:
+
+```bash
+yarn
+```

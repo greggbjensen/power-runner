@@ -1,15 +1,22 @@
-import { ChildProcess, spawn } from 'child_process';
-import { BrowserWindow, shell } from 'electron';
+import { spawn } from 'child_process';
+import { BrowserWindow } from 'electron';
 import * as globby from 'globby';
+import * as pty from 'node-pty';
+import * as os from 'os';
 import { IScript, IScriptExit, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptParser } from './script.parser';
+
+// Initialize node-pty with an appropriate shell
+const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
 
 export class NodeScriptService {
 
   private static readonly FileExtensionRegex = /.ps1$/i;
 
-  private _childProcesses = new Map<string, ChildProcess>();
-  private _textEncoder = new TextEncoder();
+  // TODO GBJ: Make compatible with Linux.
+  private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
+
+  private _childProcesses = new Map<string, pty.IPty>();
 
   constructor(
     private _browserWindow: BrowserWindow,
@@ -42,28 +49,28 @@ export class NodeScriptService {
       try {
         const paramList = script.params.map(p => this.formatParam(p)).join(' ');
         const command = `.\\${script.name} ${paramList}`;
-        const child = spawn('PowerShell', [command], {
-          cwd: script.directory
+        const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
+          name: 'xterm-color',
+          cols: 120,
+          rows: 40,
+          cwd: script.directory,
+          env: process.env
         });
 
         const name = script.name.replace(NodeScriptService.FileExtensionRegex, '');
         const scriptChannel = `${script.module}_${name}`;
         this._childProcesses.set(scriptChannel, child);
 
-        child.stdout.on('data', (data: string) => {
-          this._browserWindow.webContents.send(`${scriptChannel}:stdout`, data);
-        });
-        child.stderr.on('data', (data: string) => {
-          this._browserWindow.webContents.send(`${scriptChannel}:stderr`, data);
+        child.on('data', (data: any) => {
+          this._browserWindow.webContents.send(`${scriptChannel}:data`, data);
         });
         child.on('exit', (exitCode) => {
           this._browserWindow.webContents.send(`${scriptChannel}:exit`, { scriptName: script.name, exitCode } as IScriptExit);
           this._childProcesses.delete(scriptChannel);
         });
-        child.stdin.end();
 
         setTimeout(() => {
-          this._browserWindow.webContents.send(`${scriptChannel}:stdout`, this._textEncoder.encode(command));
+          this._browserWindow.webContents.send(`${scriptChannel}:data`, command);
         }, 1);
 
         // Reply with a channel to listen on for stdout, stderr, and exit.

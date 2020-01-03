@@ -1,5 +1,5 @@
 
-<as-split unit="percent" direction="vertical">
+<as-split unit="percent" direction="vertical" (dragEnd)="scriptLog?.onResize()">
   <as-split-area size="40" class="script-form-area">
     <pru-script-form [script]="script" (run)="startRun($event)" (edit)="startEdit($event)"></pru-script-form>
   </as-split-area>
