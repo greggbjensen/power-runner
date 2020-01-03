@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { IScriptExit, ScriptRef } from 'src/app/core/models';
 import { StatusService } from 'src/app/core/services';
@@ -7,14 +7,14 @@ import { Terminal } from 'xterm';
 @Directive({
   selector: '[pruScriptLogWriter]'
 })
-export class ScriptLogWriterDirective implements OnInit, OnDestroy {
+export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
-    this._element.nativeElement.innerHTML = '';
 
     this._scriptRef = value;
 
+    console.log('UPDATED');
     if (this._scriptRef) {
       this._dataSubscription = this._scriptRef.data.subscribe(data => {
         this._terminal.write(data);
@@ -41,9 +41,11 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     private _statusService: StatusService
   ) { }
 
-  public ngOnInit(): void {
+  public ngAfterViewInit(): void {
     this._terminal = new Terminal();
-    this._terminal.open(this._element.nativeElement);
+    setTimeout(() => {
+      this._terminal.open(this._element.nativeElement);
+    }, 1);
   }
 
   public ngOnDestroy(): void {

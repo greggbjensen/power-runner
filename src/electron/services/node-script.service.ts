@@ -47,7 +47,6 @@ export class NodeScriptService {
     return new Promise((resolve, reject) => {
 
       try {
-        console.log(`${script.directory} ${script.name} ${NodeScriptService.PowerShellPath} `);
         const paramList = script.params.map(p => this.formatParam(p)).join(' ');
         const command = `.\\${script.name} ${paramList}`;
         const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
@@ -70,9 +69,9 @@ export class NodeScriptService {
           this._childProcesses.delete(scriptChannel);
         });
 
-        // setTimeout(() => {
-        //   this._browserWindow.webContents.send(`${scriptChannel}:stdout`, this._textEncoder.encode(command));
-        // }, 1);
+        setTimeout(() => {
+          this._browserWindow.webContents.send(`${scriptChannel}:data`, command);
+        }, 1);
 
         // Reply with a channel to listen on for stdout, stderr, and exit.
         resolve(scriptChannel);
