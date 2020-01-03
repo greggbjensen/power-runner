@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ScriptRef, IScriptExit } from 'src/app/core/models';
+import { IScriptExit, ScriptRef } from 'src/app/core/models';
 import { StatusService } from 'src/app/core/services';
+import { Terminal } from 'xterm';
 
 @Directive({
   selector: '[pruScriptLogWriter]'
@@ -15,8 +16,7 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
     this._scriptRef = value;
 
     if (this._scriptRef) {
-      this._stdoutSubscription = this._scriptRef.stdout.subscribe(line => this.addLine(line));
-      this._stderrorSubscription = this._scriptRef.stderr.subscribe(line => this.addLine(line, true));
+      this._dataSubscription = this._scriptRef.data.subscribe(data => this._terminal.write(data));
       this._exitSubscription = this._scriptRef.exit.subscribe((scriptExit: IScriptExit) => {
         const message = scriptExit.exitCode === 0 ? ' completed' : ` failed with exit code ${scriptExit.exitCode}`;
         this._statusService.setStatus(`${this.scriptRef.script.module.toUpperCase()}/${this.scriptRef.script.name} ${message}`);
@@ -29,18 +29,17 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   }
 
   private _scriptRef: ScriptRef;
-  private _stdoutSubscription: Subscription;
-  private _stderrorSubscription: Subscription;
+  private _dataSubscription: Subscription;
   private _exitSubscription: Subscription;
-  private _textDecoder = new TextDecoder('utf-8');
+  private _terminal: Terminal;
 
   constructor(
     private _element: ElementRef,
-    private _renderer: Renderer2,
     private _statusService: StatusService
   ) { }
 
   public ngOnInit(): void {
+    this._terminal = new Terminal(this._element.nativeElement);
   }
 
   public ngOnDestroy(): void {
@@ -48,40 +47,12 @@ export class ScriptLogWriterDirective implements OnInit, OnDestroy {
   }
 
   private unsubscribeAll(): void {
-    if (this._stdoutSubscription) {
-      this._stdoutSubscription.unsubscribe();
-    }
-
-    if (this._stderrorSubscription) {
-      this._stdoutSubscription.unsubscribe();
+    if (this._dataSubscription) {
+      this._dataSubscription.unsubscribe();
     }
 
     if (this._exitSubscription) {
-      this._stdoutSubscription.unsubscribe();
-    }
-  }
-
-  private addLine(line: BufferSource, isError: boolean = false): void {
-
-    const lineElement = this._renderer.createElement('li');
-    this._renderer.addClass(lineElement, 'log-line');
-    if (isError) {
-      this._renderer.addClass(lineElement, 'log-line-error');
-    }
-
-    try {
-      const text = this._textDecoder.decode(line)
-        .replace(/\n/g, '<br />')
-        .replace(/  /g, '&nbsp;&nbsp;');
-      this._renderer.setProperty(lineElement, 'innerHTML', text);
-      this._renderer.appendChild(this._element.nativeElement, lineElement);
-
-      if (this.scriptRef.tail) {
-        this.scrollToBottom();
-      }
-
-    } catch (err) {
-      console.error(err);
+      this._dataSubscription.unsubscribe();
     }
   }
 
