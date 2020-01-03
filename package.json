@@ -13,6 +13,7 @@
     "package": "npm run copy-deps && npm run build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
     "package-installer": "npm run package && npm run installer",
+    "electron-rebuild": "./node_modules/.bin/electron-rebuild.cmd",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -37,7 +38,7 @@
     "globby": "^10.0.1",
     "hammerjs": "^2.0.8",
     "js-yaml": "^3.13.1",
-    "node-pty": "^0.9.0",
+    "node-pty": "^0.9.0-beta19",
     "node-yaml": "^4.0.1",
     "rxjs": "~6.4.0",
     "ts-md5": "^1.2.7",
@@ -54,11 +55,12 @@
     "@angular/language-service": "~8.2.4",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "^12.11.7",
     "codelyzer": "^5.0.0",
     "copyfiles": "^2.1.1",
-    "electron": "^6.0.7",
+    "electron": "^6.1.6",
     "electron-packager": "^14.1.1",
+    "electron-rebuild": "^1.8.8",
     "electron-reload": "^1.5.0",
     "electron-winstaller": "^4.0.0",
     "jasmine-core": "~3.4.0",
@@ -72,6 +74,6 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "tslint-consistent-codestyle": "^1.15.1",
-    "typescript": "~3.5.3"
+    "typescript": "3.5.3"
   }
 }

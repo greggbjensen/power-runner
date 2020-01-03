@@ -14,7 +14,6 @@ export class NodeScriptService {
   private static readonly FileExtensionRegex = /.ps1$/i;
 
   private _childProcesses = new Map<string, pty.IPty>();
-  private _textEncoder = new TextEncoder();
 
   constructor(
     private _browserWindow: BrowserWindow,
