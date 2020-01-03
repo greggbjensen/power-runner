@@ -4,14 +4,25 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+
+  .mat-icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 2rem;
+  }
+
+  .mat-icon-button {
+    width: 2.4rem;
+  }
 }
 
 .script-output {
-  list-style: none;
-  margin: 0;
-  padding: $space-15;
-  height: 100%;
-  overflow-x: auto;
+  position: absolute;
+  top: 4.7rem;
+  left: $space-15;
+  bottom: 0;
+  right: 0;
 }
 
 .script-log-title {
@@ -31,6 +42,32 @@
   white-space: nowrap;
 }
 
-#script-log-toggle-tail {
-  margin: 0.2rem 0.3rem 0 auto;
+.script-log-search {
+  margin-left: auto;
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+
+  .mat-form-field {
+    line-height: 0;
+  }
+
+  .mat-form-field-infix {
+    padding: 0;
+  }
+
+  .mat-input-element {
+    line-height: 3rem;
+    width: 28rem;
+  }
+
+  .mat-form-field-suffix {
+    top: -0.2rem
+  }
+}
+
+.script-log-search-arrows {
+  font-size: $font-size-11;
+  margin: 0 $space-6 0 $space-4
 }

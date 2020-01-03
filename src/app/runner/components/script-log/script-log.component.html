@@ -1,6 +1,25 @@
 <form class="script-log-title" [formGroup]="formGroup">
   <h2 class="script-log-title">Output</h2>
-  <mat-checkbox id="script-log-toggle-tail" (change)="toggleTail()" formControlName="tail">Tail</mat-checkbox>
+
+  <mat-form-field class="script-log-search" appearance="outline">
+    <input matInput placeholder="Search" formControlName="searchText">
+    <button
+      mat-button
+      [style.visibility]="formGroup.get('searchText').value ? 'visible' : 'hidden'"
+      matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <div class="script-log-search-arrows">
+    <button mat-button mat-icon-button aria-label="Previous" (click)="searchPrevious()">
+      <mat-icon>arrow_upward</mat-icon>
+    </button>
+    <button mat-button mat-icon-button aria-label="Next" (click)="searchNext()">
+      <mat-icon>arrow_downward</mat-icon>
+    </button>
+  </div>
+
 </form>
-<div class="script-output" pruScriptLogWriter [scriptRef]="scriptRef">
+<div class="script-output" #scriptOutput="scriptLogWriter" pruScriptLogWriter [scriptRef]="scriptRef">
 </div>

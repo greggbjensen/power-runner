@@ -13,7 +13,7 @@
     "package": "yarn copy-deps && yarn build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
     "package-installer": "yarn package && yarn installer",
-    "electron-rebuild": "./node_modules/.bin/electron-rebuild.cmd",
+    "electron-rebuild": "./node_modules/.bin/electron-rebuild",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -31,6 +31,7 @@
     "@angular/platform-browser-dynamic": "~8.2.4",
     "@angular/router": "~8.2.4",
     "@types/underscore": "^1.9.2",
+    "@w11k/ngx-componentdestroyed": "^4.1.4",
     "angular-split": "^3.0.2",
     "electron-is-dev": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
@@ -46,6 +47,9 @@
     "underscore": "^1.9.1",
     "xregexp": "^4.2.4",
     "xterm": "^4.3.0",
+    "xterm-addon-fit": "^0.3.0",
+    "xterm-addon-search": "^0.4.0",
+    "xterm-addon-web-links": "^0.2.1",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

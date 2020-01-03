@@ -1,24 +1,33 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { IScriptExit, ScriptRef } from 'src/app/core/models';
 import { StatusService } from 'src/app/core/services';
 import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import { SearchAddon } from 'xterm-addon-search';
+import { WebLinksAddon } from 'xterm-addon-web-links';
 
 @Directive({
-  selector: '[pruScriptLogWriter]'
+  selector: '[pruScriptLogWriter]',
+  exportAs: 'scriptLogWriter'
 })
 export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
+  private _scriptRef: ScriptRef;
+  private _dataSubscription: Subscription;
+  private _exitSubscription: Subscription;
+  private _terminal: Terminal;
+  private _fitAddon: FitAddon;
+  private _searchAddon: SearchAddon;
+
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
-
     this._scriptRef = value;
+    this._terminal.clear();
 
-    console.log('UPDATED');
     if (this._scriptRef) {
       this._dataSubscription = this._scriptRef.data.subscribe(data => {
         this._terminal.write(data);
-        console.log(data);
       });
       this._exitSubscription = this._scriptRef.exit.subscribe((scriptExit: IScriptExit) => {
         const message = scriptExit.exitCode === 0 ? ' completed' : ` failed with exit code ${scriptExit.exitCode}`;
@@ -31,20 +40,43 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
     return this._scriptRef;
   }
 
-  private _scriptRef: ScriptRef;
-  private _dataSubscription: Subscription;
-  private _exitSubscription: Subscription;
-  private _terminal: Terminal;
-
   constructor(
     private _element: ElementRef,
     private _statusService: StatusService
   ) { }
 
+  @HostListener('window:resize') public onResize(): void {
+    if (this._fitAddon) {
+      this._fitAddon.fit();
+    }
+  }
+
+  public searchNext(searchText: string): void {
+    if (this._searchAddon) {
+      this._searchAddon.findNext(searchText);
+    }
+  }
+
+  public searchPrevious(searchText: string): void {
+    if (this._searchAddon) {
+      this._searchAddon.findPrevious(searchText);
+    }
+  }
+
   public ngAfterViewInit(): void {
-    this._terminal = new Terminal();
+    this._terminal = new Terminal({
+      theme: {
+        background: '#1e1e1e'
+      }
+    });
+    this._fitAddon = new FitAddon();
+    this._searchAddon = new SearchAddon();
+    this._terminal.loadAddon(new WebLinksAddon());
+    this._terminal.loadAddon(this._fitAddon);
+    this._terminal.loadAddon(this._searchAddon);
     setTimeout(() => {
       this._terminal.open(this._element.nativeElement);
+      this._fitAddon.fit();
     }, 1);
   }
 

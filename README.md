@@ -19,6 +19,11 @@ Write-Host "$name $action"
 
 # Contributing
 
+Install Windows Build Tools
+```bash
+npm install --global --production windows-build-tools
+```
+
 You must run the following instead of npm install:
 
 ```bash
