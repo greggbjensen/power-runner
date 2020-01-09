@@ -21,17 +21,17 @@
 
         <mat-form-field *ngSwitchCase="ParamType.String">
           <mat-label>{{param.name}}</mat-label>
-          <input matInput type="text" [formControlName]="param.name">
+          <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="ParamType.SecureString">
           <mat-label>{{param.name}}</mat-label>
-          <input matInput type="password" [formControlName]="param.name">
+          <input AutoSizeInput matInput type="password" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="ParamType.Number">
           <mat-label>{{param.name}}</mat-label>
-          <input matInput type="number" [formControlName]="param.name">
+          <input AutoSizeInput matInput type="number" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="ParamType.Set">
