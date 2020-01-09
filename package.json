@@ -38,6 +38,7 @@
     "fs-extra": "^8.1.0",
     "globby": "^10.0.1",
     "hammerjs": "^2.0.8",
+    "is-elevated": "^3.0.0",
     "js-yaml": "^3.13.1",
     "node-pty": "^0.9.0-beta19",
     "node-yaml": "^4.0.1",

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { app, BrowserWindow } from 'electron';
+const isElevated = require('is-elevated');
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +51,16 @@ export class NodeAppService {
 
   public getVersionAsync(): Promise<string> {
     return Promise.resolve(this._version);
+  }
+
+  public async getElevatedStatusAsync(): Promise<string> {
+    let adminName = '';
+
+    const elevated = await isElevated();
+    if (elevated) {
+      adminName = process.platform === 'win32' ? 'Administrator' : 'Root';
+    }
+
+    return adminName;
   }
 }

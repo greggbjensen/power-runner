@@ -4602,6 +4602,13 @@ is-accessor-descriptor@^1.0.0:
   dependencies:
     kind-of "^6.0.0"
 
+is-admin@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-admin/-/is-admin-3.0.0.tgz#5c6077fd235e056c3dbc0b6f1bbd23ff96e97135"
+  integrity sha512-wOa3CXFJAu8BZ2BDtG9xYOOrsq6oiSvc2jFPy4X/HINx5bmJUcW8e+apItVbU2E7GIfBVaFVO7Zit4oAWtTJcw==
+  dependencies:
+    execa "^1.0.0"
+
 is-arguments@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/is-arguments/-/is-arguments-1.0.4.tgz#3faf966c7cba0ff437fb31f6250082fcf0448cf3"
@@ -4677,6 +4684,14 @@ is-directory@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/is-directory/-/is-directory-0.3.1.tgz#61339b6f2475fc772fd9c9d83f5c8575dc154ae1"
   integrity sha1-YTObbyR1/Hcv2cnYP1yFddwVSuE=
+
+is-elevated@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-elevated/-/is-elevated-3.0.0.tgz#f0de684f89b5144179ae1729ba8af590b8e0cecb"
+  integrity sha512-wjcp6RkouU9jpg55zERl+BglvV5j4jx5c/EMvQ+d12j/+nIEenNWPu+qc0tCg3JkLodbKZMg1qhJzEwG4qjclg==
+  dependencies:
+    is-admin "^3.0.0"
+    is-root "^2.1.0"
 
 is-extendable@^0.1.0, is-extendable@^0.1.1:
   version "0.1.1"
@@ -4806,6 +4821,11 @@ is-regex@^1.0.4, is-regex@^1.0.5:
   integrity sha512-vlKW17SNq44owv5AQR3Cq0bQPEb8+kF3UKZ2fiZNOWtztYE5i0CzCZxFDwO58qAOWtxdBRVO/V5Qin1wjCqFYQ==
   dependencies:
     has "^1.0.3"
+
+is-root@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/is-root/-/is-root-2.1.0.tgz#809e18129cf1129644302a4f8544035d51984a9c"
+  integrity sha512-AGOriNp96vNBd3HtU+RzFEc75FfR5ymiYv8E553I71SCeXBiMsVDUtdio1OEFvrPyLIQ9tVR5RxXIFe5PUFjMg==
 
 is-stream@^1.1.0:
   version "1.1.0"

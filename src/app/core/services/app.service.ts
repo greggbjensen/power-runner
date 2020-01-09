@@ -37,6 +37,10 @@ export class AppService extends ProxyNodeService {
     return this.proxy.invoke('getVersionAsync');
   }
 
+  public getElevatedStatusAsync(): Promise<string> {
+    return this.proxy.invoke('getElevatedStatusAsync');
+  }
+
   public toggleDeveloperToolsAsync(): Promise<void> {
     return this.proxy.invoke('toggleDeveloperToolsAsync');
   }
