@@ -10,7 +10,10 @@
   <mat-menu #helpMenu="matMenu">
     <button mat-menu-item (click)="toggleDeveloperTools()">Toggle Developer Tools</button>
   </mat-menu>
-  <h1 id="main-title">PowerRunner</h1>
+  <h1 id="main-title">
+    <span>PowerRunner</span>
+    <span *ngIf="elevatedStatus">: {{elevatedStatus}}</span>
+  </h1>
   <div class="main-window-actions">
     <button mat-icon-button (click)="minimize()"><mat-icon>maximize</mat-icon></button>
     <button mat-icon-button (click)="toggleMaximize()"><mat-icon>{{isMaximized ? 'crop_square' : 'filter_none'}}</mat-icon></button>

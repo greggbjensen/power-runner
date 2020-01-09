@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
+import { AutoSizeInputModule } from 'ngx-autosize-input';
 import { BrowseDirectoryFieldComponent } from './components';
 
 @NgModule({
@@ -37,7 +38,8 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatToolbarModule,
     MatTabsModule,
     ReactiveFormsModule,
-    AngularSplitModule.forChild()
+    AngularSplitModule.forChild(),
+    AutoSizeInputModule
   ],
   exports: [
     MatButtonModule,
@@ -52,6 +54,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatMenuModule,
     MatToolbarModule,
     MatTabsModule,
+    AutoSizeInputModule,
     BrowseDirectoryFieldComponent
   ]
 })

@@ -20,15 +20,19 @@ export class AppComponent {
   public showSettings = false;
   public isMaximized = false;
   public settings: ISettings;
+  public elevatedStatus: string;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
 
   constructor(
     private _scriptService: ScriptService,
     private _appService: AppService,
-    private _settingsService: SettingsService
+    private _settingsService: SettingsService,
   ) {
     this.nodes$ = this._nodes.asObservable();
     this.initialize();
+
+    this._appService.getElevatedStatusAsync()
+      .then(status => this.elevatedStatus = status);
   }
 
   public scriptOpened(script: IScript): void {

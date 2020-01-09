@@ -23,7 +23,10 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
     this._scriptRef = value;
-    this._terminal.clear();
+
+    if (this._terminal) {
+      this._terminal.clear();
+    }
 
     if (this._scriptRef) {
       this._dataSubscription = this._scriptRef.data.subscribe(data => {
@@ -65,6 +68,8 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this._terminal = new Terminal({
+      windowsMode: true,
+      disableStdin: true,
       theme: {
         background: '#1e1e1e'
       }
