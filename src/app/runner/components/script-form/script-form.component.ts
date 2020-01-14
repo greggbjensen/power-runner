@@ -1,6 +1,8 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IScript, IScriptParam, IScriptProfile, ParamType } from 'src/app/core/models';
+import { MatDialog } from '@angular/material/dialog';
+import { AddDialogComponent } from 'src/app/shared/components';
 
 
 @Component({
@@ -53,6 +55,7 @@ export class ScriptFormComponent implements OnInit {
   private _script: IScript;
 
   constructor(
+    public dialog: MatDialog
   ) {
     this.selectedProfile = this.profiles[0].name;
   }
@@ -69,6 +72,25 @@ export class ScriptFormComponent implements OnInit {
 
   public startEdit(): void {
     this.edit.emit(this.script);
+  }
+
+  public addProfile(): void {
+    const dialogRef = this.dialog.open(AddDialogComponent, {
+      width: '50rem',
+      data: {
+        title: 'Add Profile'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (name) {
+        console.log(name);
+      }
+    });
+  }
+
+  public removeProfile(): void {
+
   }
 
   private createFormGroup(params: IScriptParam[]): FormGroup {

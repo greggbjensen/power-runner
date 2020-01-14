@@ -16,11 +16,12 @@ import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
 import { AutoSizeInputModule } from 'ngx-autosize-input';
-import { BrowseDirectoryFieldComponent } from './components';
+import { AddDialogComponent, BrowseDirectoryFieldComponent } from './components';
 
 @NgModule({
   declarations: [
-    BrowseDirectoryFieldComponent
+    BrowseDirectoryFieldComponent,
+    AddDialogComponent
   ],
   imports: [
     CommonModule,
@@ -40,6 +41,9 @@ import { BrowseDirectoryFieldComponent } from './components';
     ReactiveFormsModule,
     AngularSplitModule.forChild(),
     AutoSizeInputModule
+  ],
+  entryComponents: [
+    AddDialogComponent
   ],
   exports: [
     MatButtonModule,

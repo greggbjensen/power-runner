@@ -1,0 +1,13 @@
+<form [formGroup]="form" (submit)="add()">
+  <h1 mat-dialog-title>{{data.title}}</h1>
+  <div mat-dialog-content>
+    <mat-form-field class="fill-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" cdkFocusInitial>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="cancel()" type="button">Cancel</button>
+    <button mat-raised-button color="primary" type="submit">Add</button>
+  </div>
+</form>

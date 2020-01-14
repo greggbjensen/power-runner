@@ -11,9 +11,12 @@
         </mat-select>
       </mat-form-field>
       <div class="script-actions">
+        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()"><mat-icon>remove_circle</mat-icon></button>
+        <button class="script-profile-add" mat-icon-button (click)="addProfile()"><mat-icon>add_circle</mat-icon></button>
         <button class="script-edit" mat-raised-button (click)="startEdit()">Edit</button>
         <button class="script-run" mat-raised-button color="primary" (click)="startRun()">Run</button>
       </div>
+
     </div>
 
     <ng-container *ngFor="let param of script.params; let i = index">
