@@ -80,7 +80,8 @@ export class ScriptFormComponent implements OnInit {
 
       if (data.name) {
         const profile = this.gatherProfile(data.name);
-        this._profileService.updateAsync(this._script.directory, this._script.name, data.saveAsType, profile);
+        this._profileService.updateAsync(this._script.directory, this._script.name, data.saveAsType, profile)
+          .then(profiles => this.updateProfiles(profiles, profile.name));
       }
     });
   }
@@ -111,10 +112,20 @@ export class ScriptFormComponent implements OnInit {
     return profile;
   }
 
-  private updateProfiles(profiles: IScriptProfile[]): void {
+  private updateProfiles(profiles: IScriptProfile[], selectedProfile: string = null): void {
     this.profiles = profiles;
-    this.selectedProfile = this.profiles.length > 0
-      ? this.profiles[0].name
-      : null;
+
+    if (this.profiles.length > 0) {
+      if (selectedProfile) {
+        const profile = this.profiles.find(p => p.name.toLowerCase() === selectedProfile.toLowerCase());
+        this.selectedProfile = profile ? profile.name : null;
+      }
+
+      if (!this.selectedProfile) {
+        this.selectedProfile = this.profiles[0].name;
+      }
+    } else {
+      this.selectedProfile = null;
+    }
   }
 }

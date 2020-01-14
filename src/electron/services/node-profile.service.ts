@@ -28,7 +28,8 @@ export class NodeProfileService {
     return sharedProfiles.concat(personalProfiles);
   }
 
-  public async updateAsync(directory: string, scriptName: string, saveAsType: SaveAsType, profile: IScriptProfile): Promise<void> {
+  public async updateAsync(directory: string, scriptName: string, saveAsType: SaveAsType, profile: IScriptProfile)
+  : Promise<IScriptProfile[]> {
 
     const profileMap = await this.getMergedMapAsync(directory);
     const scriptKey = saveAsType === SaveAsType.Personal
@@ -61,6 +62,8 @@ export class NodeProfileService {
         : path.join(directory, NodeProfileService.SharedFileName);
       await this.saveProfileMapAsync(fileName, updatedMap);
     }
+
+    return profiles;
   }
 
   private getSaveAsType(scriptKey: string): SaveAsType {
