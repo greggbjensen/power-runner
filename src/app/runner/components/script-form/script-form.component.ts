@@ -81,6 +81,7 @@ export class ScriptFormComponent implements OnInit {
       if (data.name) {
         const profile = this.gatherProfile(data.name);
         this._profileService.updateAsync(this._script.directory, this._script.name, data.saveAsType, profile)
+          .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
           .then(profiles => this.updateProfiles(profiles, profile.name));
       }
     });

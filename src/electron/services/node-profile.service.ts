@@ -29,7 +29,7 @@ export class NodeProfileService {
   }
 
   public async updateAsync(directory: string, scriptName: string, saveAsType: SaveAsType, profile: IScriptProfile)
-  : Promise<IScriptProfile[]> {
+  : Promise<void> {
 
     const profileMap = await this.getMergedMapAsync(directory);
     const scriptKey = saveAsType === SaveAsType.Personal
@@ -56,18 +56,17 @@ export class NodeProfileService {
 
     if (hasUpdate) {
       const updatedMap = this.getUnmergedMap(profileMap, saveAsType);
-
       const fileName = saveAsType === SaveAsType.Personal
         ? this._personalProfileFile
         : path.join(directory, NodeProfileService.SharedFileName);
+      console.log('HERE', fileName, updatedMap);
+
       await this.saveProfileMapAsync(fileName, updatedMap);
     }
-
-    return profiles;
   }
 
   private getSaveAsType(scriptKey: string): SaveAsType {
-    return (/(\|\/)/).test(scriptKey)
+    return (/[\\\/]/).test(scriptKey)
       ? SaveAsType.Personal // Personal will always have a path separator.
       : SaveAsType.Shared;
   }
