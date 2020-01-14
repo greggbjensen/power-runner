@@ -1,7 +1,14 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { NodeAppService, NodeBrowseDialogService, NodeScriptService, NodeSettingsService, ScriptParser } from './services';
+import {
+  NodeAppService,
+  NodeBrowseDialogService,
+  NodeProfileService,
+  NodeScriptService,
+  NodeSettingsService,
+  ScriptParser
+} from './services';
 import { Updater } from './updater';
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().trim() === 'dev';
@@ -55,6 +62,7 @@ function createWindow(): void {
   bindService(new NodeAppService(browserWindow, isDev));
   bindService(new NodeSettingsService());
   bindService(new NodeScriptService(browserWindow, scriptParser));
+  bindService(new NodeProfileService());
   bindService(new NodeBrowseDialogService(browserWindow));
 
   if (isDev) {

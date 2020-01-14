@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu'
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -16,12 +17,11 @@ import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
 import { AutoSizeInputModule } from 'ngx-autosize-input';
-import { AddDialogComponent, BrowseDirectoryFieldComponent } from './components';
+import { BrowseDirectoryFieldComponent } from './components';
 
 @NgModule({
   declarations: [
-    BrowseDirectoryFieldComponent,
-    AddDialogComponent
+    BrowseDirectoryFieldComponent
   ],
   imports: [
     CommonModule,
@@ -33,6 +33,7 @@ import { AddDialogComponent, BrowseDirectoryFieldComponent } from './components'
     MatSelectModule,
     MatTreeModule,
     MatIconModule,
+    MatRadioModule,
     MatSidenavModule,
     MatDialogModule,
     MatMenuModule,
@@ -42,9 +43,6 @@ import { AddDialogComponent, BrowseDirectoryFieldComponent } from './components'
     AngularSplitModule.forChild(),
     AutoSizeInputModule
   ],
-  entryComponents: [
-    AddDialogComponent
-  ],
   exports: [
     MatButtonModule,
     MatCheckboxModule,
@@ -53,6 +51,7 @@ import { AddDialogComponent, BrowseDirectoryFieldComponent } from './components'
     MatSelectModule,
     MatTreeModule,
     MatIconModule,
+    MatRadioModule,
     MatSidenavModule,
     MatDialogModule,
     MatMenuModule,

@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
 import { SharedModule } from '../shared/shared.module';
 import {
+  AddProfileDialogComponent,
   ScriptFormComponent,
   ScriptLogComponent,
   ScriptPageComponent,
@@ -23,13 +24,17 @@ import { ScriptLogWriterDirective } from './directives/script-log-writer.directi
     ScriptPageComponent,
     SettingsPaneComponent,
     ScriptTabsContainerComponent,
-    StatusBarComponent
+    StatusBarComponent,
+    AddProfileDialogComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
     AngularSplitModule.forChild()
+  ],
+  entryComponents: [
+    AddProfileDialogComponent
   ],
   exports: [
     ScriptTreeComponent,

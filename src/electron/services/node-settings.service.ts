@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as yaml from 'node-yaml';
 import * as os from 'os';
 import * as path from 'path';
-import { ISettings } from 'src/app/core/models';
+import { ISettings } from '../../app/core/models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class NodeSettingsService {
   public async saveAsync(settings: ISettings): Promise<void> {
     const settingsDirectory = path.dirname(this._settingsFile);
     await fs.ensureDir(settingsDirectory);
-    return await yaml.write(this._settingsFile, settings);
+    await yaml.write(this._settingsFile, settings);
   }
 
   public async readAsync(): Promise<ISettings> {

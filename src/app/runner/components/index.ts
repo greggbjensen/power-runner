@@ -1,3 +1,5 @@
+export { AddProfileDialogComponent } from './add-profile-dialog/add-profile-dialog.component';
+export { IAddProfileData } from './add-profile-dialog/iadd-profile-data';
 export { StatusBarComponent } from './status-bar/status-bar.component';
 export { ScriptTabsContainerComponent } from './script-tabs-container/script-tabs-container.component';
 export { SettingsPaneComponent } from './settings-pane/settings-pane.component';

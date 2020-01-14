@@ -1,8 +1,10 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { IScript, IScriptParam, IScriptProfile, ParamType } from 'src/app/core/models';
 import { MatDialog } from '@angular/material/dialog';
-import { AddDialogComponent } from 'src/app/shared/components';
+import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType } from 'src/app/core/models';
+import { ProfileService, StatusService } from 'src/app/core/services';
+import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
+import { IAddProfileData } from '../add-profile-dialog/iadd-profile-data';
 
 
 @Component({
@@ -16,21 +18,8 @@ export class ScriptFormComponent implements OnInit {
   // tslint:disable-next-line: naming-convention
   public ParamType = ParamType;
   public form: FormGroup;
-  public selectedProfile: string;
-  public profiles: IScriptProfile[] = [
-    {
-      name: 'Default',
-      params: {
-        name: 'Test'
-      },
-    },
-    {
-      name: 'Last Run',
-      params: {
-        name: 'Test'
-      }
-    }
-  ];
+  public selectedProfile: string = null;
+  public profiles: IScriptProfile[] = [];
 
   @Input() public set script(value: IScript) {
 
@@ -39,9 +28,12 @@ export class ScriptFormComponent implements OnInit {
       this._script = Object.assign({ }, value);
       this._script.params = value.params.map(p => Object.assign({ }, p));
       this.form = this.createFormGroup(this._script.params);
+      this._profileService.listAsync(this._script.directory, this._script.name)
+        .then(profiles => this.updateProfiles(profiles));
     } else {
       this._script = null;
       this.form = null;
+      this.updateProfiles([]);
     }
   }
 
@@ -55,9 +47,9 @@ export class ScriptFormComponent implements OnInit {
   private _script: IScript;
 
   constructor(
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private _profileService: ProfileService,
   ) {
-    this.selectedProfile = this.profiles[0].name;
   }
 
   public ngOnInit(): void {
@@ -75,16 +67,20 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public addProfile(): void {
-    const dialogRef = this.dialog.open(AddDialogComponent, {
+    const dialogRef = this.dialog.open(AddProfileDialogComponent, {
       width: '50rem',
       data: {
-        title: 'Add Profile'
+        title: 'Add Profile',
+        name: '',
+        saveAsType: SaveAsType.Shared
       }
     });
 
-    dialogRef.afterClosed().subscribe(name => {
-      if (name) {
-        console.log(name);
+    dialogRef.afterClosed().subscribe((data: IAddProfileData) => {
+
+      if (data.name) {
+        const profile = this.gatherProfile(data.name);
+        this._profileService.updateAsync(this._script.directory, this._script.name, data.saveAsType, profile);
       }
     });
   }
@@ -100,5 +96,25 @@ export class ScriptFormComponent implements OnInit {
     });
 
     return new FormGroup(fields);
+  }
+
+  private gatherProfile(name: string): IScriptProfile {
+    const profile = {
+      name,
+      params: { }
+    };
+
+    this.script.params.forEach(p => {
+      profile.params[p.name] = this.form.value[p.name];
+    });
+
+    return profile;
+  }
+
+  private updateProfiles(profiles: IScriptProfile[]): void {
+    this.profiles = profiles;
+    this.selectedProfile = this.profiles.length > 0
+      ? this.profiles[0].name
+      : null;
   }
 }
