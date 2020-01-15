@@ -34,7 +34,6 @@ export class ScriptParser {
       if (match && match[0]) {
         let paramText = match[0].trim();
         paramText = paramText.replace(ScriptParser.CommentsRegex, '');  // Trim out comments.
-        console.log('TEST', paramText);
         const paramList = paramText.split(ScriptParser.ParamSeparatorRetgex);
 
         scriptParams = paramList.map(i => this.parseParam(i)).filter(p => !!p);
@@ -45,8 +44,6 @@ export class ScriptParser {
       console.error(err);
       scriptParams = [];
     }
-
-    console.log(scriptParams);
 
     let directory = path.dirname(filePath);
     if (os.platform() === 'win32') {
@@ -66,14 +63,12 @@ export class ScriptParser {
 
   private parseParam(paramLine: string): IScriptParam {
     let param: IScriptParam = null;
-    console.log('LINE', paramLine);
 
     const match = ScriptParser.AttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
       const name = match[2];
       let value: any = match[3];
-      console.log('MATCH', attributes, name, value);
 
       param = {
         name,

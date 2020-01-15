@@ -32,7 +32,7 @@ export class AppComponent {
     this.initialize();
 
     this._appService.getElevatedStatusAsync()
-      .then(status => this.elevatedStatus = status);
+      .then(status => this.elevatedStatus = status, err => console.error(err));
   }
 
   public scriptOpened(script: IScript): void {
@@ -85,7 +85,7 @@ export class AppComponent {
       const fullPaths = this.settings.searchPaths.map(p => `${this.settings.basePath}/${p}`.replace(/\\/g, '/'));
       this._scriptService.listAsync(fullPaths).then((scripts) => {
         this._nodes.next(this.nodeTransform(scripts));
-      });
+      }, err => console.error(err));
     }
   }
 

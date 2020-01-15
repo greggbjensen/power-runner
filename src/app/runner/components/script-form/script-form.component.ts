@@ -31,7 +31,7 @@ export class ScriptFormComponent implements OnInit {
       this._script.params = value.params.map(p => Object.assign({ }, p));
       this.form = this.createFormGroup(this._script.params);
       this._profileService.listAsync(this._script.directory, this._script.name)
-        .then(profiles => this.updateProfiles(profiles));
+        .then(profiles => this.updateProfiles(profiles), err => console.error(err));
     } else {
       this._script = null;
       this.form = null;
@@ -100,7 +100,7 @@ export class ScriptFormComponent implements OnInit {
   public removeProfile(): void {
     this._profileService.deleteAsync(this.script.directory, this.script.name, this.profileForm.value.selectedProfile)
       .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
-      .then(profiles => this.updateProfiles(profiles));
+      .then(profiles => this.updateProfiles(profiles), err => console.error(err));
   }
 
   private async saveUpdatedProfileAsync(profileName: string, saveAsType: SaveAsType = null): Promise<void> {

@@ -52,7 +52,7 @@ export class Updater {
           if (result.response === 0) {
             autoUpdater.quitAndInstall();
           }
-        });
+        }, err => console.error(err));
       }
     );
 
