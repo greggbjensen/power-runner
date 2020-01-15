@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { AppService, BrowseDialogService, NodeProxyFactory, ScriptService, StatusService } from './services';
 
 @NgModule({
@@ -8,7 +9,8 @@ import { AppService, BrowseDialogService, NodeProxyFactory, ScriptService, Statu
     StatusService,
     NodeProxyFactory,
     BrowseDialogService,
-    AppService
+    AppService,
+    { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { showDelay: 400, hideDelay: 400, touchendHideDelay: 1000 } },
   ],
   declarations: [],
   imports: [

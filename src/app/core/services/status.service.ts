@@ -7,9 +7,12 @@ const electron = (window as any).require('electron');
   providedIn: 'root'
 })
 export class StatusService {
+  private static readonly ClearStatusDelay = 2000;
+
   public status$: Observable<string>;
   private _status = new BehaviorSubject('');
   private _ipcRenderer: IpcRenderer;
+  private _clearStatusTimeout: any;
 
   constructor() {
     this.status$ = this._status.asObservable();
@@ -20,6 +23,17 @@ export class StatusService {
   }
 
   public setStatus(message: string): void {
+    if (this._clearStatusTimeout) {
+      clearTimeout(this._clearStatusTimeout);
+    }
+
     this._status.next(message);
+
+    // Only let status set for so long.
+    if (message) {
+      this._clearStatusTimeout = setTimeout(() => {
+        this._status.next('');
+      }, StatusService.ClearStatusDelay);
+    }
   }
 }

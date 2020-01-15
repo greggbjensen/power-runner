@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
@@ -38,6 +39,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatTabsModule,
     ReactiveFormsModule,
     AngularSplitModule.forChild(),
@@ -56,6 +58,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatTabsModule,
     AutoSizeInputModule,
     BrowseDirectoryFieldComponent

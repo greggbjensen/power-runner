@@ -55,6 +55,7 @@ export class ScriptFormComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private _profileService: ProfileService,
+    private _statusService: StatusService
   ) {
   }
 
@@ -102,16 +103,25 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public removeProfile(): void {
+    this._statusService.setStatus(`Removing profile "${this.selectedProfile}"`);
+
     this._profileService.deleteAsync(this.script.directory, this.script.name, this.selectedProfile)
       .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
-      .then(profiles => this.updateProfiles(profiles), err => console.error(err));
+      .then(profiles => {
+        this.updateProfiles(profiles);
+        this._statusService.setStatus(`Profile "${this.selectedProfile}" removed`);
+      }, err => console.error(err));
   }
 
   private async saveUpdatedProfileAsync(profileName: string, saveAsType: SaveAsType = null): Promise<void> {
+    this._statusService.setStatus(`Saving profile "${profileName}"`);
+
     const profile = this.gatherProfile(profileName);
     await this._profileService.updateAsync(this._script.directory, this._script.name, profile, saveAsType);
     const profiles = await this._profileService.listAsync(this.script.directory, this.script.name);
     this.updateProfiles(profiles, profile.name);
+
+    this._statusService.setStatus(`Profile "${profileName}" saved`);
   }
 
   private createFormGroup(params: IScriptParam[]): FormGroup {
