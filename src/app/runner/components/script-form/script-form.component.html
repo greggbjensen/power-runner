@@ -10,9 +10,13 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="profile-actions">
+        <button class="script-profile-undo" mat-icon-button (click)="undoProfile()" matTooltip="Undo changes"><mat-icon>undo</mat-icon></button>
+        <button class="script-profile-save" mat-icon-button (click)="saveProfile()" matTooltip="Save profile"><mat-icon>save</mat-icon></button>
+        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()" matTooltip="Remove profile"><mat-icon>remove_circle</mat-icon></button>
+        <button class="script-profile-add" mat-icon-button (click)="addProfile()" matTooltip="Add profile"><mat-icon>add_circle</mat-icon></button>
+      </div>
       <div class="script-actions">
-        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()"><mat-icon>remove_circle</mat-icon></button>
-        <button class="script-profile-add" mat-icon-button (click)="addProfile()"><mat-icon>add_circle</mat-icon></button>
         <button class="script-edit" mat-raised-button (click)="startEdit()">Edit</button>
         <button class="script-run" mat-raised-button color="primary" (click)="startRun()">Run</button>
       </div>

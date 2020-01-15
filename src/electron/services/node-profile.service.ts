@@ -32,10 +32,21 @@ export class NodeProfileService {
     return [defaultProfile].concat(sharedProfiles.concat(personalProfiles));
   }
 
-  public async updateAsync(directory: string, scriptName: string, saveAsType: SaveAsType, profile: IScriptProfile)
+  public async updateAsync(directory: string, scriptName: string, profile: IScriptProfile, saveAsType: SaveAsType = null)
   : Promise<void> {
 
     const profileMap = await this.getMergedMapAsync(directory);
+
+    // If the save as type was not specified, it must be existing, so keep it the same.
+    if (!saveAsType) {
+
+      // If the key was not personal, default to shared.
+      const personalKey = this.getScriptKey(directory, scriptName, SaveAsType.Personal);
+      saveAsType = profileMap[personalKey]
+        ? SaveAsType.Personal
+        : SaveAsType.Shared;
+    }
+
     const scriptKey = this.getScriptKey(directory, scriptName, saveAsType);
 
     let profiles = profileMap[scriptKey];

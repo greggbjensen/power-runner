@@ -55,6 +55,9 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.profileForm.get('selectedProfile').valueChanges.subscribe(value => {
+      this.loadProfile(value);
+    });
   }
 
   public startRun(): void {
@@ -81,18 +84,30 @@ export class ScriptFormComponent implements OnInit {
     dialogRef.afterClosed().subscribe((data: IAddProfileData) => {
 
       if (data.name) {
-        const profile = this.gatherProfile(data.name);
-        this._profileService.updateAsync(this._script.directory, this._script.name, data.saveAsType, profile)
-          .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
-          .then(profiles => this.updateProfiles(profiles, profile.name));
+        this.saveUpdatedProfileAsync(data.name, data.saveAsType);
       }
     });
+  }
+
+  public undoProfile(): void {
+    this.loadProfile(this.profileForm.value.selectedProfile);
+  }
+
+  public saveProfile(): void {
+    this.saveUpdatedProfileAsync(this.profileForm.value.selectedProfile);
   }
 
   public removeProfile(): void {
     this._profileService.deleteAsync(this.script.directory, this.script.name, this.profileForm.value.selectedProfile)
       .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
       .then(profiles => this.updateProfiles(profiles));
+  }
+
+  private async saveUpdatedProfileAsync(profileName: string, saveAsType: SaveAsType = null): Promise<void> {
+    const profile = this.gatherProfile(profileName);
+    await this._profileService.updateAsync(this._script.directory, this._script.name, profile, saveAsType);
+    const profiles = await this._profileService.listAsync(this.script.directory, this.script.name);
+    this.updateProfiles(profiles, profile.name);
   }
 
   private createFormGroup(params: IScriptParam[]): FormGroup {
@@ -142,6 +157,30 @@ export class ScriptFormComponent implements OnInit {
       this.profileForm.patchValue({
         selectedProfile: 'Default'
       });
+    }
+  }
+
+  private loadProfile(profileName: string): void {
+    const lowerProfileName = profileName.toLowerCase();
+
+    let applyParams: { [name: string]: any };
+    if (lowerProfileName === 'default') {
+      applyParams = { };
+      this._script.params.forEach(p => applyParams[p.name] = p.default);
+    } else {
+      const profile = this.profiles.find(p => p.name.toLowerCase() === lowerProfileName);
+      if (profile) {
+        applyParams = profile.params;
+      }
+    }
+
+    if (applyParams) {
+      const params = { };
+      Object.keys(applyParams).forEach(name => {
+        params[name] = applyParams[name];
+      });
+
+      this.form.patchValue(params);
     }
   }
 }
