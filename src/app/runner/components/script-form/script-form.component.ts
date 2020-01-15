@@ -132,10 +132,15 @@ export class ScriptFormComponent implements OnInit {
         this.profileForm.patchValue({
           selectedProfile: this.profiles[0].name
         });
+
+      } else if (!this.profiles.find(p => p.name.toLowerCase() === this.profileForm.value.selectedProfile.toLowerCase())) {
+        this.profileForm.patchValue({
+          selectedProfile: 'Default'
+        });
       }
     } else {
       this.profileForm.patchValue({
-        selectedProfile: ''
+        selectedProfile: 'Default'
       });
     }
   }

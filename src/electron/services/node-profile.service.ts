@@ -25,7 +25,11 @@ export class NodeProfileService {
     const fullScriptName = path.join(directory, scriptName);
     const personalProfiles = profileMap[fullScriptName] || [];
 
-    return sharedProfiles.concat(personalProfiles);
+    const defaultProfile: IScriptProfile = {
+      name: 'Default',
+      params: [ ]
+    };
+    return [defaultProfile].concat(sharedProfiles.concat(personalProfiles));
   }
 
   public async updateAsync(directory: string, scriptName: string, saveAsType: SaveAsType, profile: IScriptProfile)
