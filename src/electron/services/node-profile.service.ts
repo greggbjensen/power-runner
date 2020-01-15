@@ -32,9 +32,7 @@ export class NodeProfileService {
   : Promise<void> {
 
     const profileMap = await this.getMergedMapAsync(directory);
-    const scriptKey = saveAsType === SaveAsType.Personal
-      ? path.join(directory, scriptName)
-      : scriptName;
+    const scriptKey = this.getScriptKey(directory, scriptName, saveAsType);
 
     let profiles = profileMap[scriptKey];
     if (!profiles) {
@@ -55,14 +53,54 @@ export class NodeProfileService {
     }
 
     if (hasUpdate) {
-      const updatedMap = this.getUnmergedMap(profileMap, saveAsType);
-      const fileName = saveAsType === SaveAsType.Personal
-        ? this._personalProfileFile
-        : path.join(directory, NodeProfileService.SharedFileName);
-      console.log('HERE', fileName, updatedMap);
-
-      await this.saveProfileMapAsync(fileName, updatedMap);
+      await this.saveProfileMapAsync(directory, profileMap, saveAsType);
     }
+  }
+
+  public async deleteAsync(directory: string, scriptName: string, profileName: string): Promise<void> {
+    const profileMap = await this.getMergedMapAsync(directory);
+
+    await this.remove(profileMap, directory, scriptName, profileName, SaveAsType.Shared);
+    await this.remove(profileMap, directory, scriptName, profileName, SaveAsType.Personal);
+  }
+
+  private async remove(
+    profileMap: IScriptProfileMap, directory: string, scriptName: string, profileName: string,
+    saveAsType: SaveAsType): Promise<boolean> {
+
+    let wasDeleted = false;
+    let foundIndex = 0;
+    const scriptKey = this.getScriptKey(directory, scriptName, saveAsType);
+    const profiles = profileMap[scriptKey];
+    const lowerProfileName = profileName.toLowerCase();
+
+    if (profiles) {
+
+      foundIndex = profiles.findIndex(s => s.name.toLowerCase() === lowerProfileName);
+      if (foundIndex !== -1) {
+        profiles.splice(foundIndex, 1);
+        if (profiles.length === 0) {
+          delete profileMap[scriptKey];
+        }
+
+        await this.saveProfileMapAsync(directory, profileMap, saveAsType);
+        wasDeleted = true;
+      }
+    }
+
+    return wasDeleted;
+  }
+
+  private getProfileFileName(directory: string, saveAsType: SaveAsType): string {
+    return saveAsType === SaveAsType.Personal
+      ? this._personalProfileFile
+      : path.join(directory, NodeProfileService.SharedFileName);
+  }
+
+  private getScriptKey(directory: string, scriptName: string, saveAsType: SaveAsType): string {
+    return saveAsType === SaveAsType.Personal
+    ? path.join(directory, scriptName)
+    : scriptName;
   }
 
   private getSaveAsType(scriptKey: string): SaveAsType {
@@ -80,10 +118,14 @@ export class NodeProfileService {
     return profiles;
   }
 
-  private async saveProfileMapAsync(fileName: string, profileMap: IScriptProfileMap): Promise<void> {
+  private async saveProfileMapAsync(directory: string, profileMap: IScriptProfileMap, saveAsType: SaveAsType): Promise<void> {
+
+    const unmergedMap = this.getUnmergedMap(profileMap, saveAsType);
+    const fileName = this.getProfileFileName(directory, saveAsType);
+
     const profileDirectory = path.dirname(fileName);
     await fs.ensureDir(profileDirectory);
-    await yaml.write(fileName, profileMap);
+    await yaml.write(fileName, unmergedMap);
   }
 
   private mergeMaps(...maps: IScriptProfileMap[]): IScriptProfileMap {

@@ -18,7 +18,9 @@ export class ScriptFormComponent implements OnInit {
   // tslint:disable-next-line: naming-convention
   public ParamType = ParamType;
   public form: FormGroup;
-  public selectedProfile: string = null;
+  public profileForm = new FormGroup({
+    selectedProfile: new FormControl('')
+  });
   public profiles: IScriptProfile[] = [];
 
   @Input() public set script(value: IScript) {
@@ -88,7 +90,9 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public removeProfile(): void {
-
+    this._profileService.deleteAsync(this.script.directory, this.script.name, this.profileForm.value.selectedProfile)
+      .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
+      .then(profiles => this.updateProfiles(profiles));
   }
 
   private createFormGroup(params: IScriptParam[]): FormGroup {
@@ -119,14 +123,20 @@ export class ScriptFormComponent implements OnInit {
     if (this.profiles.length > 0) {
       if (selectedProfile) {
         const profile = this.profiles.find(p => p.name.toLowerCase() === selectedProfile.toLowerCase());
-        this.selectedProfile = profile ? profile.name : null;
+        this.profileForm.patchValue({
+          selectedProfile: profile ? profile.name : null
+        });
       }
 
-      if (!this.selectedProfile) {
-        this.selectedProfile = this.profiles[0].name;
+      if (!this.profileForm.value.selectedProfile) {
+        this.profileForm.patchValue({
+          selectedProfile: this.profiles[0].name
+        });
       }
     } else {
-      this.selectedProfile = null;
+      this.profileForm.patchValue({
+        selectedProfile: ''
+      });
     }
   }
 }

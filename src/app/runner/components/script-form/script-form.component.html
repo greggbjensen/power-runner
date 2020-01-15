@@ -1,10 +1,10 @@
 <div *ngIf="script" class="script-form-container">
   <span class=script-form-path>{{script.directory}}\{{script.name}}</span>
   <form class="script-form-form" *ngIf="form" [formGroup]="form">
-    <div class="script-form-header">
+    <div class="script-form-header" [formGroup]="profileForm">
       <mat-form-field class="script-profile" appearance="standard">
         <mat-label>Profile</mat-label>
-        <mat-select [value]="selectedProfile">
+        <mat-select formControlName="selectedProfile">
           <mat-option *ngFor="let profile of profiles" [value]="profile.name">
             {{profile.name}}
           </mat-option>

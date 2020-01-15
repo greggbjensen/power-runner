@@ -21,4 +21,8 @@ export class ProfileService extends ProxyNodeService {
   public updateAsync(directory: string, scriptName: string, saveAsType: SaveAsType, profile: IScriptProfile): Promise<void> {
     return this.proxy.invoke('updateAsync', directory, scriptName, saveAsType, profile);
   }
+
+  public deleteAsync(directory: string, scriptName: string, profileName: string): Promise<void> {
+    return this.proxy.invoke('deleteAsync', directory, scriptName, profileName);
+  }
 }
