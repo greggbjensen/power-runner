@@ -10,7 +10,7 @@ import { IScriptProfile, IScriptProfileMap, SaveAsType } from '../../app/core/mo
   providedIn: 'root'
 })
 export class NodeProfileService {
-  private static readonly SharedFileName = '.powerrunner-profiles';
+  private static readonly SharedFileName = '.powerrunnerrc';
   private _personalProfileFile: string;
 
   constructor() {
@@ -56,7 +56,8 @@ export class NodeProfileService {
     }
 
     // Verify there is a change before updating.
-    const profileIndex = profiles.findIndex(p => p.name === scriptKey);
+    const lowerProfileName = profile.name.toLowerCase();
+    const profileIndex = profiles.findIndex(p => p.name.toLowerCase() === lowerProfileName);
     let hasUpdate = false;
     if (profileIndex === -1) {
       profiles.push(profile);

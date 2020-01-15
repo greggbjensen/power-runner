@@ -23,6 +23,10 @@ export class ScriptFormComponent implements OnInit {
   });
   public profiles: IScriptProfile[] = [];
 
+  public get selectedProfile(): string {
+    return this.profileForm.value.selectedProfile;
+  }
+
   @Input() public set script(value: IScript) {
 
     // Create a copy to modify.
@@ -90,15 +94,15 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public undoProfile(): void {
-    this.loadProfile(this.profileForm.value.selectedProfile);
+    this.loadProfile(this.selectedProfile);
   }
 
   public saveProfile(): void {
-    this.saveUpdatedProfileAsync(this.profileForm.value.selectedProfile);
+    this.saveUpdatedProfileAsync(this.selectedProfile);
   }
 
   public removeProfile(): void {
-    this._profileService.deleteAsync(this.script.directory, this.script.name, this.profileForm.value.selectedProfile)
+    this._profileService.deleteAsync(this.script.directory, this.script.name, this.selectedProfile)
       .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
       .then(profiles => this.updateProfiles(profiles), err => console.error(err));
   }
@@ -143,12 +147,12 @@ export class ScriptFormComponent implements OnInit {
         });
       }
 
-      if (!this.profileForm.value.selectedProfile) {
+      if (!this.selectedProfile) {
         this.profileForm.patchValue({
           selectedProfile: this.profiles[0].name
         });
 
-      } else if (!this.profiles.find(p => p.name.toLowerCase() === this.profileForm.value.selectedProfile.toLowerCase())) {
+      } else if (!this.profiles.find(p => p.name.toLowerCase() === this.selectedProfile.toLowerCase())) {
         this.profileForm.patchValue({
           selectedProfile: 'Default'
         });
