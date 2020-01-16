@@ -1,8 +1,8 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { Md5 } from 'ts-md5/dist/md5';
 import * as XRegExp from 'xregexp';
-import * as os from 'os';
 import { IScript, IScriptParam, ParamType } from '../../app/core/models';
 
 export class ScriptParser {

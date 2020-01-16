@@ -36,8 +36,14 @@ export class AppComponent {
   }
 
   public scriptOpened(script: IScript): void {
-    this.selectedScript = script;
-    this.openScripts.push(script);
+
+    const alreadyOpenScript = this.openScripts.find(s => s.id === script.id);
+    if (!alreadyOpenScript) {
+      this.selectedScript = script;
+      this.openScripts.push(script);
+    } else {
+      this.selectedScript = alreadyOpenScript;
+    }
   }
 
   public toggleSettings(): void {
