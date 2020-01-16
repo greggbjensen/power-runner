@@ -29,6 +29,10 @@ export class ScriptPageComponent implements OnInit {
     });
   }
 
+  public stopRun(script: IScript): void {
+    this._scriptService.stopAsync(script);
+  }
+
   public startEdit(script: IScript): void {
     this._scriptService.editAsync(script);
   }

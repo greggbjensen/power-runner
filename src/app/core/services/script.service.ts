@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IScript, NodeProxy } from '../models';
+import { IScript, NodeProxy, ScriptRef, ScriptStatus } from '../models';
 import { NodeProxyFactory } from './node-proxy.factory';
 import { ProxyNodeService } from './proxy-node-service';
 import { StatusService } from './status.service';
@@ -23,6 +23,11 @@ export class ScriptService extends ProxyNodeService {
   public async runAsync(script: IScript): Promise<string> {
     this._statusService.setStatus(`${script.module.toUpperCase()}/${script.name} running...`);
     return this.proxy.invoke('runAsync', script);
+  }
+
+  public async stopAsync(script: IScript): Promise<string> {
+    this._statusService.setStatus(`${script.module.toUpperCase()}/${script.name} stopping...`);
+    return this.proxy.invoke('stopAsync', script);
   }
 
   public async editAsync(script: IScript): Promise<IScript[]> {

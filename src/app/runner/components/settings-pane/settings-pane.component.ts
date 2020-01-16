@@ -51,6 +51,6 @@ export class SettingsPaneComponent implements OnInit {
     };
 
     this._settingsService.saveAsync(settings)
-      .then(() => this.closed.emit('saved'));
+      .then(() => this.closed.emit('saved'), err => console.error(err));
   }
 }

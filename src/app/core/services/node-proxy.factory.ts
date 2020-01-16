@@ -23,7 +23,6 @@ export class NodeProxyFactory {
     for (const key in proxyService) {
       const field = proxyService[key];
       if (typeof field === 'function' && !key.startsWith('_') && key !== 'constructor') {
-        console.log(serviceName + '.' + key);
         proxy.add(key, this.createCall(serviceName, key));
       }
     }

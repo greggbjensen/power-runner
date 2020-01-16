@@ -1,8 +1,18 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import * as unhandled from 'electron-unhandled';
 import * as path from 'path';
 import * as url from 'url';
-import { NodeAppService, NodeBrowseDialogService, NodeScriptService, NodeSettingsService, ScriptParser } from './services';
+import {
+  NodeAppService,
+  NodeBrowseDialogService,
+  NodeProfileService,
+  NodeScriptService,
+  NodeSettingsService,
+  ScriptParser
+} from './services';
 import { Updater } from './updater';
+
+unhandled();
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().trim() === 'dev';
 if (isDev) {
@@ -55,6 +65,7 @@ function createWindow(): void {
   bindService(new NodeAppService(browserWindow, isDev));
   bindService(new NodeSettingsService());
   bindService(new NodeScriptService(browserWindow, scriptParser));
+  bindService(new NodeProfileService());
   bindService(new NodeBrowseDialogService(browserWindow));
 
   if (isDev) {
@@ -62,6 +73,10 @@ function createWindow(): void {
     browserWindow.webContents.openDevTools();
     browserWindow.webContents.once('did-finish-load', () => {
       browserWindow.webContents.send('status:message', 'Ready');
+
+      // REMOVE
+      updater = new Updater(browserWindow);
+      updater.init();
     });
   } else {
 
@@ -114,11 +129,17 @@ function bindService(service: object): void {
     .filter(key => typeof service[key] === 'function' && key !== 'constructor');
   operations.forEach(operation => {
     ipcMain.on(`${serviceName}.${operation}`, (event, ...args) => {
-      service[operation].call(service, ...args).then(result =>
-        event.reply(`${serviceName}.${operation}:resolve`, result)
-      , error => {
-        event.reply(`${serviceName}.${operation}:reject`, error);
-      });
+      service[operation].call(service, ...args)
+        .then(result => {
+          if (browserWindow) {
+            event.reply(`${serviceName}.${operation}:resolve`, result);
+          }
+        },
+        error => {
+          if (browserWindow) {
+            event.reply(`${serviceName}.${operation}:reject`, error);
+          }
+        });
     });
   });
 }

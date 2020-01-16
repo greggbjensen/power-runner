@@ -6,9 +6,10 @@ electronInstaller.createWindowsInstaller({
   outputDirectory: 'release/installers/PowerRunner-win32-x64',
   authors: 'Gregg B. Jensen',
   description: 'PowerShell Script runnner that loads scripts from paths and parses commmand line parameters to present a tabbed form and output window.',
-  exe: 'PowerRunner.exe'
+  exe: 'PowerRunner.exe',
+  noMsi: true
 }).then(()=> {
-  console.log('Installer build complete.');
+  console.info('Installer build complete.');
 }, err => {
-  console.log(`Error creating installer: ${err.message}`);
+  console.error(`Error creating installer: ${err.message}`);
 });

@@ -1,9 +1,9 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { Md5 } from 'ts-md5/dist/md5';
 import * as XRegExp from 'xregexp';
-import * as os from 'os';
-import { IScript, IScriptParam, ParamType } from '../../app/core/models';
+import { IScript, IScriptParam, ParamType, ScriptStatus } from '../../app/core/models';
 
 export class ScriptParser {
 
@@ -34,7 +34,6 @@ export class ScriptParser {
       if (match && match[0]) {
         let paramText = match[0].trim();
         paramText = paramText.replace(ScriptParser.CommentsRegex, '');  // Trim out comments.
-        console.log('TEST', paramText);
         const paramList = paramText.split(ScriptParser.ParamSeparatorRetgex);
 
         scriptParams = paramList.map(i => this.parseParam(i)).filter(p => !!p);
@@ -46,8 +45,6 @@ export class ScriptParser {
       scriptParams = [];
     }
 
-    console.log(scriptParams);
-
     let directory = path.dirname(filePath);
     if (os.platform() === 'win32') {
       directory = directory.replace(/\//g, '\\');
@@ -58,7 +55,8 @@ export class ScriptParser {
       directory,
       module: path.basename(directory),
       name: path.basename(filePath),
-      params: scriptParams
+      params: scriptParams,
+      status: ScriptStatus.Stopped
     };
 
     return script;
@@ -66,14 +64,12 @@ export class ScriptParser {
 
   private parseParam(paramLine: string): IScriptParam {
     let param: IScriptParam = null;
-    console.log('LINE', paramLine);
 
     const match = ScriptParser.AttributesParamRegex.exec(paramLine);
     if (match) {
       const attributes = match[1];
       const name = match[2];
       let value: any = match[3];
-      console.log('MATCH', attributes, name, value);
 
       param = {
         name,

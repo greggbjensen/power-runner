@@ -1,4 +1,5 @@
 import { IScriptParam } from './iscript-param';
+import { ScriptStatus } from './script-status.enum';
 
 export interface IScript {
   id: string;
@@ -6,4 +7,5 @@ export interface IScript {
   name: string;
   directory: string;
   params: IScriptParam[];
+  status: ScriptStatus;
 }

@@ -11,6 +11,8 @@ const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
 
 export class NodeScriptService {
 
+  private static readonly Pause = '\x13';   // XOFF
+  private static readonly Resume = '\x11';  // XON
   private static readonly FileExtensionRegex = /.ps1$/i;
 
   // TODO GBJ: Make compatible with Linux.
@@ -59,14 +61,14 @@ export class NodeScriptService {
 
         const name = script.name.replace(NodeScriptService.FileExtensionRegex, '');
         const scriptChannel = `${script.module}_${name}`;
-        this._childProcesses.set(scriptChannel, child);
+        this._childProcesses.set(script.id, child);
 
         child.on('data', (data: any) => {
           this._browserWindow.webContents.send(`${scriptChannel}:data`, data);
         });
         child.on('exit', (exitCode) => {
           this._browserWindow.webContents.send(`${scriptChannel}:exit`, { scriptName: script.name, exitCode } as IScriptExit);
-          this._childProcesses.delete(scriptChannel);
+          this._childProcesses.delete(script.id);
         });
 
         setTimeout(() => {
@@ -80,6 +82,18 @@ export class NodeScriptService {
         reject(err);
       }
     });
+  }
+
+  public async stopAsync(script: IScript): Promise<void> {
+    const child = this._childProcesses.get(script.id);
+    if (child) {
+      try {
+        child.write(NodeScriptService.Pause);
+        child.kill();
+      } catch {
+        // Do nothing.
+      }
+    }
   }
 
   private formatParam(param: IScriptParam): string {

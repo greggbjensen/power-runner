@@ -7,11 +7,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu'
+import { MatMenuModule } from '@angular/material/menu';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
@@ -32,10 +34,12 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatSelectModule,
     MatTreeModule,
     MatIconModule,
+    MatRadioModule,
     MatSidenavModule,
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatTabsModule,
     ReactiveFormsModule,
     AngularSplitModule.forChild(),
@@ -49,10 +53,12 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatSelectModule,
     MatTreeModule,
     MatIconModule,
+    MatRadioModule,
     MatSidenavModule,
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatTabsModule,
     AutoSizeInputModule,
     BrowseDirectoryFieldComponent

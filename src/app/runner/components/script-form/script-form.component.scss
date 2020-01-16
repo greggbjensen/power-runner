@@ -42,6 +42,19 @@
   flex: 1;
 }
 
+.profile-actions {
+  padding-left: $space-6;
+  border-bottom: 0.1rem solid $white-200;
+
+  .mat-icon-button {
+    height: 3rem;
+  }
+
+  .mat-icon {
+    height: 3.5rem;
+  }
+}
+
 .script-actions {
   min-width: 10rem;
   margin-left: $space-15;

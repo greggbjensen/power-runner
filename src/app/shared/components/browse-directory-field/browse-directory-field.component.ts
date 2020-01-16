@@ -32,6 +32,6 @@ export class BrowseDirectoryFieldComponent implements OnInit {
     this._browseDialogService.selectDirectoryAsync()
       .then(d => this.form.patchValue({
         [this.controlName]: d
-      }));
+      }), err => console.error(err));
   }
 }
