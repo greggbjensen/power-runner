@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
+import { MarkdownModule } from 'ngx-markdown';
 import { SharedModule } from '../shared/shared.module';
 import {
   AddProfileDialogComponent,
+  AppUpdateDialogComponent,
   ScriptFormComponent,
   ScriptLogComponent,
   ScriptPageComponent,
@@ -25,16 +27,19 @@ import { ScriptLogWriterDirective } from './directives/script-log-writer.directi
     SettingsPaneComponent,
     ScriptTabsContainerComponent,
     StatusBarComponent,
-    AddProfileDialogComponent
+    AddProfileDialogComponent,
+    AppUpdateDialogComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    AngularSplitModule.forChild()
+    AngularSplitModule.forChild(),
+    MarkdownModule.forChild()
   ],
   entryComponents: [
-    AddProfileDialogComponent
+    AddProfileDialogComponent,
+    AppUpdateDialogComponent
   ],
   exports: [
     ScriptTreeComponent,

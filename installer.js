@@ -9,7 +9,7 @@ electronInstaller.createWindowsInstaller({
   exe: 'PowerRunner.exe',
   noMsi: true
 }).then(()=> {
-  console.log('Installer build complete.');
+  console.info('Installer build complete.');
 }, err => {
-  console.log(`Error creating installer: ${err.message}`);
+  console.error(`Error creating installer: ${err.message}`);
 });

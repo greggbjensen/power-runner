@@ -1,0 +1,10 @@
+
+<h1 mat-dialog-title>Update Available</h1>
+<div mat-dialog-content>
+  <p>Version {{data.releaseName}} is ready, do you want to restart to load it?</p>
+  <markdown [data]="data.releaseNotes"></markdown>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button (click)="update()" color="primary">Update</button>
+</div>

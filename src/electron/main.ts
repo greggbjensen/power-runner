@@ -73,6 +73,10 @@ function createWindow(): void {
     browserWindow.webContents.openDevTools();
     browserWindow.webContents.once('did-finish-load', () => {
       browserWindow.webContents.send('status:message', 'Ready');
+
+      // REMOVE
+      updater = new Updater(browserWindow);
+      updater.init();
     });
   } else {
 

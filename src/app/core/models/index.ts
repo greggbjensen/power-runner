@@ -11,3 +11,4 @@ export { IScriptProfile } from './iscript-profile';
 export { IScriptProfileMap } from './iscript-profile-map';
 export { ISettings } from './isettings';
 export { IScriptExit } from './iscript-exit';
+export { IAppUpdate } from './iapp-update';

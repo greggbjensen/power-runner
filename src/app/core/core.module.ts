@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
+import { MarkdownModule } from 'ngx-markdown';
 import { AppService, BrowseDialogService, NodeProxyFactory, ScriptService, StatusService } from './services';
 
 @NgModule({
@@ -14,7 +15,8 @@ import { AppService, BrowseDialogService, NodeProxyFactory, ScriptService, Statu
   ],
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    MarkdownModule.forRoot()
   ]
 })
 export class CoreModule { }

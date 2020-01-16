@@ -1,6 +1,9 @@
-import { autoUpdater, BrowserWindow, dialog } from 'electron';
+import { autoUpdater, BrowserWindow, dialog, ipcMain } from 'electron';
+import * as fetch from 'node-fetch';
+import { IAppUpdate } from '../app/core/models';
 
 const autoUpdateUrl = 'https://github.com/greggbjensen/power-runner/releases/latest/download';
+const releaseRestUrl = 'https://api.github.com/repos/greggbjensen/power-runner/releases/tags';
 
 // SourceRef: https://medium.com/@Lola_Dam/how-to-update-your-electron-application-with-update-rocks-b253d85dbc4d
 
@@ -19,6 +22,12 @@ export class Updater {
     } else {
       this.initDarwinWin32();
     }
+
+    ipcMain.on('update:confirmation', (event, result) => {
+      if (result === 'Update') {
+        autoUpdater.quitAndInstall();
+      }
+    });
   }
 
   private initDarwinWin32(): void {
@@ -43,25 +52,40 @@ export class Updater {
       'update-downloaded',
       (event, releaseNotes, releaseName) => {
         this.sendStatus('Update downloaded');
-        dialog.showMessageBox(this._browserWindow, {
-          type: 'question',
-          buttons: ['Update', 'Cancel'],
-          defaultId: 0,
-          message: `Version ${releaseName} is ready, do you want to restart to load it?`,
-          detail: releaseNotes,
-          title: 'Update available'
-        }).then(result => {
-          if (result.response === 0) {
-            autoUpdater.quitAndInstall();
-          }
-        }, err => console.error(err));
+        this.promptForUpdateAsync(releaseName);
       }
     );
 
     autoUpdater.setFeedURL({
       url: autoUpdateUrl
     });
+
+    // Check for updates on startup and on a delay.
+    autoUpdater.checkForUpdates();
     setInterval(() => autoUpdater.checkForUpdates(), Updater.UpdateCheckDelay);
+  }
+
+  private async promptForUpdateAsync(releaseName: string): Promise<void> {
+    const releaseNotes = await this.getReleaseNotesAsync(releaseName);
+    const update: IAppUpdate = {
+      releaseNotes,
+      releaseName
+    };
+    this._browserWindow.webContents.send('update:available', update);
+  }
+
+  private async getReleaseNotesAsync(releaseName: string): Promise<string> {
+    let releaseNotes = '';
+    try {
+      const url = `${releaseRestUrl}/${releaseName}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      releaseNotes = data.body;
+    } catch (err) {
+      console.error(err);
+    }
+
+    return releaseNotes;
   }
 
   private sendStatus(message: string): void {
