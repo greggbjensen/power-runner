@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostBinding, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IAddProfileData } from './iadd-profile-data';
@@ -10,7 +10,7 @@ import { IAddProfileData } from './iadd-profile-data';
   encapsulation: ViewEncapsulation.None
 })
 export class AddProfileDialogComponent implements OnInit {
-
+  @HostBinding('class.add-profile-dialog') public className = true;
 
   public form = new FormGroup({
     title: new FormControl(''),
