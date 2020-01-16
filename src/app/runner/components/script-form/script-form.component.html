@@ -11,14 +11,25 @@
         </mat-select>
       </mat-form-field>
       <div class="profile-actions">
-        <button class="script-profile-undo" mat-icon-button (click)="undoProfile()" matTooltip="Undo changes" matTooltipPosition="above"><mat-icon>undo</mat-icon></button>
-        <button class="script-profile-save" mat-icon-button (click)="saveProfile()" matTooltip="Save profile" matTooltipPosition="above" [disabled]="selectedProfile === 'Default'"><mat-icon>save</mat-icon></button>
-        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()" matTooltip="Remove profile" matTooltipPosition="above" [disabled]="selectedProfile === 'Default'"><mat-icon>remove_circle</mat-icon></button>
-        <button class="script-profile-add" mat-icon-button (click)="addProfile()" matTooltip="Add profile" matTooltipPosition="above"><mat-icon>add_circle</mat-icon></button>
+        <button class="script-profile-undo" mat-icon-button (click)="undoProfile()" matTooltip="Undo changes" matTooltipPosition="above">
+          <mat-icon>undo</mat-icon>
+        </button>
+        <button class="script-profile-save" mat-icon-button (click)="saveProfile()" matTooltip="Save profile" matTooltipPosition="above" [disabled]="selectedProfile === 'Default'">
+          <mat-icon>save</mat-icon>
+        </button>
+        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()" matTooltip="Remove profile" matTooltipPosition="above" [disabled]="selectedProfile === 'Default'">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+        <button class="script-profile-add" mat-icon-button (click)="addProfile()" matTooltip="Add profile" matTooltipPosition="above">
+          <mat-icon>add_circle</mat-icon>
+        </button>
       </div>
       <div class="script-actions">
         <button class="script-edit" mat-raised-button (click)="startEdit()">Edit</button>
-        <button class="script-run" mat-raised-button color="primary" (click)="startRun()">Run</button>
+        <ng-container [ngSwitch]="script.status">
+          <button class="script-run" *ngSwitchCase="ScriptStatus.Stopped" mat-raised-button color="primary" (click)="startRun()">Run</button>
+          <button class="script-stop" *ngSwitchDefault mat-raised-button color="warn" (click)="stopRun()">Stop</button>
+        </ng-container>
       </div>
 
     </div>

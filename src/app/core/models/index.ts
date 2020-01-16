@@ -1,3 +1,4 @@
+export { ScriptStatus } from './script-status.enum';
 export { SaveAsType } from './save-as-type.enum';
 export { ParamType } from './param-type.enum';
 export { ScriptRef } from './script-ref';

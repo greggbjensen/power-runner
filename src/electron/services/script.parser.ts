@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { Md5 } from 'ts-md5/dist/md5';
 import * as XRegExp from 'xregexp';
-import { IScript, IScriptParam, ParamType } from '../../app/core/models';
+import { IScript, IScriptParam, ParamType, ScriptStatus } from '../../app/core/models';
 
 export class ScriptParser {
 
@@ -55,7 +55,8 @@ export class ScriptParser {
       directory,
       module: path.basename(directory),
       name: path.basename(filePath),
-      params: scriptParams
+      params: scriptParams,
+      status: ScriptStatus.Stopped
     };
 
     return script;

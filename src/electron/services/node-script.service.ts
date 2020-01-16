@@ -59,7 +59,7 @@ export class NodeScriptService {
 
         const name = script.name.replace(NodeScriptService.FileExtensionRegex, '');
         const scriptChannel = `${script.module}_${name}`;
-        this._childProcesses.set(scriptChannel, child);
+        this._childProcesses.set(script.id, child);
 
         child.on('data', (data: any) => {
           this._browserWindow.webContents.send(`${scriptChannel}:data`, data);
@@ -80,6 +80,13 @@ export class NodeScriptService {
         reject(err);
       }
     });
+  }
+
+  public async stopAsync(script: IScript): Promise<void> {
+    const child = this._childProcesses.get(script.id);
+    if (child) {
+      child.kill();
+    }
   }
 
   private formatParam(param: IScriptParam): string {

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType } from 'src/app/core/models';
+import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, StatusService } from 'src/app/core/services';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
 import { IAddProfileData } from '../add-profile-dialog/iadd-profile-data';
@@ -22,6 +22,9 @@ export class ScriptFormComponent implements OnInit {
     selectedProfile: new FormControl('')
   });
   public profiles: IScriptProfile[] = [];
+
+  // tslint:disable-next-line:naming-convention
+  public ScriptStatus = ScriptStatus;
 
   public get selectedProfile(): string {
     return this.profileForm.value.selectedProfile;
@@ -48,6 +51,7 @@ export class ScriptFormComponent implements OnInit {
   }
 
   @Output() public run = new EventEmitter<IScript>();
+  @Output() public stop = new EventEmitter<IScript>();
   @Output() public edit = new EventEmitter<IScript>();
 
   private _script: IScript;
@@ -70,6 +74,10 @@ export class ScriptFormComponent implements OnInit {
       p.value = this.form.value[p.name];
     });
     this.run.emit(this.script);
+  }
+
+  public stopRun(): void {
+    this.stop.emit(this.script);
   }
 
   public startEdit(): void {
