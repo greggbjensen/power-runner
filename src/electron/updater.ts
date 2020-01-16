@@ -1,10 +1,12 @@
-import { autoUpdater, BrowserWindow, dialog, MessageBoxReturnValue } from 'electron';
+import { autoUpdater, BrowserWindow, dialog } from 'electron';
 
 const autoUpdateUrl = 'https://github.com/greggbjensen/power-runner/releases/latest/download';
 
 // SourceRef: https://medium.com/@Lola_Dam/how-to-update-your-electron-application-with-update-rocks-b253d85dbc4d
 
 export class Updater {
+
+  private static readonly UpdateCheckDelay = 3600000; // 4 hours.
 
   constructor(
     private _browserWindow: BrowserWindow
@@ -59,7 +61,7 @@ export class Updater {
     autoUpdater.setFeedURL({
       url: autoUpdateUrl
     });
-    autoUpdater.checkForUpdates();
+    setInterval(() => autoUpdater.checkForUpdates(), Updater.UpdateCheckDelay);
   }
 
   private sendStatus(message: string): void {
