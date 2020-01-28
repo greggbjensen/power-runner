@@ -26,27 +26,18 @@ export class NodeProfileService {
     const personalProfiles = profileMap[fullScriptName] || [];
 
     const defaultProfile: IScriptProfile = {
+      id: 'default',
       name: 'Default',
-      params: [ ]
+      params: [ ],
+      saveAsType: SaveAsType.Shared
     };
     return [defaultProfile].concat(sharedProfiles.concat(personalProfiles));
   }
 
-  public async updateAsync(directory: string, scriptName: string, profile: IScriptProfile, saveAsType: SaveAsType = null)
+  public async updateAsync(directory: string, scriptName: string, profile: IScriptProfile, saveAsType: SaveAsType)
   : Promise<void> {
 
     const profileMap = await this.getMergedMapAsync(directory);
-
-    // If the save as type was not specified, it must be existing, so keep it the same.
-    if (!saveAsType) {
-
-      // If the key was not personal, default to shared.
-      const personalKey = this.getScriptKey(directory, scriptName, SaveAsType.Personal);
-      saveAsType = profileMap[personalKey]
-        ? SaveAsType.Personal
-        : SaveAsType.Shared;
-    }
-
     const scriptKey = this.getScriptKey(directory, scriptName, saveAsType);
 
     let profiles = profileMap[scriptKey];
@@ -73,11 +64,10 @@ export class NodeProfileService {
     }
   }
 
-  public async deleteAsync(directory: string, scriptName: string, profileName: string): Promise<void> {
+  public async deleteAsync(directory: string, scriptName: string, profileName: string, saveAsType: SaveAsType): Promise<void> {
     const profileMap = await this.getMergedMapAsync(directory);
 
-    await this.remove(profileMap, directory, scriptName, profileName, SaveAsType.Shared);
-    await this.remove(profileMap, directory, scriptName, profileName, SaveAsType.Personal);
+    await this.remove(profileMap, directory, scriptName, profileName, saveAsType);
   }
 
   private async remove(
@@ -130,8 +120,13 @@ export class NodeProfileService {
       return { } as IScriptProfileMap;
     }
 
-    const profiles: IScriptProfileMap = await yaml.read(fileName) || { };
-    return profiles;
+    const profileMap: IScriptProfileMap = await yaml.read(fileName) || { };
+    Object.keys(profileMap).forEach(key => profileMap[key].forEach(p => {
+      p.id = `${saveAsType.toLowerCase()}_${p.name.toLowerCase()}`;
+      p.saveAsType = saveAsType;
+    }));
+
+    return profileMap;
   }
 
   private async saveProfileMapAsync(directory: string, profileMap: IScriptProfileMap, saveAsType: SaveAsType): Promise<void> {
@@ -161,7 +156,14 @@ export class NodeProfileService {
       .filter(scriptKey => this.getSaveAsType(scriptKey) === saveAsType)
       .sort()
       .forEach(scriptKey => {
-        unmergedMap[scriptKey] = map[scriptKey];
+        unmergedMap[scriptKey] = map[scriptKey].map(profile => {
+          const clone = Object.assign({ }, profile) as IScriptProfile;
+
+          // Take out save as type and id, since they do not need to be persisted to file.
+          delete clone.saveAsType;
+          delete clone.id;
+          return clone;
+        });
       });
 
     return unmergedMap;

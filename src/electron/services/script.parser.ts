@@ -49,12 +49,14 @@ export class ScriptParser {
     if (os.platform() === 'win32') {
       directory = directory.replace(/\//g, '\\');
     }
-    const id = Md5.hashStr(filePath) as string;
+
+    const name = path.basename(filePath);
+    const id = `${directory.replace(/\//g, '_')}_${name}`;
     const script: IScript = {
       id,
       directory,
       module: path.basename(directory),
-      name: path.basename(filePath),
+      name,
       params: scriptParams,
       status: ScriptStatus.Stopped
     };

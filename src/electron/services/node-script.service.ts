@@ -54,7 +54,7 @@ export class NodeScriptService {
         const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
           name: 'xterm-color',
           cols: 120,
-          rows: 40,
+          rows: 10000,
           cwd: script.directory,
           env: process.env
         });

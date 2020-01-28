@@ -41,7 +41,9 @@ export class NodeProxyFactory {
     });
 
     this._ipcRenderer.on(`${serviceName}.${functionName}:reject`, (event, error) => {
-      resolveable.reject(error);
+      const err = new Error(error.message);
+      err.stack = error.stack;
+      resolveable.reject(err);
     });
 
     return (...args: any[]) => {

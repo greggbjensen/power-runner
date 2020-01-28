@@ -31,6 +31,15 @@
   .script-profile {
     flex: 1;
   }
+
+  .script-profile-icon {
+    position: absolute;
+    top: -0.3rem
+  }
+
+  .script-profile-name {
+    padding-left: $space-25;
+  }
 }
 
 .script-form-header {
