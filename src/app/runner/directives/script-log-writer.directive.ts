@@ -69,7 +69,6 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   public ngAfterViewInit(): void {
     this._terminal = new Terminal({
       disableStdin: true,
-      rows: 10000,
       theme: {
         background: '#1e1e1e'
       }
