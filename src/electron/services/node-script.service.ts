@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
@@ -23,7 +23,14 @@ export class NodeScriptService {
   constructor(
     private _browserWindow: BrowserWindow,
     private _scriptParser: ScriptParser
-  ) { }
+  ) {
+    ipcMain.on('script:data-ack', (event: any, scriptId: string) => {
+      const child = this._childProcesses.get(scriptId);
+      if (child) {
+        child.write(NodeScriptService.Resume);
+      }
+    });
+  }
 
   public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
 
@@ -56,7 +63,8 @@ export class NodeScriptService {
           cols: 120,
           rows: 30,
           cwd: script.directory,
-          env: process.env
+          env: process.env,
+          handleFlowControl: true
         });
 
         const name = script.name.replace(NodeScriptService.FileExtensionRegex, '');
@@ -64,6 +72,7 @@ export class NodeScriptService {
         this._childProcesses.set(script.id, child);
 
         child.on('data', (data: any) => {
+          child.write(NodeScriptService.Pause);
           this._browserWindow.webContents.send(`${scriptChannel}:data`, data);
         });
         child.on('exit', (exitCode) => {
