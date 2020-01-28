@@ -1,6 +1,12 @@
+@import "../../../../styles/variables";
+
 .add-profile-dialog {
 
   .mat-dialog-content {
     overflow: visible;
+  }
+
+  .error {
+    color: $red-500;
   }
 }

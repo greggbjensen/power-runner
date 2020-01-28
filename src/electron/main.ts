@@ -137,7 +137,11 @@ function bindService(service: object): void {
         },
         error => {
           if (browserWindow) {
-            event.reply(`${serviceName}.${operation}:reject`, error);
+            const err = {
+              message: error.message,
+              stack: error.stack
+            };
+            event.reply(`${serviceName}.${operation}:reject`, err);
           }
         });
     });

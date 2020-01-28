@@ -3,8 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, StatusService } from 'src/app/core/services';
+import _ = require('underscore');
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
-import { IAddProfileData } from '../add-profile-dialog/iadd-profile-data';
 
 
 @Component({
@@ -19,16 +19,16 @@ export class ScriptFormComponent implements OnInit {
   public ParamType = ParamType;
   public form: FormGroup;
   public profileForm = new FormGroup({
-    selectedProfile: new FormControl('')
+    selectedProfileId: new FormControl('')
   });
   public profiles: IScriptProfile[] = [];
+  public selectedProfile: IScriptProfile;
 
   // tslint:disable-next-line:naming-convention
   public ScriptStatus = ScriptStatus;
 
-  public get selectedProfile(): string {
-    return this.profileForm.value.selectedProfile;
-  }
+  // tslint:disable-next-line:naming-convention
+  public SaveAsType = SaveAsType;
 
   @Input() public set script(value: IScript) {
 
@@ -42,6 +42,7 @@ export class ScriptFormComponent implements OnInit {
     } else {
       this._script = null;
       this.form = null;
+      this.selectedProfile = null;
       this.updateProfiles([]);
     }
   }
@@ -64,9 +65,15 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.profileForm.get('selectedProfile').valueChanges.subscribe(value => {
+    this.profileForm.get('selectedProfileId').valueChanges.subscribe(value => {
       this.loadProfile(value);
     });
+  }
+
+  public getIcon(profile: IScriptProfile): string {
+    return profile && profile.saveAsType === SaveAsType.Personal
+      ? 'lock'
+      : 'people';
   }
 
   public startRun(): void {
@@ -89,45 +96,50 @@ export class ScriptFormComponent implements OnInit {
       width: '50rem',
       data: {
         title: 'Add Profile',
-        name: '',
-        saveAsType: SaveAsType.Shared
+        profile: {
+          name: '',
+          saveAsType: SaveAsType.Shared
+        },
+        existingProfiles: this.profiles
       }
     });
 
-    dialogRef.afterClosed().subscribe((data: IAddProfileData) => {
+    dialogRef.afterClosed().subscribe((profile: IScriptProfile) => {
 
-      if (data.name) {
-        this.saveUpdatedProfileAsync(data.name, data.saveAsType);
+      if (profile) {
+        this.saveUpdatedProfileAsync(profile.name, profile.saveAsType);
       }
     });
   }
 
   public undoProfile(): void {
-    this.loadProfile(this.selectedProfile);
+    this.loadProfile(this.selectedProfile.id);
   }
 
   public saveProfile(): void {
-    this.saveUpdatedProfileAsync(this.selectedProfile);
+    this.saveUpdatedProfileAsync(this.selectedProfile.name, this.selectedProfile.saveAsType);
   }
 
   public removeProfile(): void {
-    this._statusService.setStatus(`Removing profile "${this.selectedProfile}"`);
+    this._statusService.setStatus(`Removing ${this.selectedProfile.saveAsType} profile "${this.selectedProfile.name}"`);
 
-    this._profileService.deleteAsync(this.script.directory, this.script.name, this.selectedProfile)
+    const profileSaveAsType = this.selectedProfile.saveAsType;
+    const profileName = this.selectedProfile.name;
+    this._profileService.deleteAsync(this.script.directory, this.script.name, this.selectedProfile.name, this.selectedProfile.saveAsType)
       .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
       .then(profiles => {
         this.updateProfiles(profiles);
-        this._statusService.setStatus(`Profile "${this.selectedProfile}" removed`);
+        this._statusService.setStatus(`${profileSaveAsType} profile "${profileName}" removed`);
       }, err => console.error(err));
   }
 
-  private async saveUpdatedProfileAsync(profileName: string, saveAsType: SaveAsType = null): Promise<void> {
+  private async saveUpdatedProfileAsync(profileName: string, saveAsType: SaveAsType): Promise<void> {
     this._statusService.setStatus(`Saving profile "${profileName}"`);
 
-    const profile = this.gatherProfile(profileName);
+    const profile = this.gatherProfile(profileName, saveAsType);
     await this._profileService.updateAsync(this._script.directory, this._script.name, profile, saveAsType);
     const profiles = await this._profileService.listAsync(this.script.directory, this.script.name);
-    this.updateProfiles(profiles, profile.name);
+    this.updateProfiles(profiles, profile.id);
 
     this._statusService.setStatus(`Profile "${profileName}" saved`);
   }
@@ -141,10 +153,12 @@ export class ScriptFormComponent implements OnInit {
     return new FormGroup(fields);
   }
 
-  private gatherProfile(name: string): IScriptProfile {
+  private gatherProfile(name: string, saveAsType: SaveAsType): IScriptProfile {
     const profile = {
+      id: `${saveAsType.toLowerCase()}_${name.toLowerCase()}`,
       name,
-      params: { }
+      params: { },
+      saveAsType
     };
 
     this.script.params.forEach(p => {
@@ -154,46 +168,44 @@ export class ScriptFormComponent implements OnInit {
     return profile;
   }
 
-  private updateProfiles(profiles: IScriptProfile[], selectedProfile: string = null): void {
+  private updateProfiles(profiles: IScriptProfile[], selectedProfileId: string = null): void {
     this.profiles = profiles;
-
-    if (this.profiles.length > 0) {
-      if (selectedProfile) {
-        const profile = this.profiles.find(p => p.name.toLowerCase() === selectedProfile.toLowerCase());
-        this.profileForm.patchValue({
-          selectedProfile: profile ? profile.name : null
-        });
-      }
-
-      if (!this.selectedProfile) {
-        this.profileForm.patchValue({
-          selectedProfile: this.profiles[0].name
-        });
-
-      } else if (!this.profiles.find(p => p.name.toLowerCase() === this.selectedProfile.toLowerCase())) {
-        this.profileForm.patchValue({
-          selectedProfile: 'Default'
-        });
-      }
+    if (selectedProfileId) {
+      this.setSelectedProfile(selectedProfileId);
     } else {
-      this.profileForm.patchValue({
-        selectedProfile: 'Default'
-      });
+      this.setSelectedProfile('default');
     }
   }
 
-  private loadProfile(profileName: string): void {
-    const lowerProfileName = profileName.toLowerCase();
+  private setSelectedProfile(profileId: string): void {
+    const profile = this.getProfileOrDefault(profileId);
+    this.profileForm.patchValue({
+      selectedProfileId: profile ? profile.id : null
+    });
+    this.selectedProfile = profile;
+  }
+
+  private getProfileOrDefault(profileId: string): IScriptProfile {
+
+    const searchId = (profileId ? profileId : 'default');
+    let profile = this.profiles.find(p => p.id === searchId);
+    if (!profile) {
+      profile = this.profiles.find(p => p.id === 'default');
+    }
+
+    return profile;
+  }
+
+  private loadProfile(profileId: string): void {
+    const profile = this.getProfileOrDefault(profileId);
+    this.selectedProfile = profile;
 
     let applyParams: { [name: string]: any };
-    if (lowerProfileName === 'default') {
+    if (profile.id === 'default') {
       applyParams = { };
       this._script.params.forEach(p => applyParams[p.name] = p.default);
     } else {
-      const profile = this.profiles.find(p => p.name.toLowerCase() === lowerProfileName);
-      if (profile) {
-        applyParams = profile.params;
-      }
+      applyParams = profile.params;
     }
 
     if (applyParams) {

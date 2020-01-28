@@ -10,6 +10,7 @@
       <mat-radio-button value="Shared">Shared</mat-radio-button>
       <mat-radio-button value="Personal">Personal</mat-radio-button>
     </mat-radio-group>
+    <p *ngIf="hasExistingName" class="error">The name "{{form.value.name}}" already exists in {{form.value.saveAsType}}.</p>
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="cancel()" type="button">Cancel</button>

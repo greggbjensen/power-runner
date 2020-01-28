@@ -68,11 +68,20 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this._terminal = new Terminal({
-      windowsMode: true,
       disableStdin: true,
+      rows: 10000,
       theme: {
         background: '#1e1e1e'
       }
+    });
+    this._terminal.attachCustomKeyEventHandler(event => {
+      let handle = true;
+      if (event.ctrlKey && event.key === 'c') {
+        this.copyToClipboard();
+        handle = false;
+      }
+
+      return handle;
     });
     this._fitAddon = new FitAddon();
     this._searchAddon = new SearchAddon();
@@ -87,6 +96,10 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.unsubscribeAll();
+  }
+
+  private copyToClipboard(): void {
+    document.execCommand('copy');
   }
 
   private unsubscribeAll(): void {

@@ -4,8 +4,13 @@
     <div class="script-form-header" [formGroup]="profileForm">
       <mat-form-field class="script-profile" appearance="standard">
         <mat-label>Profile</mat-label>
-        <mat-select formControlName="selectedProfile">
-          <mat-option *ngFor="let profile of profiles" [value]="profile.name">
+        <mat-select formControlName="selectedProfileId">
+          <mat-select-trigger>
+            <mat-icon class="icon-small script-profile-icon">{{getIcon(this.selectedProfile)}}</mat-icon>
+            <span class="script-profile-name">{{this.selectedProfile?.name}}</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let profile of profiles" [value]="profile.id">
+            <mat-icon class="icon-small">{{getIcon(profile)}}</mat-icon>
             {{profile.name}}
           </mat-option>
         </mat-select>
@@ -14,10 +19,10 @@
         <button class="script-profile-undo" mat-icon-button (click)="undoProfile()" matTooltip="Undo changes" matTooltipPosition="above">
           <mat-icon>undo</mat-icon>
         </button>
-        <button class="script-profile-save" mat-icon-button (click)="saveProfile()" matTooltip="Save profile" matTooltipPosition="above" [disabled]="selectedProfile === 'Default'">
+        <button class="script-profile-save" mat-icon-button (click)="saveProfile()" matTooltip="Save profile" matTooltipPosition="above" [disabled]="selectedProfile?.id === 'default'">
           <mat-icon>save</mat-icon>
         </button>
-        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()" matTooltip="Remove profile" matTooltipPosition="above" [disabled]="selectedProfile === 'Default'">
+        <button class="script-profile-remove" mat-icon-button (click)="removeProfile()" matTooltip="Remove profile" matTooltipPosition="above" [disabled]="selectedProfile?.id === 'default'">
           <mat-icon>remove_circle</mat-icon>
         </button>
         <button class="script-profile-add" mat-icon-button (click)="addProfile()" matTooltip="Add profile" matTooltipPosition="above">
