@@ -1,4 +1,5 @@
 import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
+import { IpcRenderer } from 'electron';
 import { Subscription } from 'rxjs';
 import { IScriptExit, ScriptRef } from 'src/app/core/models';
 import { StatusService } from 'src/app/core/services';
@@ -6,6 +7,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { WebLinksAddon } from 'xterm-addon-web-links';
+const electron = (window as any).require('electron');
 
 @Directive({
   selector: '[pruScriptLogWriter]',
@@ -19,6 +21,7 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   private _terminal: Terminal;
   private _fitAddon: FitAddon;
   private _searchAddon: SearchAddon;
+  private _ipcRenderer: IpcRenderer | undefined;
 
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
@@ -30,7 +33,7 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
     if (this._scriptRef) {
       this._dataSubscription = this._scriptRef.data.subscribe(data => {
-        this._terminal.write(data);
+        this._terminal.write(data, () => this.dataAcknowlege());
       });
       this._exitSubscription = this._scriptRef.exit.subscribe((scriptExit: IScriptExit) => {
         const message = scriptExit.exitCode === 0 ? ' completed' : ` failed with exit code ${scriptExit.exitCode}`;
@@ -46,7 +49,9 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   constructor(
     private _element: ElementRef,
     private _statusService: StatusService
-  ) { }
+  ) {
+    this._ipcRenderer = electron.ipcRenderer;
+  }
 
   @HostListener('window:resize') public onResize(): void {
     if (this._fitAddon) {
@@ -95,6 +100,10 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.unsubscribeAll();
+  }
+
+  private dataAcknowlege(): void {
+    this._ipcRenderer.send('script:data-ack', this.scriptRef.script.id);
   }
 
   private copyToClipboard(): void {
