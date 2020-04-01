@@ -12,7 +12,7 @@ const electron = (window as any).require('electron');
 export class BrowseDirectoryFieldComponent implements OnInit {
 
   @Input() public label: string;
-
+  @Input() public placeholder: string;
   @Input() public controlName: string;
 
   public get form(): FormGroup {

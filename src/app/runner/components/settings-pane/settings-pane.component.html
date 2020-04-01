@@ -1,10 +1,10 @@
 <form [formGroup]="form" (submit)="save()">
   <h2>Settings</h2>
-  <pru-browse-directory-field id="settings-base-path" label="Base Path" controlName="basePath"></pru-browse-directory-field>
+  <pru-browse-directory-field id="settings-base-path" label="Base Path" controlName="basePath" placeholder="Root directory for PowerShell script search."></pru-browse-directory-field>
 
   <mat-form-field>
     <mat-label>Search Paths</mat-label>
-    <textarea id="settings-search-paths" matInput placeholder="Minimatch path patterns separated by newlines." formControlName="searchPaths"></textarea>
+    <textarea id="settings-search-paths" matInput placeholder="Minimatch path patterns separated by newlines.&#10;&#10;Examples:&#10;&#10;MyProject\*.ps1&#10;**\*.ps1" formControlName="searchPaths"></textarea>
   </mat-form-field>
 
   <div class="form-actions">
