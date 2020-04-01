@@ -2,18 +2,6 @@
 
 PowerShell Script runnner that loads scripts from paths and parses commmand line parameters to present a tabbed form and output window.
 
-## Features
-- Set all command parameters using inputs, drop downs, and checkboxes that auto-size
-- Keep track of many instances in a tabbed experience
-- Scans requested directories to show heirarchical scripts in one place
-- Double click a script to quickly edit and run
-- Store and share saved command line parameters as a profile
-- Run as administrator to execute elevated scripts
-- Quickly stop and start runs with a button
-- Search and browse console output
-- Click Edit to go directly to source
-- Automatically keeps itself up to date
-
 ## Example
 
 ``` PowerShell
@@ -35,6 +23,18 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 <br>
 
 ![Overview](assets/overview.png)
+
+## Features
+- Set all command parameters using inputs, drop downs, and checkboxes that auto-size
+- Keep track of many instances in a tabbed experience
+- Scans requested directories to show heirarchical scripts in one place
+- Double click a script to quickly edit and run
+- Store and share saved command line parameters as a profile
+- Run as administrator to execute elevated scripts
+- Quickly stop and start runs with a button
+- Search and browse console output
+- Click Edit to go directly to source
+- Automatically keeps itself up to date
 
 # Setup
 1. Click `PowerRunnerSetup.exe` from [Releases](https://github.com/greggbjensen/power-runner/releases/) to install
