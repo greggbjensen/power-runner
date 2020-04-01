@@ -41,9 +41,7 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 2. Keep the download, and click to launch it
 3. Click on `More info` on the blue Windows prompt, then `Run anyway`
 
-    ![Overview](assets/windows-approve-dialog.png)
-
-    ![Overview](assets/windows-approve-dialog-run-anyway.png)
+    ![Overview](assets/windows-approve-dialog.png) ![Overview](assets/windows-approve-dialog-run-anyway.png)
     
 
 2. When the application starts for the first time, the settings page will be shown
