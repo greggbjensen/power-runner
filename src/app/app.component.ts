@@ -120,6 +120,10 @@ export class AppComponent {
       this._scriptService.listAsync(fullPaths).then((scripts) => {
         this._nodes.next(this.nodeTransform(scripts));
       }, err => console.error(err));
+
+    } else {
+      // Show settings so they can be setup for the first time.
+      this.showSettings = true;
     }
   }
 
