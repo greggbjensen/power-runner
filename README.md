@@ -2,7 +2,7 @@
 
 PowerShell Script runnner that loads scripts from paths and parses commmand line parameters to present a tabbed form and output window.
 
-## Example
+# Example
 
 ``` PowerShell
 param (
@@ -24,7 +24,7 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 
 ![Overview](assets/overview.png)
 
-## Features
+# Features
 - Set all command parameters using inputs, drop downs, and checkboxes that auto-size
 - Keep track of many instances in a tabbed experience
 - Scans requested directories to show heirarchical scripts in one place
@@ -59,13 +59,13 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 2. Install `Yarn` from https://classic.yarnpkg.com/en/docs/install/#windows-stable
 3. Install `Visual Studio Code` from https://code.visualstudio.com/
 3. Install `Windows Build Tools` by running the following from an elevated command prompt:
-  ```bash
-  npm install --global --production windows-build-tools
-  ```
+    ```bash
+    npm install --global --production windows-build-tools
+    ```
 4. Clone the repository and create a new feature branch
 5. Install project dependencies by running the following from the command line in the repository directory:
 
-  ```bash
-  yarn
-  ```
+    ```bash
+    yarn
+    ```
 6. Make any changes and submit a pull request
