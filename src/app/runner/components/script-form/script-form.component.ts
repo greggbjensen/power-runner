@@ -1,9 +1,11 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
+import { IScript, IScriptParam, IScriptProfile, IScriptRun, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, StatusService } from 'src/app/core/services';
-import _ = require('underscore');
+import { ScriptFormatter } from 'src/app/core/utils';
+import * as _ from 'underscore';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
 
 
@@ -51,7 +53,7 @@ export class ScriptFormComponent implements OnInit {
     return this._script;
   }
 
-  @Output() public run = new EventEmitter<IScript>();
+  @Output() public run = new EventEmitter<IScriptRun>();
   @Output() public stop = new EventEmitter<IScript>();
   @Output() public edit = new EventEmitter<IScript>();
 
@@ -60,7 +62,8 @@ export class ScriptFormComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private _profileService: ProfileService,
-    private _statusService: StatusService
+    private _statusService: StatusService,
+    private _clipboard: Clipboard
   ) {
   }
 
@@ -76,11 +79,17 @@ export class ScriptFormComponent implements OnInit {
       : 'people';
   }
 
-  public startRun(): void {
-    this.script.params.forEach(p => {
-      p.value = this.form.value[p.name];
-    });
-    this.run.emit(this.script);
+  public copyCommand(): void {
+
+    this.updateParamValues();
+    const paramList = this.script.params.map(p => ScriptFormatter.formatParam(p)).join(' ');
+    const command = `${this.script.directory}\\${this._script.name} ${paramList}`;
+    this._clipboard.copy(command);
+  }
+
+  public startRun(runExternal: boolean = false): void {
+    this.updateParamValues();
+    this.run.emit({ script: this.script, runExternal});
   }
 
   public stopRun(): void {
@@ -216,5 +225,11 @@ export class ScriptFormComponent implements OnInit {
 
       this.form.patchValue(params);
     }
+  }
+
+  private updateParamValues(): void {
+    this.script.params.forEach(p => {
+      p.value = this.form.value[p.name];
+    });
   }
 }

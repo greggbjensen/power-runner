@@ -73,7 +73,6 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this._terminal = new Terminal({
-      disableStdin: true,
       theme: {
         background: '#1e1e1e'
       }
@@ -86,6 +85,9 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
       }
 
       return handle;
+    });
+    this._terminal.onKey(event => {
+      this._ipcRenderer.send('terminal.key', event.key);
     });
     this._fitAddon = new FitAddon();
     this._searchAddon = new SearchAddon();

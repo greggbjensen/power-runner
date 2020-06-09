@@ -32,9 +32,20 @@
       <div class="script-actions">
         <button class="script-edit" mat-raised-button (click)="startEdit()">Edit</button>
         <ng-container [ngSwitch]="script.status">
-          <button class="script-run" *ngSwitchCase="ScriptStatus.Stopped" mat-raised-button color="primary" (click)="startRun()">Run</button>
+          <mat-button-toggle-group *ngSwitchCase="ScriptStatus.Stopped">
+            <mat-button-toggle class="script-run" (click)="startRun()">Run</mat-button-toggle>
+            <mat-button-toggle class="script-run-external drop-down-button" [matMenuTriggerFor]="runMenu">
+              <mat-icon>arrow_drop_down</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
           <button class="script-stop" *ngSwitchDefault mat-raised-button color="warn" (click)="stopRun()">Stop</button>
         </ng-container>
+
+        <mat-menu #runMenu="matMenu">
+          <button mat-menu-item (click)="startRun()">Run</button>
+          <button mat-menu-item (click)="startRun(true)">Run external</button>
+          <button mat-menu-item (click)="copyCommand()">Copy command</button>
+        </mat-menu>
       </div>
 
     </div>

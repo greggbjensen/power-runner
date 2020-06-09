@@ -15,7 +15,7 @@ export class ScriptLogComponent implements OnInit, OnDestroy {
 
   @HostBinding('class.script-log') public className = true;
 
-  @ViewChild('scriptOutput', { static: false }) public scriptOutput: ScriptLogWriterDirective;
+  @ViewChild('scriptOutput') public scriptOutput: ScriptLogWriterDirective;
 
   @Input() public scriptRef: ScriptRef;
 

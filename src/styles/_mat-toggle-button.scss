@@ -1,0 +1,17 @@
+@import 'variables';
+
+.pru {
+
+  .mat-button-toggle,
+  .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    font-size: $font-size-13;
+    line-height: 3.4rem;
+  }
+
+  .mat-button-toggle-group {
+
+    .drop-down-button .mat-button-toggle-label-content {
+      padding: 0;
+    }
+  }
+}
