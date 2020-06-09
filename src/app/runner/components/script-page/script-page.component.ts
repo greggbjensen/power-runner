@@ -12,7 +12,7 @@ import { ScriptLogComponent } from '../script-log/script-log.component';
 export class ScriptPageComponent implements OnInit {
   @HostBinding('class.script-page') public className = true;
   @Input() public script: IScript;
-  @ViewChild(ScriptLogComponent, { static: false }) public scriptLog: ScriptLogComponent;
+  @ViewChild(ScriptLogComponent) public scriptLog: ScriptLogComponent;
   public scriptRef: ScriptRef;
 
   constructor(
