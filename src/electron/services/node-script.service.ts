@@ -82,7 +82,6 @@ export class NodeScriptService {
         });
 
         ipcMain.on('terminal.key', (event, key) => {
-          console.log(key);
           child.write(key);
         });
 
