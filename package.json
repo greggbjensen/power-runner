@@ -13,7 +13,7 @@
     "package": "yarn copy-deps && yarn build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
     "package-installer": "yarn package && yarn installer",
-    "electron-rebuild": "./node_modules/.bin/electron-rebuild",
+    "electron-rebuild": "./node_modules/.bin/electron-rebuild --version 9.0.3",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -42,6 +42,7 @@
     "js-yaml": "^3.13.1",
     "ngx-autosize-input": "^2.3.6",
     "ngx-markdown": "^8.2.1",
+    "node-abi": "^2.18.0",
     "node-fetch": "^2.6.0",
     "node-pty": "^0.9.0",
     "node-yaml": "^4.0.1",
@@ -79,7 +80,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
     "protractor": "~5.4.0",
-    "ts-node": "~7.0.0",
+    "ts-node": "~8.10.2",
     "tslint": "~5.15.0",
     "tslint-consistent-codestyle": "^1.15.1",
     "typescript": "3.8.3"

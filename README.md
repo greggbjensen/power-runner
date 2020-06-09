@@ -69,3 +69,14 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
     yarn
     ```
 6. Make any changes and submit a pull request
+
+# Creating a Release
+1. Delete the `release\PowerRunner-win32-x64` folder if it exists
+2. Remove any versions you no longer want to support as an upgrade from `release\installers\PowerRunner-win32-x64`
+3. Run `yarn package-installer`
+4. Create a new release on GitHub
+5. Copy the files from `release\installers\PowerRunner-win32-x64` to that release
+
+# Troubleshooting
+- `.yarnrc` must always reflect the same `target` as the `electron` version in the `package.json`
+- If you get a  
