@@ -1,8 +1,10 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, StatusService } from 'src/app/core/services';
+import { ScriptFormatter } from 'src/app/core/utils';
 import * as _ from 'underscore';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
 
@@ -60,7 +62,8 @@ export class ScriptFormComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private _profileService: ProfileService,
-    private _statusService: StatusService
+    private _statusService: StatusService,
+    private _clipboard: Clipboard
   ) {
   }
 
@@ -77,13 +80,15 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public copyCommand(): void {
-    document.execCommand('copy');
+
+    this.updateParamValues();
+    const paramList = this.script.params.map(p => ScriptFormatter.formatParam(p)).join(' ');
+    const command = `${this.script.directory}\\${this._script.name} ${paramList}`;
+    this._clipboard.copy(command);
   }
 
   public startRun(): void {
-    this.script.params.forEach(p => {
-      p.value = this.form.value[p.name];
-    });
+    this.updateParamValues();
     this.run.emit(this.script);
   }
 
@@ -220,5 +225,11 @@ export class ScriptFormComponent implements OnInit {
 
       this.form.patchValue(params);
     }
+  }
+
+  private updateParamValues(): void {
+    this.script.params.forEach(p => {
+      p.value = this.form.value[p.name];
+    });
   }
 }

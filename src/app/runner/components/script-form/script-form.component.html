@@ -30,6 +30,9 @@
         </button>
       </div>
       <div class="script-actions">
+        <button class="script-copy" mat-icon-button (click)="copyCommand()" matTooltip="Copy command" matTooltipPosition="above">
+          <mat-icon>file_copy</mat-icon>
+        </button>
         <button class="script-edit" mat-raised-button (click)="startEdit()">Edit</button>
         <ng-container [ngSwitch]="script.status">
           <button class="script-run" *ngSwitchCase="ScriptStatus.Stopped" mat-raised-button color="primary" (click)="startRun()">Run</button>

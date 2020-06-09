@@ -1,3 +1,4 @@
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -41,6 +42,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatToolbarModule,
     MatTooltipModule,
     MatTabsModule,
+    ClipboardModule,
     ReactiveFormsModule,
     AngularSplitModule.forChild(),
     AutoSizeInputModule
@@ -60,6 +62,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatToolbarModule,
     MatTooltipModule,
     MatTabsModule,
+    ClipboardModule,
     AutoSizeInputModule,
     BrowseDirectoryFieldComponent
   ]

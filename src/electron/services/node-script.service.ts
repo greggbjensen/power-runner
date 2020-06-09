@@ -3,7 +3,8 @@ import { BrowserWindow, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
-import { IScript, IScriptExit, IScriptParam, ParamType } from '../../app/core/models';
+import { IScript, IScriptExit } from '../../app/core/models';
+import { ScriptFormatter } from '../../app/core/utils/script-formatter';
 import { ScriptParser } from './script.parser';
 
 // Initialize node-pty with an appropriate shell
@@ -56,7 +57,7 @@ export class NodeScriptService {
     return new Promise((resolve, reject) => {
 
       try {
-        const paramList = script.params.map(p => this.formatParam(p)).join(' ');
+        const paramList = script.params.map(p => ScriptFormatter.formatParam(p)).join(' ');
         const command = `.\\${script.name} ${paramList}`;
         const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
           name: 'xterm-color',
@@ -108,38 +109,5 @@ export class NodeScriptService {
         // Do nothing.
       }
     }
-  }
-
-  private formatParam(param: IScriptParam): string {
-    let paramText = '';
-
-    if (param.value !== '' && param.value !== param.default) {
-      switch (param.type) {
-
-        case ParamType.Switch:
-          if (param.value) {
-            paramText = `-${param.name}`;
-          }
-          break;
-
-        case ParamType.Boolean:
-          paramText = `-${param.name} $${param.value}`;
-          break;
-
-        case ParamType.Number:
-          paramText = `-${param.name} ${param.value}`;
-          break;
-
-        case ParamType.SecureString:
-          paramText = `-${param.name} (ConvertTo-SecureString ${param.value} -AsPlainText -Force)`;
-          break;
-
-        default: // ParamType.String, ParamType.File, ParamType.Directory
-          paramText = `-${param.name} "${param.value}"`;
-          break;
-      }
-    }
-
-    return paramText;
   }
 }
