@@ -71,13 +71,18 @@ export class NodeScriptService {
         const scriptChannel = `${script.module}_${name}`;
         this._childProcesses.set(script.id, child);
 
-        child.on('data', (data: any) => {
+        child.onData((data: string) => {
           child.write(NodeScriptService.Pause);
           this._browserWindow.webContents.send(`${scriptChannel}:data`, data);
         });
-        child.on('exit', (exitCode) => {
+        child.onExit(({ exitCode }) => {
           this._browserWindow.webContents.send(`${scriptChannel}:exit`, { scriptName: script.name, exitCode } as IScriptExit);
           this._childProcesses.delete(script.id);
+        });
+
+        ipcMain.on('terminal.key', (event, key) => {
+          console.log(key);
+          child.write(key);
         });
 
         setTimeout(() => {
