@@ -76,6 +76,10 @@ export class ScriptFormComponent implements OnInit {
       : 'people';
   }
 
+  public copyCommand(): void {
+    document.execCommand('copy');
+  }
+
   public startRun(): void {
     this.script.params.forEach(p => {
       p.value = this.form.value[p.name];
