@@ -68,7 +68,19 @@
   min-width: 10rem;
   margin-left: $space-15;
 
-  button {
+  .mat-button-toggle {
+    background-color: $blue-500;
+  }
+
+  .script-run {
+    width: 6rem;
+  }
+
+  .script-stop {
+    width: 8.7rem;
+  }
+
+  button, .mat-button-toggle-group {
     margin-left: $space-15;
 
     &:first-child {
