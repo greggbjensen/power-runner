@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { IScript, IScriptParam, IScriptProfile, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, StatusService } from 'src/app/core/services';
-import _ = require('underscore');
+import * as _ from 'underscore';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
 
 
