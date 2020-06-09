@@ -1,5 +1,5 @@
-import { Component, HostBinding, Input, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { IScript, ScriptRef, IScriptRun } from 'src/app/core/models';
+import { Component, HostBinding, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { IScript, IScriptRun, ScriptRef } from 'src/app/core/models';
 import { NodeProxyFactory, ScriptService } from 'src/app/core/services';
 import { ScriptLogComponent } from '../script-log/script-log.component';
 

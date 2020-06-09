@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { BrowserWindow, ipcMain, clipboard } from 'electron';
+import { BrowserWindow, clipboard, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
