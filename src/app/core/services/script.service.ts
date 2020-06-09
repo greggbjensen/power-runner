@@ -20,9 +20,9 @@ export class ScriptService extends ProxyNodeService {
     return this.proxy.invoke('listAsync', fileGlobs);
   }
 
-  public async runAsync(script: IScript): Promise<string> {
+  public async runAsync(script: IScript, runExternal: boolean = false): Promise<string> {
     this._statusService.setStatus(`${script.module.toUpperCase()}/${script.name} running...`);
-    return this.proxy.invoke('runAsync', script);
+    return this.proxy.invoke('runAsync', script, runExternal);
   }
 
   public async stopAsync(script: IScript): Promise<string> {

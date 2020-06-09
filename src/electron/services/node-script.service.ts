@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, ipcMain, clipboard } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
@@ -18,6 +18,7 @@ export class NodeScriptService {
 
   // TODO GBJ: Make compatible with Linux.
   private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
+  private static readonly CommandPath = `${process.env.SYSTEMROOT}\\system32\\cmd.exe`;
 
   private _childProcesses = new Map<string, pty.IPty>();
 
@@ -52,13 +53,22 @@ export class NodeScriptService {
     return Promise.resolve();
   }
 
-  public runAsync(script: IScript): Promise<string>  {
+  public runAsync(script: IScript, runExternal: boolean = false): Promise<string>  {
 
     return new Promise((resolve, reject) => {
 
       try {
         const paramList = script.params.map(p => ScriptFormatter.formatParam(p)).join(' ');
-        const command = `.\\${script.name} ${paramList}`;
+        const command = !runExternal
+          ? `.\\${script.name} ${paramList}`
+          // tslint:disable-next-line: max-line-length
+          : `Invoke-Command { cmd /c start ${NodeScriptService.PowerShellPath} -NoExit .\\${script.name} ${paramList} }`;
+
+        // Set clipboard for use in external window.
+        if (runExternal) {
+          clipboard.writeText(`.\\${script.name} ${paramList}`);
+        }
+
         const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
           name: 'xterm-color',
           cols: 120,

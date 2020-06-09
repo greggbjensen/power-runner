@@ -1,5 +1,5 @@
 import { Component, HostBinding, Input, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { IScript, ScriptRef } from 'src/app/core/models';
+import { IScript, ScriptRef, IScriptRun } from 'src/app/core/models';
 import { NodeProxyFactory, ScriptService } from 'src/app/core/services';
 import { ScriptLogComponent } from '../script-log/script-log.component';
 
@@ -23,9 +23,9 @@ export class ScriptPageComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public startRun(script: IScript): void {
-    this._scriptService.runAsync(script).then((scriptChannel: string) => {
-      this.scriptRef = this._nodeProxyFactory.createScriptRef(script, scriptChannel);
+  public startRun(scriptRun: IScriptRun): void {
+    this._scriptService.runAsync(scriptRun.script, scriptRun.runExternal).then((scriptChannel: string) => {
+      this.scriptRef = this._nodeProxyFactory.createScriptRef(scriptRun.script, scriptChannel);
     });
   }
 
