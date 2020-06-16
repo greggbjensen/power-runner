@@ -16,6 +16,8 @@ import { AppUpdateDialogComponent } from './runner/components';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
+  private static readonly ExcludeRegex = /^\!/;
+
   @HostBinding('class.pru') public className = true;
   public title = 'powerrunner';
   public nodes$: Observable<IScriptNode[]>;
@@ -116,7 +118,7 @@ export class AppComponent {
   private async initialize(): Promise<void> {
     this.settings = await this._settingsService.readAsync();
     if (this.settings && this.settings.basePath && this.settings.searchPaths && this.settings.searchPaths.length > 0) {
-      const fullPaths = this.settings.searchPaths.map(p => `${this.settings.basePath}/${p}`.replace(/\\/g, '/'));
+      const fullPaths = this.settings.searchPaths.map(p => this.getFullPath(p));
       this._scriptService.listAsync(fullPaths).then((scripts) => {
         this._nodes.next(this.nodeTransform(scripts));
       }, err => console.error(err));
@@ -125,6 +127,22 @@ export class AppComponent {
       // Show settings so they can be setup for the first time.
       this.showSettings = true;
     }
+  }
+
+  private getFullPath(path: string): string {
+
+    let updatedPath = path;
+    const isExclude = AppComponent.ExcludeRegex.test(path);
+    if (isExclude) {
+      updatedPath = path.replace(AppComponent.ExcludeRegex, '');
+    }
+
+    updatedPath = isExclude
+      ? `!${this.settings.basePath}/${updatedPath}`
+      : `${this.settings.basePath}/${updatedPath}`;
+
+    updatedPath = updatedPath.replace(/\\/g, '/');
+    return updatedPath;
   }
 
   private nodeTransform(scripts: IScript[]): IScriptNode[] {
