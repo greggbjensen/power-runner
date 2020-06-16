@@ -195,7 +195,5 @@ export class ScriptParser {
       default:
         break;
     }
-
-    console.log(param);
   }
 }
