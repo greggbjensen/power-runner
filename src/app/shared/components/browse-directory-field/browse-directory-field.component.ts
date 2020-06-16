@@ -30,8 +30,12 @@ export class BrowseDirectoryFieldComponent implements OnInit {
 
   public browseBasePath(): void {
     this._browseDialogService.selectDirectoryAsync()
-      .then(d => this.form.patchValue({
-        [this.controlName]: d
-      }), err => console.error(err));
+      .then(d => {
+        if (d) {
+          this.form.patchValue({
+            [this.controlName]: d
+          });
+        }
+      }, err => console.error(err));
   }
 }

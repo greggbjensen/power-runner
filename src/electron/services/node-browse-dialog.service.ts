@@ -18,7 +18,11 @@ export class NodeBrowseDialogService {
       dialog.showOpenDialog(this._browserWindow, {
         properties: ['openDirectory']
       }).then(result => {
-        resolve(result.filePaths[0]);
+        if (!result.canceled) {
+          resolve(result.filePaths[0]);
+        } else {
+          resolve();
+        }
       }, err => {
         reject(err);
       });
