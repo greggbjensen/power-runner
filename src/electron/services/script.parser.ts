@@ -159,7 +159,7 @@ export class ScriptParser {
           param.validation = { };
         }
 
-        param.validation = param.validation.set = set;
+        param.validation.set = set;
         break;
 
       case 'parameter':
@@ -167,16 +167,18 @@ export class ScriptParser {
         const paramMap = { } as any;
         params.map(p => {
           const keyValue = p.split('=');
-          if (parts.length > 1) {
+          if (keyValue.length > 1) {
             let value: any = keyValue[1].trim();
-            const lowerValuue = value.toLowerCase();
-            if (lowerValuue === '$true') {
+            const lowerValue = value.toLowerCase();
+            if (lowerValue === '$true') {
               value = true;
-            } else if (lowerValuue === '$false') {
+            } else if (lowerValue === '$false') {
               value = false;
             }
 
             paramMap[keyValue[0].trim()] = value;
+          } else if (keyValue.length > 0) {
+            paramMap[keyValue[0].trim()] = true;
           }
         });
 
@@ -193,5 +195,7 @@ export class ScriptParser {
       default:
         break;
     }
+
+    console.log(param);
   }
 }
