@@ -1,6 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { IScript, IScriptParam, IScriptProfile, IScriptRun, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, StatusService } from 'src/app/core/services';
@@ -88,6 +88,32 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public startRun(runExternal: boolean = false): void {
+    this.form.markAllAsTouched();
+    this.form.updateValueAndValidity();
+
+    if (this.form.invalid) {
+      const errors = [];
+      Object.keys(this.form.controls).forEach(name => {
+        const control = this.form.get(name);
+        if (control.invalid) {
+          Object.keys(control.errors).forEach(key => {
+            switch (key) {
+              case 'required':
+                errors.push(`${name} is required!`);
+                break;
+
+              default:
+                break;
+            }
+          });
+        }
+      });
+
+      const firstError = errors[0];
+      this._statusService.setStatus(firstError);
+      return;
+    }
+
     this.updateParamValues();
     this.run.emit({ script: this.script, runExternal});
   }
@@ -156,7 +182,12 @@ export class ScriptFormComponent implements OnInit {
   private createFormGroup(params: IScriptParam[]): FormGroup {
     const fields = { };
     params.forEach(p => {
-      fields[p.name] = new FormControl(p.value);
+      const validators: ValidatorFn[] = [];
+      if (p.validation && p.validation.required) {
+        validators.push(Validators.required);
+      }
+
+      fields[p.name] = new FormControl(p.value, validators);
     });
 
     return new FormGroup(fields);

@@ -154,7 +154,40 @@ export class ScriptParser {
       case 'validateset':
         const set = params.map(p => p.replace(/^\s*["']/, '').replace(/["']\s*$/, ''));
         param.type = ParamType.Set;
-        param.validation = { set };
+
+        if (!param.validation) {
+          param.validation = { };
+        }
+
+        param.validation = param.validation.set = set;
+        break;
+
+      case 'parameter':
+
+        const paramMap = { } as any;
+        params.map(p => {
+          const keyValue = p.split('=');
+          if (parts.length > 1) {
+            let value: any = keyValue[1].trim();
+            const lowerValuue = value.toLowerCase();
+            if (lowerValuue === '$true') {
+              value = true;
+            } else if (lowerValuue === '$false') {
+              value = false;
+            }
+
+            paramMap[keyValue[0].trim()] = value;
+          }
+        });
+
+        if (paramMap.Mandatory) {
+          if (!param.validation) {
+            param.validation = { };
+          }
+
+          param.validation = { required: true };
+        }
+
         break;
 
       default:
