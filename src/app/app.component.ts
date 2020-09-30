@@ -3,7 +3,7 @@ import { IpcRenderer } from 'electron';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as _ from 'underscore';
 const electron = (window as any).require('electron');
-import { IScript, IScriptNode, ISettings, IAppUpdate } from './core/models';
+import { IScript, IScriptNode, ISettings, IAppUpdate, IScriptFile } from './core/models';
 import { AppService, ScriptService, SettingsService } from './core/services';
 import { MatDialog } from '@angular/material/dialog';
 import { AppUpdateDialogComponent } from './runner/components';
@@ -145,7 +145,7 @@ export class AppComponent {
     return updatedPath;
   }
 
-  private nodeTransform(scripts: IScript[]): IScriptNode[] {
+  private nodeTransform(scripts: IScriptFile[]): IScriptNode[] {
     const grouped = _.groupBy(scripts, s => s.module);
     return _.keys(grouped).map(key => ({
       name: key,

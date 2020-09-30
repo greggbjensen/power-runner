@@ -3,7 +3,8 @@ import { BrowserWindow, clipboard, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
-import { IScript, IScriptExit } from '../../app/core/models';
+import * as path from 'path';
+import { IScript, IScriptExit, IScriptFile } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
 import { ScriptParser } from './script.parser';
 
@@ -34,15 +35,15 @@ export class NodeScriptService {
     });
   }
 
-  public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
+  public async listAsync(fileGlobs: string[]): Promise<IScriptFile[]> {
 
     const files = await globby(fileGlobs);
-    const scripts = await Promise.all(files.map(f => this._scriptParser.parseScript(f)));
+    const scripts = await Promise.all(files.map(f => this.getScriptFile(f)));
 
     return scripts;
   }
 
-  public editAsync(script: IScript): Promise<void>  {
+  public editAsync(script: IScriptFile): Promise<void>  {
 
     spawn('Code.exe', [`${script.directory}/${script.name}`], {
       cwd: `${process.env.LOCALAPPDATA}\\Programs\\Microsoft VS Code`, // TODO GBJ: Make compatible with Linux.
@@ -108,7 +109,7 @@ export class NodeScriptService {
     });
   }
 
-  public async stopAsync(script: IScript): Promise<void> {
+  public async stopAsync(script: IScriptFile): Promise<void> {
     const child = this._childProcesses.get(script.id);
     if (child) {
       try {
@@ -118,5 +119,28 @@ export class NodeScriptService {
         // Do nothing.
       }
     }
+  }
+
+  public parseAsync(file: IScriptFile): Promise<IScript> {
+    return this._scriptParser.parseAsync(file);
+  }
+
+  private getScriptFile(filePath: string): IScriptFile {
+
+    let directory = path.dirname(filePath);
+    if (os.platform() === 'win32') {
+      directory = directory.replace(/\//g, '\\');
+    }
+
+    const name = path.basename(filePath);
+    const id = `${directory.replace(/\//g, '_')}_${name}`;
+    const file: IScriptFile = {
+      id,
+      directory,
+      module: path.basename(directory),
+      name
+    };
+
+    return file;
   }
 }

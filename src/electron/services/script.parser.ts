@@ -3,7 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { Md5 } from 'ts-md5/dist/md5';
 import * as XRegExp from 'xregexp';
-import { IScript, IScriptParam, ParamType, ScriptStatus } from '../../app/core/models';
+import { IScript, IScriptFile, IScriptParam, ParamType, ScriptStatus } from '../../app/core/models';
 
 export class ScriptParser {
 
@@ -23,8 +23,9 @@ export class ScriptParser {
     });
   }
 
-  public async parseScript(filePath: string): Promise<IScript> {
+  public async parseAsync(file: IScriptFile): Promise<IScript> {
 
+    const filePath = `${file.directory}/${file.name}`;
     const content = await ScriptParser.readFile(filePath);
 
     // SourceRef: https://stackoverflow.com/questions/546433/regular-expression-to-match-balanced-parentheses
@@ -45,18 +46,11 @@ export class ScriptParser {
       scriptParams = [];
     }
 
-    let directory = path.dirname(filePath);
-    if (os.platform() === 'win32') {
-      directory = directory.replace(/\//g, '\\');
-    }
-
-    const name = path.basename(filePath);
-    const id = `${directory.replace(/\//g, '_')}_${name}`;
     const script: IScript = {
-      id,
-      directory,
-      module: path.basename(directory),
-      name,
+      id: file.id,
+      directory: file.directory,
+      module: file.module,
+      name: file.name,
       params: scriptParams,
       status: ScriptStatus.Stopped
     };
