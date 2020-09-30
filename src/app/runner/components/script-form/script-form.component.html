@@ -1,5 +1,10 @@
 <div *ngIf="script" class="script-form-container">
-  <span class=script-form-path>{{script.directory}}\{{script.name}}</span>
+  <div class="script-form-header">
+    <button class="script-form-refresh" mat-icon-button (click)="refreshAsync()" matTooltip="Refresh" matTooltipPosition="left">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <span class=script-form-path>{{script.directory}}\{{script.name}}</span>
+  </div>
   <form class="script-form-form" *ngIf="form" [formGroup]="form">
     <div class="script-form-header" [formGroup]="profileForm">
       <mat-form-field class="script-profile" appearance="standard">

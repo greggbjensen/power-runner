@@ -18,7 +18,11 @@
 .script-form-path {
   font-size: $font-size-11;
   display: block;
-  margin: 0 0 $space-10 $space-15;
+  margin: 0 0 $space-10 0.3rem;
+}
+
+.script-form-refresh {
+  margin-top: -0.8rem;
 }
 
 .script-form-container {

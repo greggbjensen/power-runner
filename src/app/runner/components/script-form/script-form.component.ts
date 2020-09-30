@@ -3,7 +3,7 @@ import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncaps
 import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { IScript, IScriptParam, IScriptProfile, IScriptRun, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
-import { ProfileService, StatusService } from 'src/app/core/services';
+import { ProfileService, ScriptService, StatusService } from 'src/app/core/services';
 import { ScriptFormatter } from 'src/app/core/utils';
 import * as _ from 'underscore';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
@@ -63,6 +63,7 @@ export class ScriptFormComponent implements OnInit {
     public dialog: MatDialog,
     private _profileService: ProfileService,
     private _statusService: StatusService,
+    private _scriptService: ScriptService,
     private _clipboard: Clipboard
   ) {
   }
@@ -124,6 +125,10 @@ export class ScriptFormComponent implements OnInit {
 
   public startEdit(): void {
     this.edit.emit(this.script);
+  }
+
+  public async refreshAsync(): Promise<void> {
+    this._script = await this._scriptService.parseAsync(this._script);
   }
 
   public addProfile(): void {
