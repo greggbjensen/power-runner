@@ -1,10 +1,10 @@
-import { spawn } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { BrowserWindow, clipboard, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
 import * as path from 'path';
-import { IScript, IScriptExit, IScriptFile } from '../../app/core/models';
+import { IPowerShellParam, IScript, IScriptExit, IScriptFile, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
 import { ScriptParser } from './script.parser';
 
@@ -16,6 +16,7 @@ export class NodeScriptService {
   private static readonly Pause = '\x13';   // XOFF
   private static readonly Resume = '\x11';  // XON
   private static readonly FileExtensionRegex = /.ps1$/i;
+  private static readonly CondenseCommandRegex = /\r?\n\s*/g;
 
   // TODO GBJ: Make compatible with Linux.
   private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
@@ -122,7 +123,100 @@ export class NodeScriptService {
   }
 
   public parseAsync(file: IScriptFile): Promise<IScript> {
-    return this._scriptParser.parseAsync(file);
+
+    return new Promise((resolve, reject) => {
+
+      const command = this.createMetadataCommand(file.name);
+      exec(command, { shell: NodeScriptService.PowerShellPath, cwd: file.directory }, (error, stdout, stderr) => {
+        if (error) {
+          reject(error);
+        } else if (stdout) {
+
+          // Ensure result is always an array.
+          let parameters = JSON.parse(stdout);
+          if (!Array.isArray(parameters)) {
+            parameters = [parameters];
+          }
+
+          const script = Object.assign({ }, file) as IScript;
+          script.params = parameters.map(p => this.projectParameter(p));
+          resolve(script);
+        } else {
+          reject(stderr);
+        }
+      });
+    });
+  }
+
+  private projectParameter(parameter: IPowerShellParam): IScriptParam {
+    const param = {
+      name: parameter.name,
+      default: parameter.default,
+      validation: { }
+    } as IScriptParam;
+
+    // Process defaults.
+    switch (param.default.toLowerCase()) {
+      case '$true':
+        param.default = true;
+        break;
+
+      case '$false':
+        param.default = false;
+        break;
+
+      default:
+        break;
+    }
+
+    // Process attributes.
+    if (parameter.attributes) {
+      parameter.attributes.forEach(attribute => {
+        switch (attribute.type.toLowerCase()) {
+          case 'parameter':
+            if (attribute.required) {
+              param.validation.required = true;
+            }
+            break;
+
+          case 'validateset':
+            param.type = ParamType.Set;
+            param.validation.set = attribute.values;
+            break;
+
+          default:
+            break;
+        }
+      });
+    }
+
+    // Process type.
+    if (!param.type) {
+      switch (parameter.type.toLowerCase()) {
+        case 'switch':
+          param.type = ParamType.Switch;
+          break;
+
+        case 'boolean':
+          param.type = ParamType.Boolean;
+          break;
+
+        case 'string':
+          param.type = ParamType.String;
+          break;
+
+        case 'securescript':
+          param.type = ParamType.SecureString;
+          break;
+
+        default:
+          param.type = ParamType.Number;
+          console.error(`Type not mapped: ${parameter.type}`);
+          break;
+      }
+    }
+
+    return param;
   }
 
   private getScriptFile(filePath: string): IScriptFile {
@@ -142,5 +236,49 @@ export class NodeScriptService {
     };
 
     return file;
+  }
+
+  private createMetadataCommand(scriptName: string): string {
+    return `
+Get-Command .\\${scriptName} | % {
+  $defaults = @{}
+  foreach ($param in $_.ScriptBlock.Ast.ParamBlock.Parameters) {
+    $name = $param.Name.ToString().TrimStart("$")
+    $defaults[$name] = $param.DefaultValue.ToString().Trim('"', "'")
+  }
+
+  foreach ($key in $_.Parameters.Keys) {
+    $x = $_.Parameters.$key;
+    $attributes = @()
+    foreach ($attribute in $x.Attributes) {
+      $type = $attribute.TypeId.Name.Replace("Attribute", "")
+      switch ($type) {
+        "Parameter" {
+          $attributes += @{
+            type = $type;
+            required = $attribute.Mandatory
+          }
+        }
+        "ValidateSet" {
+          $attributes += @{
+            type = $type;
+            values = $attribute.ValidValues
+          }
+        }
+        Default {}
+      }
+    }
+
+    $default = $defaults[$x.Name]
+
+    @{
+      name = $x.Name;
+      type = $x.ParameterType.Name.Replace("Parameter", "")
+      attributes = $attributes
+      default = $default
+    }
+  }
+} | ConvertTo-Json -Depth 4 -Compress
+`;
   }
 }
