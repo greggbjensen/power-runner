@@ -9,7 +9,7 @@
     "start": "yarn build && SET NODE_ENV=dev && electron ./dist/electron/main.js",
     "build": "tsc -p tsconfig.electron.json && ng build --base-href ./",
     "build-prod": "tsc -p tsconfig.electron.json && ng build --prod --base-href ./",
-    "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./node_modules/**/*.* ./dist",
+    "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./src/electron/powershell/*.ps1 ./dist --up 1 && copyfiles ./node_modules/**/*.* ./dist",
     "package": "yarn copy-deps && yarn build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
     "package-installer": "yarn package && yarn installer",
@@ -84,5 +84,10 @@
     "tslint": "~5.15.0",
     "tslint-consistent-codestyle": "^1.15.1",
     "typescript": "3.8.3"
+  },
+  "build": {
+    "extraResources": [
+      "./electron/powershell/**"
+    ]
   }
 }

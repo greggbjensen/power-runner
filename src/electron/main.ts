@@ -64,7 +64,7 @@ function createWindow(): void {
 
   bindService(new NodeAppService(browserWindow, isDev));
   bindService(new NodeSettingsService());
-  bindService(new NodeScriptService(browserWindow, scriptParser));
+  bindService(new NodeScriptService(app, browserWindow, scriptParser));
   bindService(new NodeProfileService());
   bindService(new NodeBrowseDialogService(browserWindow));
 

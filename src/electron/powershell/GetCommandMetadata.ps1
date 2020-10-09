@@ -1,6 +1,8 @@
-export function createMetadataCommand(scriptName: string) {
-  return `
-Get-Command ${scriptName} | % {
+param (
+  [string][Parameter(Mandatory = $true)]$scriptPath
+)
+
+Get-Command $scriptPath | % {
   $defaults = @{}
   foreach ($param in $_.ScriptBlock.Ast.ParamBlock.Parameters) {
     $name = $param.Name.ToString().TrimStart("$")
@@ -35,9 +37,7 @@ Get-Command ${scriptName} | % {
       name = $x.Name;
       type = $x.ParameterType.Name.Replace("Parameter", "")
       attributes = $attributes
-      defaults = $default
+      default = $default
     }
   }
 } | ConvertTo-Json -Depth 4 -Compress
-`;
-}

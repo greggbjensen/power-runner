@@ -1,5 +1,5 @@
 import { exec, spawn } from 'child_process';
-import { BrowserWindow, clipboard, ipcMain } from 'electron';
+import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
@@ -16,7 +16,7 @@ export class NodeScriptService {
   private static readonly Pause = '\x13';   // XOFF
   private static readonly Resume = '\x11';  // XON
   private static readonly FileExtensionRegex = /.ps1$/i;
-  private static readonly CondenseCommandRegex = /\r?\n\s*/g;
+  private static readonly NodeModulesRegex = /node_modules/i;
 
   // TODO GBJ: Make compatible with Linux.
   private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
@@ -25,6 +25,7 @@ export class NodeScriptService {
   private _childProcesses = new Map<string, pty.IPty>();
 
   constructor(
+    private _app: App,
     private _browserWindow: BrowserWindow,
     private _scriptParser: ScriptParser
   ) {
@@ -126,8 +127,14 @@ export class NodeScriptService {
 
     return new Promise((resolve, reject) => {
 
-      const command = this.createMetadataCommand(file.name);
-      exec(command, { shell: NodeScriptService.PowerShellPath, cwd: file.directory }, (error, stdout, stderr) => {
+      const filePath = `${file.directory}\\${file.name}`;
+      const resourcesPath = !NodeScriptService.NodeModulesRegex.test(process.resourcesPath)
+        ? process.resourcesPath
+        : path.dirname(this._app.getAppPath());
+      const workingDirectory = `${resourcesPath}\\electron\\powershell`;
+      const command = `"${NodeScriptService.PowerShellPath}" "${workingDirectory}\\GetCommandMetadata.ps1" "${filePath}"`;
+      exec(command, { cwd: workingDirectory }, (error, stdout, stderr) => {
+        console.error(error);
         if (error) {
           reject(error);
         } else if (stdout) {
@@ -236,49 +243,5 @@ export class NodeScriptService {
     };
 
     return file;
-  }
-
-  private createMetadataCommand(scriptName: string): string {
-    return `
-Get-Command .\\${scriptName} | % {
-  $defaults = @{}
-  foreach ($param in $_.ScriptBlock.Ast.ParamBlock.Parameters) {
-    $name = $param.Name.ToString().TrimStart("$")
-    $defaults[$name] = $param.DefaultValue.ToString().Trim('"', "'")
-  }
-
-  foreach ($key in $_.Parameters.Keys) {
-    $x = $_.Parameters.$key;
-    $attributes = @()
-    foreach ($attribute in $x.Attributes) {
-      $type = $attribute.TypeId.Name.Replace("Attribute", "")
-      switch ($type) {
-        "Parameter" {
-          $attributes += @{
-            type = $type;
-            required = $attribute.Mandatory
-          }
-        }
-        "ValidateSet" {
-          $attributes += @{
-            type = $type;
-            values = $attribute.ValidValues
-          }
-        }
-        Default {}
-      }
-    }
-
-    $default = $defaults[$x.Name]
-
-    @{
-      name = $x.Name;
-      type = $x.ParameterType.Name.Replace("Parameter", "")
-      attributes = $attributes
-      default = $default
-    }
-  }
-} | ConvertTo-Json -Depth 4 -Compress
-`;
   }
 }
