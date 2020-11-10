@@ -1,11 +1,11 @@
-import { Component, HostBinding, ViewEncapsulation, NgZone } from '@angular/core';
+import { Component, HostBinding, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { IpcRenderer } from 'electron';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as _ from 'underscore';
 const electron = (window as any).require('electron');
-import { IScript, IScriptNode, ISettings, IAppUpdate, IScriptFile } from './core/models';
-import { AppService, ScriptService, SettingsService } from './core/services';
 import { MatDialog } from '@angular/material/dialog';
+import { IAppUpdate, IScriptFile, IScriptNode, ISettings } from './core/models';
+import { AppService, ScriptService, SettingsService, StatusService } from './core/services';
 import { AppUpdateDialogComponent } from './runner/components';
 
 
@@ -15,7 +15,7 @@ import { AppUpdateDialogComponent } from './runner/components';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   private static readonly ExcludeRegex = /^\!/;
 
   @HostBinding('class.pru') public className = true;
@@ -34,6 +34,7 @@ export class AppComponent {
     private _scriptService: ScriptService,
     private _appService: AppService,
     private _settingsService: SettingsService,
+    private _statusService: StatusService,
     private _dialog: MatDialog,
     private _ngZone: NgZone
   ) {
@@ -47,6 +48,10 @@ export class AppComponent {
 
     this._appService.getElevatedStatusAsync()
       .then(status => this.elevatedStatus = status, err => console.error(err));
+  }
+
+  public ngOnDestroy(): void {
+    this._scriptService.disposeAsync();
   }
 
   public fileOpened(file: IScriptFile): void {
@@ -119,14 +124,33 @@ export class AppComponent {
     this.settings = await this._settingsService.readAsync();
     if (this.settings && this.settings.basePath && this.settings.searchPaths && this.settings.searchPaths.length > 0) {
       const fullPaths = this.settings.searchPaths.map(p => this.getFullPath(p));
-      this._scriptService.listAsync(fullPaths).then((scripts) => {
-        this._nodes.next(this.nodeTransform(scripts));
+      this._scriptService.listAsync(fullPaths).then((files) => {
+        this._nodes.next(this.nodeTransform(files));
+        this.preCacheAsync(files);
       }, err => console.error(err));
 
     } else {
       // Show settings so they can be setup for the first time.
       this.showSettings = true;
     }
+  }
+
+  private async preCacheAsync(files: IScriptFile[]): Promise<void> {
+
+    const promises: Promise<void>[] = [];
+    for (const file of files) {
+      await this.delay(100);
+      promises.push(this._scriptService.preCacheAsync(file));
+    }
+
+    await Promise.all(promises);
+    this._statusService.setStatus('Pre-cache complete.');
+  }
+
+  private async delay(milliseconds: number): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => resolve(), milliseconds);
+    });
   }
 
   private getFullPath(path: string): string {

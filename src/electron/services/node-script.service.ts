@@ -157,6 +157,14 @@ export class NodeScriptService {
     return script;
   }
 
+  public async preCacheAsync(file: IScriptFile): Promise<void> {
+    await this.parseAsync(file);
+  }
+
+  public async disposeAsync(): Promise<void> {
+    await this._cache.disposeAsync();
+  }
+
   private async getFileHashAsync(file: IScriptFile): Promise<string> {
 
     const filePath = `${file.directory}\\${file.name}`;

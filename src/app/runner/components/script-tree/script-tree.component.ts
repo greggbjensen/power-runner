@@ -2,7 +2,6 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { IScriptFile, IScriptNode } from 'src/app/core/models';
-import { ScriptService } from 'src/app/core/services';
 
 @Component({
   selector: 'pru-script-tree',

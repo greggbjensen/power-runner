@@ -35,6 +35,17 @@ export class ScriptService extends ProxyNodeService {
   }
 
   public async parseAsync(file: IScriptFile): Promise<IScript> {
+    this._statusService.setStatus(`Loading ${file.module.toUpperCase()}/${file.name}...`);
     return this.proxy.invoke('parseAsync', file);
+  }
+
+  public async preCacheAsync(file: IScriptFile): Promise<void> {
+    this._statusService.setStatus(`Pre-caching ${file.module.toUpperCase()}/${file.name}...`);
+    await this.proxy.invoke('preCacheAsync', file);
+    this._statusService.setStatus(`${file.module.toUpperCase()}/${file.name} pre-cached`);
+  }
+
+  public async disposeAsync(): Promise<void> {
+    return this.proxy.invoke('diposeAsync');
   }
 }

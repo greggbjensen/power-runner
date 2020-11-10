@@ -11,15 +11,17 @@ import { IScript } from '../../app/core/models';
 export class NodeScriptCacheService {
 
   private _cacheFile: string;
+  private _db: Promise<Database>;
 
   constructor() {
     this._cacheFile = path.join(os.homedir(), '.powerrunner', 'script-cache.sqlite3');
+    this._db = this.connectDbAsync();
   }
 
   public async getAsync(module: string, name: string): Promise<IScript> {
     let script: IScript = null;
 
-    const db = await this.connectDbAsync();
+    const db = await this._db;
     if (await this.dbTableExistsAsync(db, 'script')) {
 
       const sql = `
@@ -30,7 +32,6 @@ export class NodeScriptCacheService {
       `;
 
       const result = await this.dbGetAsync<string>(db, sql, module, name) as any;
-      db.close();
 
       if (result && result.metadata) {
         script = JSON.parse(result.metadata);
@@ -42,7 +43,7 @@ export class NodeScriptCacheService {
 
   public async addAsync(module: string, name: string, script: IScript): Promise<void> {
 
-    const db = await this.connectDbAsync();
+    const db = await this._db;
     await this.dbEnsureScriptTableAsync(db);
 
     const sql = `
@@ -51,12 +52,16 @@ export class NodeScriptCacheService {
     `;
 
     const json = JSON.stringify(script);
-    await this.dbRunAsync(db, sql, module, name, script.hash, json, new Date().toISOString());
-    db.close();
+
+    try {
+      await this.dbRunAsync(db, sql, module, name, script.hash, json, new Date().toISOString());
+    } catch (err) {
+      console.warn(`Unable to cache ${module} ${name}, already in progress.`);
+    }
   }
 
   public async updateAsync(module: string, name: string, script: IScript): Promise<void> {
-    const db = await this.connectDbAsync();
+    const db = await this._db;
     await this.dbEnsureScriptTableAsync(db);
 
     const sql = `
@@ -71,6 +76,10 @@ export class NodeScriptCacheService {
 
     const json = JSON.stringify(script);
     await this.dbRunAsync(db, sql, script.hash, json, new Date().toISOString(), module, name);
+  }
+
+  public async disposeAsync(): Promise<void> {
+    const db = await this._db;
     db.close();
   }
 
