@@ -29,11 +29,11 @@ export class NodeScriptCacheService {
           AND name = ?
       `;
 
-      const json = await this.dbGetAsync<string>(db, sql, module, name);
+      const result = await this.dbGetAsync<string>(db, sql, module, name) as any;
       db.close();
 
-      if (json) {
-        script = JSON.parse(json);
+      if (result && result.metadata) {
+        script = JSON.parse(result.metadata);
       }
     }
 
@@ -77,12 +77,12 @@ export class NodeScriptCacheService {
   private async dbTableExistsAsync(db: Database, tableName: string): Promise<boolean> {
 
     const sql = `
-      SELECT COUNT(*)
+      SELECT COUNT(*) as count
       FROM sqlite_master
       WHERE type='table'
         AND name= ?;`;
-    const count = await this.dbGetAsync<number>(db, sql, tableName);
-    return count > 0;
+    const result = await this.dbGetAsync<number>(db, sql, tableName) as any;
+    return result && result.count > 0;
   }
 
   private async dbEnsureScriptTableAsync(db: Database): Promise<void> {
@@ -94,7 +94,8 @@ export class NodeScriptCacheService {
         name TEXT NOT NULL,
         hash TEXT NOT NULL,
         metadata TEXT NOT NULL,
-        modified TEXT NOT NULL
+        modified TEXT NOT NULL,
+        UNIQUE(module, name)
       );`;
     await this.dbRunAsync(db, sql);
   }
