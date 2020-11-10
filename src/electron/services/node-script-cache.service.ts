@@ -47,7 +47,7 @@ export class NodeScriptCacheService {
 
     const sql = `
       INSERT INTO script(module, name, hash, metadata, modified)
-      VALUES (?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?)
     `;
 
     const json = JSON.stringify(script);
@@ -60,7 +60,7 @@ export class NodeScriptCacheService {
     await this.dbEnsureScriptTableAsync(db);
 
     const sql = `
-      UPDATE script(module, name, hash, metadata, modified)
+      UPDATE script
       SET
           hash = ?
         , metadata = ?
@@ -102,9 +102,8 @@ export class NodeScriptCacheService {
   private dbGetAsync<T>(db: Database, sql: string, ...params: any[]): Promise<T> {
     return new Promise((resolve, reject) => {
       db.get(sql, params, (err, row) => {
-        db.close();
-
         if (err) {
+          console.error(err.message);
           reject(err);
         } else {
           resolve(row as T);
@@ -116,9 +115,8 @@ export class NodeScriptCacheService {
   private dbRunAsync(db: Database, sql: string, ...params: any[]): Promise<void> {
     return new Promise((resolve, reject) => {
       db.run(sql, params, (err) => {
-        db.close();
-
         if (err) {
+          console.error(err.message);
           reject(err);
         } else {
           resolve();
