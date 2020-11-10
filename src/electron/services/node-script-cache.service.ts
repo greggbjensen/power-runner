@@ -70,7 +70,7 @@ export class NodeScriptCacheService {
     `;
 
     const json = JSON.stringify(script);
-    await this.dbRunAsync(db, sql, module, name, script.hash, json, new Date().toISOString());
+    await this.dbRunAsync(db, sql, script.hash, json, new Date().toISOString(), module, name);
     db.close();
   }
 

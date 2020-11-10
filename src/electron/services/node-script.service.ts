@@ -39,6 +39,18 @@ export class NodeScriptService {
     });
   }
 
+  private static readFileAsync(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
   public async listAsync(fileGlobs: string[]): Promise<IScriptFile[]> {
 
     const files = await globby(fileGlobs);
@@ -164,8 +176,9 @@ export class NodeScriptService {
       const workingDirectory = `${resourcesPath}\\electron\\powershell`;
       const command = `"${NodeScriptService.PowerShellPath}" "${workingDirectory}\\GetCommandMetadata.ps1" "${filePath}"`;
       exec(command, { cwd: workingDirectory }, (error, stdout, stderr) => {
-        console.error(error);
+
         if (error) {
+          console.error(error);
           reject(error);
         } else if (stdout) {
 
@@ -193,17 +206,19 @@ export class NodeScriptService {
     } as IScriptParam;
 
     // Process defaults.
-    switch (param.default.toLowerCase()) {
-      case '$true':
-        param.default = true;
-        break;
+    if (param.default) {
+      switch (param.default.toLowerCase()) {
+        case '$true':
+          param.default = true;
+          break;
 
-      case '$false':
-        param.default = false;
-        break;
+        case '$false':
+          param.default = false;
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
 
     // Process attributes.
@@ -273,17 +288,5 @@ export class NodeScriptService {
     };
 
     return file;
-  }
-
-  private static readFileAsync(filePath: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    });
   }
 }
