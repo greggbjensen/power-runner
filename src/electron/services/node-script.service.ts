@@ -1,12 +1,14 @@
 import { exec, spawn } from 'child_process';
 import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
+import * as fs from 'fs';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
 import * as path from 'path';
+import { Md5 } from 'ts-md5/dist/md5';
 import { IPowerShellParam, IScript, IScriptExit, IScriptFile, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
-import { ScriptParser } from './script.parser';
+import { NodeScriptCacheService } from './node-script-cache.service';
 
 // Initialize node-pty with an appropriate shell
 const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
@@ -27,7 +29,7 @@ export class NodeScriptService {
   constructor(
     private _app: App,
     private _browserWindow: BrowserWindow,
-    private _scriptParser: ScriptParser
+    private _cache: NodeScriptCacheService
   ) {
     ipcMain.on('script:data-ack', (event: any, scriptId: string) => {
       const child = this._childProcesses.get(scriptId);
@@ -123,7 +125,35 @@ export class NodeScriptService {
     }
   }
 
-  public parseAsync(file: IScriptFile): Promise<IScript> {
+  public async parseAsync(file: IScriptFile): Promise<IScript> {
+
+    const hash = await this.getFileHashAsync(file);
+    let script = await this._cache.getAsync(file.module, file.name);
+    const isCached = !!script;
+    if (!isCached || script.hash !== hash) {
+      script = await this.internalParseAsync(file);
+      script.hash = hash;
+
+      if (!isCached) {
+        await this._cache.addAsync(file.module, file.name, script);
+      } else {
+        await this._cache.updateAsync(file.module, file.name, script);
+      }
+
+    }
+
+    return script;
+  }
+
+  private async getFileHashAsync(file: IScriptFile): Promise<string> {
+
+    const filePath = `${file.directory}\\${file.name}`;
+    const fileContent = await NodeScriptService.readFileAsync(filePath);
+    const hash = Md5.hashStr(fileContent) as string;
+    return hash;
+  }
+
+  private internalParseAsync(file: IScriptFile): Promise<IScript> {
 
     return new Promise((resolve, reject) => {
 
@@ -243,5 +273,17 @@ export class NodeScriptService {
     };
 
     return file;
+  }
+
+  private static readFileAsync(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
   }
 }
