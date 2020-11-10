@@ -44,6 +44,18 @@
   .script-profile-name {
     padding-left: $space-25;
   }
+
+  .script-loading {
+    display: flex;
+    margin-top: 5rem;
+    font-size: $font-size-16;
+    justify-content: center;
+    align-items: center;
+
+    .mat-spinner {
+      margin-right: 1.5rem;
+    }
+  }
 }
 
 .script-form-header {

@@ -1,5 +1,5 @@
 import { Component, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { IScript } from 'src/app/core/models';
+import { IScript, IScriptFile } from 'src/app/core/models';
 
 @Component({
   selector: 'pru-script-tabs-container',
@@ -10,15 +10,15 @@ import { IScript } from 'src/app/core/models';
 export class ScriptTabsContainerComponent implements OnInit {
   @HostBinding('class.script-tabs-container') public className = true;
 
-  @Input() public scripts: IScript[];
-  @Input() public set selectedScript(value: IScript) {
-    this._selectedScript = value;
-    this.selectedIndex = this.scripts.indexOf(this._selectedScript);
+  @Input() public files: IScriptFile[];
+  @Input() public set selectedFile(value: IScriptFile) {
+    this._selectedFile = value;
+    this.selectedIndex = this.files.indexOf(this._selectedFile);
   }
 
   public selectedIndex = -1;
 
-  private _selectedScript: IScript;
+  private _selectedFile: IScriptFile;
 
   constructor() { }
 
@@ -26,9 +26,9 @@ export class ScriptTabsContainerComponent implements OnInit {
   }
 
   public closeTab(script: IScript): void {
-    const index = this.scripts.findIndex(s => s.id === script.id);
+    const index = this.files.findIndex(s => s.id === script.id);
     if (index !== -1) {
-      this.scripts.splice(index, 1);
+      this.files.splice(index, 1);
     }
   }
 

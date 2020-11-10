@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -59,6 +60,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatIconModule,
     MatRadioModule,
     MatSidenavModule,
+    MatProgressSpinnerModule,
     MatDialogModule,
     MatMenuModule,
     MatToolbarModule,

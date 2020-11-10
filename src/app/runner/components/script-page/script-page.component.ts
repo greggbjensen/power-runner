@@ -1,5 +1,5 @@
 import { Component, HostBinding, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { IScript, IScriptRun, ScriptRef } from 'src/app/core/models';
+import { IScript, IScriptFile, IScriptRun, ScriptRef } from 'src/app/core/models';
 import { NodeProxyFactory, ScriptService } from 'src/app/core/services';
 import { ScriptLogComponent } from '../script-log/script-log.component';
 
@@ -11,7 +11,7 @@ import { ScriptLogComponent } from '../script-log/script-log.component';
 })
 export class ScriptPageComponent implements OnInit {
   @HostBinding('class.script-page') public className = true;
-  @Input() public script: IScript;
+  @Input() public file: IScriptFile;
   @ViewChild(ScriptLogComponent) public scriptLog: ScriptLogComponent;
   public scriptRef: ScriptRef;
 

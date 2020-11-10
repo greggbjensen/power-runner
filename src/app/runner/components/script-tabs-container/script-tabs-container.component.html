@@ -1,9 +1,9 @@
 <mat-tab-group [selectedIndex]="selectedIndex">
-  <mat-tab *ngFor="let script of scripts">
+  <mat-tab *ngFor="let file of files">
       <ng-template mat-tab-label>
-        <span [title]="script.directory + '/' + script.name">{{script.name}}</span>
-        <mat-icon class="script-tab-close" (click)="closeTab(script)">close</mat-icon>
+        <span [title]="file.directory + '/' + file.name">{{file.name}}</span>
+        <mat-icon class="script-tab-close" (click)="closeTab(file)">close</mat-icon>
       </ng-template>
-      <pru-script-page [script]="script"></pru-script-page>
+      <pru-script-page [file]="file"></pru-script-page>
   </mat-tab>
 </mat-tab-group>

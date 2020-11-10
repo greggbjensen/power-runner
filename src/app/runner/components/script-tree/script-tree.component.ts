@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { IScript, IScriptFile, IScriptNode } from 'src/app/core/models';
+import { IScriptFile, IScriptNode } from 'src/app/core/models';
 import { ScriptService } from 'src/app/core/services';
 
 @Component({
@@ -13,7 +13,7 @@ import { ScriptService } from 'src/app/core/services';
 export class ScriptTreeComponent implements OnInit {
   @HostBinding('class.script-tree') public className = true;
 
-  @Output() public scriptOpened = new EventEmitter<IScript>();
+  @Output() public fileOpened = new EventEmitter<IScriptFile>();
 
   public get nodes(): IScriptNode[] {
     return this.dataSource.data;
@@ -30,7 +30,6 @@ export class ScriptTreeComponent implements OnInit {
   public dataSource = new MatTreeNestedDataSource<IScriptNode>();
 
   constructor(
-    private _scriptService: ScriptService
   ) { }
 
   public ngOnInit(): void {
@@ -38,8 +37,7 @@ export class ScriptTreeComponent implements OnInit {
 
   public hasChild = (index: number, node: IScriptNode) => !!node.children && node.children.length > 0;
 
-  public async openScriptAsync(file: IScriptFile): Promise<void> {
-    const script: IScript = await this._scriptService.parseAsync(file);
-    this.scriptOpened.emit(script);
+  public async openFileAsync(file: IScriptFile): Promise<void> {
+    this.fileOpened.emit(file);
   }
 }

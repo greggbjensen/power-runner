@@ -21,8 +21,8 @@ export class AppComponent {
   @HostBinding('class.pru') public className = true;
   public title = 'powerrunner';
   public nodes$: Observable<IScriptNode[]>;
-  public openScripts: IScript[] = [];
-  public selectedScript: IScript;
+  public openFiles: IScriptFile[] = [];
+  public selectedFile: IScriptFile;
   public showSettings = false;
   public isMaximized = false;
   public settings: ISettings;
@@ -49,14 +49,14 @@ export class AppComponent {
       .then(status => this.elevatedStatus = status, err => console.error(err));
   }
 
-  public scriptOpened(script: IScript): void {
+  public fileOpened(file: IScriptFile): void {
 
-    const alreadyOpenScript = this.openScripts.find(s => s.id === script.id);
+    const alreadyOpenScript = this.openFiles.find(s => s.id === file.id);
     if (!alreadyOpenScript) {
-      this.selectedScript = script;
-      this.openScripts.push(script);
+      this.selectedFile = file;
+      this.openFiles.push(file);
     } else {
-      this.selectedScript = alreadyOpenScript;
+      this.selectedFile = alreadyOpenScript;
     }
   }
 
