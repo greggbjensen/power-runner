@@ -1,21 +1,41 @@
 import { Injectable } from '@angular/core';
-import * as crypto from 'crypto';
+import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { Database } from 'sqlite3';
-import { IScript } from '../../app/core/models';
+import { Md5 } from 'ts-md5/dist/md5';
+import { IScript, IScriptFile } from '../../app/core/models';
+import { IUncachedScriptFile } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NodeScriptCacheService {
 
+  private static readonly MetadataVersion = '1.0.0';
   private _cacheFile: string;
   private _db: Promise<Database>;
 
   constructor() {
     this._cacheFile = path.join(os.homedir(), '.powerrunner', 'script-cache.sqlite3');
     this._db = this.connectDbAsync();
+  }
+
+  private static readFileAsync(filePath: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  public async initializeAsync(): Promise<void> {
+    const db = await this._db;
+    await this.dbEnsureScriptTableAsync(db);
   }
 
   public async getAsync(module: string, name: string): Promise<IScript> {
@@ -25,15 +45,18 @@ export class NodeScriptCacheService {
     if (await this.dbTableExistsAsync(db, 'script')) {
 
       const sql = `
-        SELECT metadata
+        SELECT
+            metadata
+          , version
         FROM script
         WHERE module = ?
           AND name = ?
       `;
 
-      const result = await this.dbGetAsync<string>(db, sql, module, name) as any;
+      const result = await this.dbGetAsync(db, sql, module, name);
 
-      if (result && result.metadata) {
+      // Only use the cache record if the metadata version is correct.
+      if (result && result.metadata && result.version === NodeScriptCacheService.MetadataVersion) {
         script = JSON.parse(result.metadata);
       }
     }
@@ -41,26 +64,27 @@ export class NodeScriptCacheService {
     return script;
   }
 
-  public async addAsync(module: string, name: string, script: IScript): Promise<void> {
+  public async addAsync(script: IScript): Promise<void> {
 
     const db = await this._db;
     await this.dbEnsureScriptTableAsync(db);
 
     const sql = `
-      INSERT INTO script(module, name, hash, metadata, modified)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO script(module, name, hash, metadata, modified, version)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     const json = JSON.stringify(script);
 
     try {
-      await this.dbRunAsync(db, sql, module, name, script.hash, json, new Date().toISOString());
+      await this.dbRunAsync(db, sql, script.module, script.name, script.hash, json,
+        new Date().toISOString(), NodeScriptCacheService.MetadataVersion);
     } catch (err) {
       console.warn(`Unable to cache ${module} ${name}, already in progress.`);
     }
   }
 
-  public async updateAsync(module: string, name: string, script: IScript): Promise<void> {
+  public async updateAsync(script: IScript): Promise<void> {
     const db = await this._db;
     await this.dbEnsureScriptTableAsync(db);
 
@@ -70,17 +94,62 @@ export class NodeScriptCacheService {
           hash = ?
         , metadata = ?
         , modified = ?
+        , version = ?
       WHERE MODULE = ?
         AND NAME = ?
     `;
 
     const json = JSON.stringify(script);
-    await this.dbRunAsync(db, sql, script.hash, json, new Date().toISOString(), module, name);
+    await this.dbRunAsync(db, sql, script.hash, json, new Date().toISOString(),
+      NodeScriptCacheService.MetadataVersion,  script.module, script.name);
+  }
+
+  public async getFileHashAsync(file: IScriptFile): Promise<string> {
+
+    const filePath = `${file.directory}\\${file.name}`;
+    const fileContent = await NodeScriptCacheService.readFileAsync(filePath);
+    const hash = Md5.hashStr(fileContent) as string;
+    return hash;
+  }
+
+  public async listUncachedFilesAsync(files: IScriptFile[]): Promise<IUncachedScriptFile[]> {
+    const db = await this._db;
+    await this.dbEnsureScriptTableAsync(db);
+
+    const sql = `
+      SELECT
+          module
+        , name
+        , hash
+      FROM script
+    `;
+
+    const rows = await this.dbListAsync(db, sql);
+    const lookup: { [key: string]: string } = { };
+    rows.forEach(r => lookup[`${r.module}:${r.name}`] = r.hash);
+    const uncachedFilesPromises = files.map(file => {
+      const hash = lookup[`${file.module}:${file.name}`];
+      return this.getUncachedFileAsync(file, hash);
+    });
+
+    const uncachedFiles = await Promise.all(uncachedFilesPromises);
+    return uncachedFiles.filter(f => !!f);
   }
 
   public async disposeAsync(): Promise<void> {
     const db = await this._db;
     db.close();
+  }
+
+  private async getUncachedFileAsync(file: IScriptFile, cachedHash: string): Promise<IUncachedScriptFile> {
+    const hash = await this.getFileHashAsync(file);
+
+    // Cache is already up to date.
+    if (hash === cachedHash) {
+      return null;
+    }
+
+    return { file, hash, isUpdate: !!cachedHash };
   }
 
   private async dbTableExistsAsync(db: Database, tableName: string): Promise<boolean> {
@@ -90,7 +159,7 @@ export class NodeScriptCacheService {
       FROM sqlite_master
       WHERE type='table'
         AND name= ?;`;
-    const result = await this.dbGetAsync<number>(db, sql, tableName) as any;
+    const result = await this.dbGetAsync(db, sql, tableName);
     return result && result.count > 0;
   }
 
@@ -104,19 +173,33 @@ export class NodeScriptCacheService {
         hash TEXT NOT NULL,
         metadata TEXT NOT NULL,
         modified TEXT NOT NULL,
+        version TEXT NOT NULL,
         UNIQUE(module, name)
       );`;
     await this.dbRunAsync(db, sql);
   }
 
-  private dbGetAsync<T>(db: Database, sql: string, ...params: any[]): Promise<T> {
+  private dbGetAsync(db: Database, sql: string, ...params: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       db.get(sql, params, (err, row) => {
         if (err) {
           console.error(err.message);
           reject(err);
         } else {
-          resolve(row as T);
+          resolve(row);
+        }
+      });
+    });
+  }
+
+  private dbListAsync(db: Database, sql: string, ...params: any[]): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      db.all(sql, params, (err, row) => {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+        } else {
+          resolve(row);
         }
       });
     });

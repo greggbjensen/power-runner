@@ -6,6 +6,7 @@ const electron = (window as any).require('electron');
 import { MatDialog } from '@angular/material/dialog';
 import { IAppUpdate, IScriptFile, IScriptNode, ISettings } from './core/models';
 import { AppService, ScriptService, SettingsService, StatusService } from './core/services';
+import { RunSettings } from './run-settings';
 import { AppUpdateDialogComponent } from './runner/components';
 
 
@@ -126,7 +127,10 @@ export class AppComponent implements OnDestroy {
       const fullPaths = this.settings.searchPaths.map(p => this.getFullPath(p));
       this._scriptService.listAsync(fullPaths).then((files) => {
         this._nodes.next(this.nodeTransform(files));
-        this.preCacheAsync(files);
+
+        if (RunSettings.PreCache) {
+          setTimeout(() => this.preCacheAsync(files), 1);
+        }
       }, err => console.error(err));
 
     } else {
@@ -136,21 +140,10 @@ export class AppComponent implements OnDestroy {
   }
 
   private async preCacheAsync(files: IScriptFile[]): Promise<void> {
-
-    const promises: Promise<void>[] = [];
-    for (const file of files) {
-      await this.delay(100);
-      promises.push(this._scriptService.preCacheAsync(file));
+    if (files.length > 0) {
+      await this._scriptService.preCacheAsync(files);
+      this._statusService.setStatus(`Pre-cache complete`);
     }
-
-    await Promise.all(promises);
-    this._statusService.setStatus('Pre-cache complete.');
-  }
-
-  private async delay(milliseconds: number): Promise<void> {
-    return new Promise(resolve => {
-      setTimeout(() => resolve(), milliseconds);
-    });
   }
 
   private getFullPath(path: string): string {

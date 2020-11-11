@@ -1,13 +1,13 @@
 import { exec, spawn } from 'child_process';
 import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
-import * as fs from 'fs';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
 import * as path from 'path';
-import { Md5 } from 'ts-md5/dist/md5';
 import { IPowerShellParam, IScript, IScriptExit, IScriptFile, IScriptParam, ParamType } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
+import { RunSettings } from '../../app/run-settings';
+import { IUncachedScriptFile } from '../models';
 import { NodeScriptCacheService } from './node-script-cache.service';
 
 // Initialize node-pty with an appropriate shell
@@ -36,18 +36,6 @@ export class NodeScriptService {
       if (child) {
         child.write(NodeScriptService.Resume);
       }
-    });
-  }
-
-  private static readFileAsync(filePath: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
     });
   }
 
@@ -139,38 +127,48 @@ export class NodeScriptService {
 
   public async parseAsync(file: IScriptFile): Promise<IScript> {
 
-    const hash = await this.getFileHashAsync(file);
-    let script = await this._cache.getAsync(file.module, file.name);
+    let script: IScript;
+    if (!RunSettings.Cache) {
+      script = await this.internalParseAsync(file);
+      return script;
+    }
+
+    const hash = await this._cache.getFileHashAsync(file);
+    script = await this._cache.getAsync(file.module, file.name);
     const isCached = !!script;
     if (!isCached || script.hash !== hash) {
       script = await this.internalParseAsync(file);
       script.hash = hash;
 
       if (!isCached) {
-        await this._cache.addAsync(file.module, file.name, script);
+        await this._cache.addAsync(script);
       } else {
-        await this._cache.updateAsync(file.module, file.name, script);
+        await this._cache.updateAsync(script);
       }
-
     }
 
     return script;
   }
 
-  public async preCacheAsync(file: IScriptFile): Promise<void> {
-    await this.parseAsync(file);
+  public async preCacheAsync(files: IScriptFile[]): Promise<void> {
+
+    const uncachedFiles = await this._cache.listUncachedFilesAsync(files);
+    const lookup: { [key: string]: IUncachedScriptFile } = { };
+    uncachedFiles.forEach(f => lookup[`${f.file.module}:${f.file.name}`] = f);
+
+    for (const entry of uncachedFiles) {
+      const script = await this.internalParseAsync(entry.file);
+      script.hash = entry.hash;
+      if (entry.isUpdate) {
+        await this._cache.updateAsync(script);
+      } else {
+        await this._cache.addAsync(script);
+      }
+    }
   }
 
   public async disposeAsync(): Promise<void> {
     await this._cache.disposeAsync();
-  }
-
-  private async getFileHashAsync(file: IScriptFile): Promise<string> {
-
-    const filePath = `${file.directory}\\${file.name}`;
-    const fileContent = await NodeScriptService.readFileAsync(filePath);
-    const hash = Md5.hashStr(fileContent) as string;
-    return hash;
   }
 
   private internalParseAsync(file: IScriptFile): Promise<IScript> {
@@ -200,6 +198,7 @@ export class NodeScriptService {
           script.params = parameters.map(p => this.projectParameter(p));
           resolve(script);
         } else {
+          console.error(stderr);
           reject(stderr);
         }
       });
