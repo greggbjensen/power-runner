@@ -88,15 +88,17 @@ export class NodeScriptCacheService {
     const db = await this._db;
     await this.dbEnsureScriptTableAsync(db);
 
+    // List all cached items, filtering out versions that do not match current.
     const sql = `
       SELECT
           module
         , name
         , hash
       FROM script
+      WHERE version = ?
     `;
 
-    const rows = await this.dbListAsync(db, sql);
+    const rows = await this.dbListAsync(db, sql, NodeScriptCacheService.MetadataVersion);
     const lookup: { [key: string]: string } = { };
     rows.forEach(r => lookup[`${r.module}:${r.name}`] = r.hash);
     const uncachedFilesPromises = files.map(file => {
