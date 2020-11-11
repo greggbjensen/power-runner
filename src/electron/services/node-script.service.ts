@@ -153,12 +153,11 @@ export class NodeScriptService {
   public async preCacheAsync(files: IScriptFile[]): Promise<void> {
 
     const uncachedFiles = await this._cache.listUncachedFilesAsync(files);
-    const lookup: { [key: string]: IUncachedScriptFile } = { };
-    uncachedFiles.forEach(f => lookup[`${f.file.module}:${f.file.name}`] = f);
 
     for (const entry of uncachedFiles) {
       const script = await this.internalParseAsync(entry.file);
       script.hash = entry.hash;
+
       if (entry.isUpdate) {
         await this._cache.updateAsync(script);
       } else {
@@ -188,18 +187,28 @@ export class NodeScriptService {
           reject(error);
         } else if (stdout) {
 
-          // Ensure result is always an array.
-          let parameters = JSON.parse(stdout);
-          if (!Array.isArray(parameters)) {
-            parameters = [parameters];
-          }
+          try {
+            // Ensure result is always an array.
+            let parameters = JSON.parse(stdout);
+            if (!Array.isArray(parameters)) {
+              parameters = [parameters];
+            }
 
-          const script = Object.assign({ }, file) as IScript;
-          script.params = parameters.map(p => this.projectParameter(p));
-          resolve(script);
-        } else {
+            const script = Object.assign({ }, file) as IScript;
+            script.params = parameters.map(p => this.projectParameter(p));
+            resolve(script);
+          } catch (err) {
+            console.error(err, stdout);
+            reject(err);
+          }
+        } else if (stderr) {
           console.error(stderr);
           reject(stderr);
+        } else {
+          // No parameters available.
+          const script = Object.assign({ }, file) as IScript;
+          script.params = [];
+          resolve(script);
         }
       });
     });
