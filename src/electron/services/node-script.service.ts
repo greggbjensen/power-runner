@@ -135,16 +135,10 @@ export class NodeScriptService {
 
     const hash = await this._cache.getFileHashAsync(file);
     script = await this._cache.getAsync(file.module, file.name);
-    const isCached = !!script;
-    if (!isCached || script.hash !== hash) {
+    if (!script || script.hash !== hash) {
       script = await this.internalParseAsync(file);
       script.hash = hash;
-
-      if (!isCached) {
-        await this._cache.addAsync(script);
-      } else {
-        await this._cache.updateAsync(script);
-      }
+      await this._cache.setAsync(script);
     }
 
     return script;
@@ -157,12 +151,7 @@ export class NodeScriptService {
     for (const entry of uncachedFiles) {
       const script = await this.internalParseAsync(entry.file);
       script.hash = entry.hash;
-
-      if (entry.isUpdate) {
-        await this._cache.updateAsync(script);
-      } else {
-        await this._cache.addAsync(script);
-      }
+      await this._cache.setAsync(script);
     }
   }
 

@@ -65,44 +65,15 @@ export class NodeScriptCacheService {
     return script;
   }
 
-  public async addAsync(script: IScript): Promise<void> {
-
+  public async setAsync(script: IScript): Promise<void> {
     const db = await this._db;
     await this.dbEnsureScriptTableAsync(db);
 
-    const sql = `
-      INSERT INTO script(module, name, hash, metadata, modified, version)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
-
-    const json = JSON.stringify(script);
-
-    try {
-      await this.dbRunAsync(db, sql, script.module, script.name, script.hash, json,
-        new Date().toISOString(), NodeScriptCacheService.MetadataVersion);
-    } catch (err) {
-      console.warn(`Unable to cache ${module} ${name}, already in progress.`);
+    if (await this.existsAsync(db, script.module, script.name)) {
+      await this.updateAsync(db, script);
+    } else {
+      await this.addAsync(db, script);
     }
-  }
-
-  public async updateAsync(script: IScript): Promise<void> {
-    const db = await this._db;
-    await this.dbEnsureScriptTableAsync(db);
-
-    const sql = `
-      UPDATE script
-      SET
-          hash = ?
-        , metadata = ?
-        , modified = ?
-        , version = ?
-      WHERE MODULE = ?
-        AND NAME = ?
-    `;
-
-    const json = JSON.stringify(script);
-    await this.dbRunAsync(db, sql, script.hash, json, new Date().toISOString(),
-      NodeScriptCacheService.MetadataVersion,  script.module, script.name);
   }
 
   public async getFileHashAsync(file: IScriptFile): Promise<string> {
@@ -142,6 +113,53 @@ export class NodeScriptCacheService {
     db.close();
   }
 
+  private async existsAsync(db: Database, module: string, name: string): Promise<boolean> {
+    const sql = `
+      SELECT COUNT(*) as count
+      FROM script
+      WHERE module = ?
+        AND name = ?
+    `;
+
+    const result = await this.dbGetAsync(db, sql, module, name);
+    return result && result.count > 0;
+  }
+
+  private async addAsync(db: Database, script: IScript): Promise<void> {
+
+    const sql = `
+      INSERT INTO script(module, name, hash, metadata, modified, version)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    const json = JSON.stringify(script);
+
+    try {
+      await this.dbRunAsync(db, sql, script.module, script.name, script.hash, json,
+        new Date().toISOString(), NodeScriptCacheService.MetadataVersion);
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  private async updateAsync(db: Database, script: IScript): Promise<void> {
+
+    const sql = `
+      UPDATE script
+      SET
+          hash = ?
+        , metadata = ?
+        , modified = ?
+        , version = ?
+      WHERE MODULE = ?
+        AND NAME = ?
+    `;
+
+    const json = JSON.stringify(script);
+    await this.dbRunAsync(db, sql, script.hash, json, new Date().toISOString(),
+      NodeScriptCacheService.MetadataVersion,  script.module, script.name);
+  }
+
   private async getUncachedFileAsync(file: IScriptFile, cachedHash: string): Promise<IUncachedScriptFile> {
     const hash = await this.getFileHashAsync(file);
 
@@ -150,7 +168,7 @@ export class NodeScriptCacheService {
       return null;
     }
 
-    return { file, hash, isUpdate: !!cachedHash };
+    return { file, hash };
   }
 
   private async dbTableExistsAsync(db: Database, tableName: string): Promise<boolean> {
