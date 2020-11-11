@@ -127,10 +127,9 @@ export class ScriptFormComponent implements OnInit {
   }
 
   public async refreshAsync(): Promise<void> {
+
+    // Clear out for loading.
     this.script = null;
-    this.form = null;
-    this.selectedProfile = null;
-    this.updateProfiles([]);
 
     this.script = await this._scriptService.parseAsync(this._file);
     this.form = this.createFormGroup(this.script.params);
