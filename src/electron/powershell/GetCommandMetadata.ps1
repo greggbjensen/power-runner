@@ -13,35 +13,17 @@ if ($help -and ($help.description -ne $null)) {
   }
 }
 
+$scriptRootRegex = [regex]::new('\$PSScriptRoot', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+$directory = [System.IO.Path]::GetDirectoryName($scriptPath)
 $metadata = Get-Command $scriptPath
 $parameters = [System.Collections.ArrayList]::new()
 foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   $name = $param.Name.ToString().TrimStart("$")
 
   $default = $null
-  if ($param.DefaultValue -ne $null) {
-
-    if ($param.DefaultValue.Value -ne $null) {
-      $default = $param.DefaultValue.Value
-    } else {
-      $defaultText = $param.DefaultValue.Extent.Text -ne '$null'
-      switch ($param.DefaultValue.Extent.Text) {
-        '$null' {
-          $default = $null
-        }
-        '$true' {
-          $default = $true
-        }
-        '$false' {
-          $default = $false
-        }
-        Default {
-          $default = $param.DefaultValue
-        }
-      }
-    }
-  } else {
-    $default = $null
+  if ($param.DefaultValue.Extent.Text -ne $null) {
+    $defaultText = $scriptRootRegex.Replace($param.DefaultValue.Extent.Text, $directory)
+    $default = Invoke-Expression $defaultText
   }
 
   $x = $metadata.Parameters.$name;
