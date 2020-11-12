@@ -4,10 +4,9 @@ import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
 import * as path from 'path';
-import { IPowerShellParam, IScript, IScriptExit, IScriptFile, IScriptParam, ParamType } from '../../app/core/models';
+import { IScript, IScriptExit, IScriptFile, ScriptStatus } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
 import { RunSettings } from '../../app/run-settings';
-import { IUncachedScriptFile } from '../models';
 import { NodeScriptCacheService } from './node-script-cache.service';
 
 // Initialize node-pty with an appropriate shell
@@ -141,6 +140,8 @@ export class NodeScriptService {
       await this._cache.setAsync(script);
     }
 
+    script.status = ScriptStatus.Stopped;
+
     return script;
   }
 
@@ -178,7 +179,6 @@ export class NodeScriptService {
 
           try {
             // Ensure result is always an array.
-            console.log(stdout);
             const metadata = JSON.parse(stdout);
             const script = Object.assign({ }, file, metadata) as IScript;
             resolve(script);
