@@ -15,24 +15,21 @@ if ($help -and ($help.description -ne $null)) {
 
 $metadata = Get-Command $scriptPath
 $parameters = [System.Collections.ArrayList]::new()
-$parameterNames = [System.Collections.ArrayList]::new()
-$defaults = @{}
 foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   $name = $param.Name.ToString().TrimStart("$")
+
+  $default = $null
   if (($param.DefaultValue -ne $null) -and ($param.DefaultValue.Extent.Text -ne '$null')) {
 
     if ($param.DefaultValue.Value -ne $null) {
-      $defaults[$name] = $param.DefaultValue.Value
+      $default = $param.DefaultValue.Value
     } else {
-      $defaults[$name] = $param.DefaultValue
+      $default = $param.DefaultValue
     }
   } else {
-    $defaults[$name] = $null
+    $default = $null
   }
-  $parameterNames.Add($name) | Out-Null
-}
 
-foreach ($name in $parameterNames) {
   $x = $metadata.Parameters.$name;
   $validation = @{ }
   $type = $x.ParameterType.Name
@@ -43,22 +40,20 @@ foreach ($name in $parameterNames) {
   }
 
   foreach ($attribute in $x.Attributes) {
-    $attributeType = $attribute.TypeId.Name.Replace("Attribute", "")
+    $attributeType = $attribute.TypeId.Name
     switch ($attributeType) {
-      "Parameter" {
+      "ParameterAttribute" {
         if ($attribute.Mandatory) {
           $validation.required = $true
         }
       }
-      "ValidateSet" {
+      "ValidateSetAttribute" {
         $validation.set = $attribute.ValidValues
         $type = 'Set'
       }
       Default {}
     }
   }
-
-  $default = $defaults[$name]
 
   $parameter = @{
     name = $name
