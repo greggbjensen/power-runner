@@ -19,12 +19,26 @@ foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   $name = $param.Name.ToString().TrimStart("$")
 
   $default = $null
-  if (($param.DefaultValue -ne $null) -and ($param.DefaultValue.Extent.Text -ne '$null')) {
+  if ($param.DefaultValue -ne $null) {
 
     if ($param.DefaultValue.Value -ne $null) {
       $default = $param.DefaultValue.Value
     } else {
-      $default = $param.DefaultValue
+      $defaultText = $param.DefaultValue.Extent.Text -ne '$null'
+      switch ($param.DefaultValue.Extent.Text) {
+        '$null' {
+          $default = $null
+        }
+        '$true' {
+          $default = $true
+        }
+        '$false' {
+          $default = $false
+        }
+        Default {
+          $default = $param.DefaultValue
+        }
+      }
     }
   } else {
     $default = $null
@@ -37,6 +51,9 @@ foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   if ($x.ParameterType.BaseType.Name -eq 'Array') {
     $itemType = $type.Replace('[]', '')
     $type = 'Array'
+  }
+  elseif ($type -eq 'SwitchParameter') {
+    $type = 'Switch'
   }
 
   foreach ($attribute in $x.Attributes) {
