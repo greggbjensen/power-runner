@@ -2,7 +2,7 @@ param (
   [string][Parameter(Mandatory = $true)]$scriptPath
 )
 
-$help = Get-Help $scriptPath -Full | ConvertTo-Json
+$help = Get-Help $scriptPath -Full
 $description = $null
 if ($help -and ($help.description -ne $null)) {
   $description = ''
