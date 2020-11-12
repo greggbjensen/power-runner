@@ -2,16 +2,38 @@ param (
   [string][Parameter(Mandatory = $true)]$scriptPath
 )
 
+$help = Get-Help $scriptPath -Full | ConvertTo-Json
+$description = $null
+if ($help -and ($help.description -ne $null)) {
+  $description = ''
+  foreach ($node in $help.description) {
+    if ($node.Text -ne $null) {
+      $description += $node.Text
+    }
+  }
+}
+
 $metadata = Get-Command $scriptPath
 $parameters = [System.Collections.ArrayList]::new()
+$parameterNames = [System.Collections.ArrayList]::new()
 $defaults = @{}
 foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   $name = $param.Name.ToString().TrimStart("$")
-  $defaults[$name] = $param.DefaultValue.ToString().Trim('"', "'")
+  if ($param.DefaultValue -ne $null) {
+
+    if ($param.DefaultValue.Value -ne $null) {
+      $defaults[$name] = $param.DefaultValue.Value
+    } else {
+      $defaults[$name] = $param.DefaultValue
+    }
+  } else {
+    $defaults[$name] = $null
+  }
+  $parameterNames.Add($name) | Out-Null
 }
 
-foreach ($key in $metadata.Parameters.Keys) {
-  $x = $metadata.Parameters.$key;
+foreach ($name in $parameterNames) {
+  $x = $metadata.Parameters.$name;
   $validation = @{ }
   $type = $x.ParameterType.Name.Replace("Parameter", "")
   foreach ($attribute in $x.Attributes) {
@@ -30,7 +52,7 @@ foreach ($key in $metadata.Parameters.Keys) {
     }
   }
 
-  $default = $defaults[$key]
+  $default = $defaults[$name]
   if ([string]::Equals($default, '$true', [System.StringComparison]::OrdinalIgnoreCase)) {
     $default = $true
   }
@@ -39,7 +61,7 @@ foreach ($key in $metadata.Parameters.Keys) {
   }
 
   $parameter = @{
-    name = $key
+    name = $name
     type = $type
     validation = $validation
     default = $default
@@ -49,6 +71,6 @@ foreach ($key in $metadata.Parameters.Keys) {
 }
 
 @{
-  description = $null
+  description = $description
   params = $parameters
 } | ConvertTo-Json -Depth 4 -Compress

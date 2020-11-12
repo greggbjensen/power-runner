@@ -10,7 +10,7 @@
       "request": "launch",
       "script": "${workspaceFolder}/src/electron/powershell/GetCommandMetadata.ps1",
       "args": [
-        ".\\samples\\attributes\\ComplexParams.ps1"
+        ".\\samples\\attributes\\DocumentedParams.ps1"
       ],
       "cwd": "${workspaceFolder}"
     }
