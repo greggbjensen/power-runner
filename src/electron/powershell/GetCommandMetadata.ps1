@@ -53,12 +53,6 @@ foreach ($name in $parameterNames) {
   }
 
   $default = $defaults[$name]
-  if ([string]::Equals($default, '$true', [System.StringComparison]::OrdinalIgnoreCase)) {
-    $default = $true
-  }
-  elseif ([string]::Equals($default, '$false', [System.StringComparison]::OrdinalIgnoreCase)) {
-    $default = $false
-  }
 
   $parameter = @{
     name = $name
