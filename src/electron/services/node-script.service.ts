@@ -178,13 +178,9 @@ export class NodeScriptService {
 
           try {
             // Ensure result is always an array.
-            let parameters = JSON.parse(stdout);
-            if (!Array.isArray(parameters)) {
-              parameters = [parameters];
-            }
-
-            const script = Object.assign({ }, file) as IScript;
-            script.params = parameters.map(p => this.projectParameter(p));
+            console.log(stdout);
+            const metadata = JSON.parse(stdout);
+            const script = Object.assign({ }, file, metadata) as IScript;
             resolve(script);
           } catch (err) {
             console.error(err, stdout);
@@ -201,79 +197,6 @@ export class NodeScriptService {
         }
       });
     });
-  }
-
-  private projectParameter(parameter: IPowerShellParam): IScriptParam {
-    const param = {
-      name: parameter.name,
-      default: parameter.default,
-      validation: { }
-    } as IScriptParam;
-
-    // Process defaults.
-    if (param.default) {
-      switch (param.default.toLowerCase()) {
-        case '$true':
-          param.default = true;
-          break;
-
-        case '$false':
-          param.default = false;
-          break;
-
-        default:
-          break;
-      }
-    }
-
-    // Process attributes.
-    if (parameter.attributes) {
-      parameter.attributes.forEach(attribute => {
-        switch (attribute.type.toLowerCase()) {
-          case 'parameter':
-            if (attribute.required) {
-              param.validation.required = true;
-            }
-            break;
-
-          case 'validateset':
-            param.type = ParamType.Set;
-            param.validation.set = attribute.values;
-            break;
-
-          default:
-            break;
-        }
-      });
-    }
-
-    // Process type.
-    if (!param.type) {
-      switch (parameter.type.toLowerCase()) {
-        case 'switch':
-          param.type = ParamType.Switch;
-          break;
-
-        case 'boolean':
-          param.type = ParamType.Boolean;
-          break;
-
-        case 'string':
-          param.type = ParamType.String;
-          break;
-
-        case 'securescript':
-          param.type = ParamType.SecureString;
-          break;
-
-        default:
-          param.type = ParamType.Number;
-          console.error(`Type not mapped: ${parameter.type}`);
-          break;
-      }
-    }
-
-    return param;
   }
 
   private getScriptFile(filePath: string): IScriptFile {

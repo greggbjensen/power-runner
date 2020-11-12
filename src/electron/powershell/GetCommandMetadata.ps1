@@ -19,7 +19,7 @@ $parameterNames = [System.Collections.ArrayList]::new()
 $defaults = @{}
 foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   $name = $param.Name.ToString().TrimStart("$")
-  if ($param.DefaultValue -ne $null) {
+  if (($param.DefaultValue -ne $null) -and ($param.DefaultValue.Extent.Text -ne '$null')) {
 
     if ($param.DefaultValue.Value -ne $null) {
       $defaults[$name] = $param.DefaultValue.Value
@@ -35,7 +35,13 @@ foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
 foreach ($name in $parameterNames) {
   $x = $metadata.Parameters.$name;
   $validation = @{ }
-  $type = $x.ParameterType.Name.Replace("Parameter", "")
+  $type = $x.ParameterType.Name
+  $itemType = $null
+  if ($x.ParameterType.BaseType.Name -eq 'Array') {
+    $itemType = $type.Replace('[]', '')
+    $type = 'Array'
+  }
+
   foreach ($attribute in $x.Attributes) {
     $attributeType = $attribute.TypeId.Name.Replace("Attribute", "")
     switch ($attributeType) {
@@ -59,6 +65,10 @@ foreach ($name in $parameterNames) {
     type = $type
     validation = $validation
     default = $default
+  }
+
+  if ($itemType -ne $null) {
+    $parameter.itemType = $itemType
   }
 
   $parameters.Add($parameter) | Out-Null

@@ -58,6 +58,11 @@
     <ng-container *ngFor="let param of script.params; let i = index">
       <ng-container [ngSwitch]="param.type">
 
+        <mat-form-field *ngSwitchCase="ParamType.Array">
+          <mat-label>{{param.name}}</mat-label>
+          <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
+        </mat-form-field>
+
         <mat-form-field *ngSwitchCase="ParamType.String">
           <mat-label>{{param.name}}</mat-label>
           <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
