@@ -2,42 +2,53 @@ param (
   [string][Parameter(Mandatory = $true)]$scriptPath
 )
 
-Get-Command $scriptPath | % {
-  $defaults = @{}
-  foreach ($param in $_.ScriptBlock.Ast.ParamBlock.Parameters) {
-    $name = $param.Name.ToString().TrimStart("$")
-    $defaults[$name] = $param.DefaultValue.ToString().Trim('"', "'")
-  }
+$metadata = Get-Command $scriptPath
+$parameters = [System.Collections.ArrayList]::new()
+$defaults = @{}
+foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
+  $name = $param.Name.ToString().TrimStart("$")
+  $defaults[$name] = $param.DefaultValue.ToString().Trim('"', "'")
+}
 
-  foreach ($key in $_.Parameters.Keys) {
-    $x = $_.Parameters.$key;
-    $attributes = @()
-    foreach ($attribute in $x.Attributes) {
-      $type = $attribute.TypeId.Name.Replace("Attribute", "")
-      switch ($type) {
-        "Parameter" {
-          $attributes += @{
-            type = $type;
-            required = $attribute.Mandatory
-          }
+foreach ($key in $metadata.Parameters.Keys) {
+  $x = $metadata.Parameters.$key;
+  $validation = @{ }
+  $type = $x.ParameterType.Name.Replace("Parameter", "")
+  foreach ($attribute in $x.Attributes) {
+    $attributeType = $attribute.TypeId.Name.Replace("Attribute", "")
+    switch ($attributeType) {
+      "Parameter" {
+        if ($attribute.Mandatory) {
+          $validation.required = $true
         }
-        "ValidateSet" {
-          $attributes += @{
-            type = $type;
-            values = $attribute.ValidValues
-          }
-        }
-        Default {}
       }
-    }
-
-    $default = $defaults[$x.Name]
-
-    @{
-      name = $x.Name;
-      type = $x.ParameterType.Name.Replace("Parameter", "")
-      attributes = $attributes
-      default = $default
+      "ValidateSet" {
+        $validation.set = $attribute.ValidValues
+        $type = 'Set'
+      }
+      Default {}
     }
   }
+
+  $default = $defaults[$key]
+  if ([string]::Equals($default, '$true', [System.StringComparison]::OrdinalIgnoreCase)) {
+    $default = $true
+  }
+  elseif ([string]::Equals($default, '$false', [System.StringComparison]::OrdinalIgnoreCase)) {
+    $default = $false
+  }
+
+  $parameter = @{
+    name = $key
+    type = $type
+    validation = $validation
+    default = $default
+  }
+
+  $parameters.Add($parameter) | Out-Null
+}
+
+@{
+  description = $null
+  params = $parameters
 } | ConvertTo-Json -Depth 4 -Compress
