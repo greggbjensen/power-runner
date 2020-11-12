@@ -21,6 +21,14 @@
   margin: 0 0 $space-10 0.3rem;
 }
 
+.script-form-description {
+  padding: $space-6 $space-10;
+  background-color: $gray-600;
+  font-size: $font-size-11;
+  margin-left: $space-20;
+  flex-grow: 1;
+}
+
 .script-form-refresh {
   margin-top: -0.8rem;
 }

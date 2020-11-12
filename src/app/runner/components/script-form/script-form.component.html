@@ -3,7 +3,8 @@
     <button class="script-form-refresh" mat-icon-button (click)="refreshAsync()" matTooltip="Refresh" matTooltipPosition="left">
       <mat-icon>refresh</mat-icon>
     </button>
-    <span class=script-form-path>{{file.directory}}\{{file.name}}</span>
+    <span class="script-form-path">{{file.directory}}\{{file.name}}</span>
+    <p class="script-form-description" *ngIf="script?.description">{{script.description}}</p>
   </div>
   <form class="script-form-form" *ngIf="form && script; else loading" [formGroup]="form">
     <div class="script-form-header" [formGroup]="profileForm">
