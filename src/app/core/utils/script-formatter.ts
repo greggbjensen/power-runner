@@ -27,7 +27,7 @@ export class ScriptFormatter {
           break;
 
         default: // ParamType.String, ParamType.File, ParamType.Directory
-          paramText = `-${param.name} "${param.value}"`;
+          paramText = `-${param.name} '${param.value.replace('\'', '\'\'')}'`;
           break;
       }
     }
