@@ -4,7 +4,9 @@
       <mat-icon>refresh</mat-icon>
     </button>
     <span class="script-form-path">{{file.directory}}\{{file.name}}</span>
-    <p class="script-form-description" *ngIf="script?.description">{{script.description}}</p>
+    <div class="script-form-description" *ngIf="script?.description">
+      <mat-icon>info</mat-icon><p>{{script.description}}</p>
+    </div>
   </div>
   <form class="script-form-form" *ngIf="form && script; else loading" [formGroup]="form">
     <div class="script-form-header" [formGroup]="profileForm">
