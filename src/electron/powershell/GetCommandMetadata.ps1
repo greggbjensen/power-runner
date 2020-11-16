@@ -13,6 +13,7 @@ if ($help -and ($help.description -ne $null)) {
   }
 }
 
+$numberTypes = @( 'Byte', 'Int32', 'Int64', 'Single', 'Double', 'Decimal' )
 $scriptRootRegex = [regex]::new('\$PSScriptRoot', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
 $directory = [System.IO.Path]::GetDirectoryName($scriptPath)
 $metadata = Get-Command $scriptPath
@@ -36,6 +37,9 @@ foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   }
   elseif ($type -eq 'SwitchParameter') {
     $type = 'Switch'
+  }
+  elseif ($numberTypes.Contains($type)) {
+    $type = 'Number'
   }
 
   foreach ($attribute in $x.Attributes) {
