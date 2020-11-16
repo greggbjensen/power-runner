@@ -33,7 +33,7 @@ function createWindow(): void {
 
   browserWindow = new BrowserWindow({
       width: 1280,
-      height: 800,
+      height: 924,
       darkTheme: true,
       frame: false,
       webPreferences: {
