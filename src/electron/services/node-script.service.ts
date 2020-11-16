@@ -166,7 +166,7 @@ export class NodeScriptService {
 
       const filePath = `${file.directory}\\${file.name}`;
       const resourcesPath = !NodeScriptService.NodeModulesRegex.test(process.resourcesPath)
-        ? process.resourcesPath
+        ? `${process.resourcesPath}\\app`
         : path.dirname(this._app.getAppPath());
       const workingDirectory = `${resourcesPath}\\electron\\powershell`;
       const command = `"${NodeScriptService.PowerShellPath}" "${workingDirectory}\\GetCommandMetadata.ps1" "${filePath}"`;
