@@ -6,9 +6,9 @@ import {
   NodeAppService,
   NodeBrowseDialogService,
   NodeProfileService,
+  NodeScriptCacheService,
   NodeScriptService,
-  NodeSettingsService,
-  ScriptParser
+  NodeSettingsService
 } from './services';
 import { Updater } from './updater';
 
@@ -33,7 +33,7 @@ function createWindow(): void {
 
   browserWindow = new BrowserWindow({
       width: 1280,
-      height: 800,
+      height: 924,
       darkTheme: true,
       frame: false,
       webPreferences: {
@@ -60,11 +60,11 @@ function createWindow(): void {
     setImmediate(() => browserWindow.focus());
   });
 
-  const scriptParser = new ScriptParser();
+  const scriptCache = new NodeScriptCacheService();
 
   bindService(new NodeAppService(browserWindow, isDev));
   bindService(new NodeSettingsService());
-  bindService(new NodeScriptService(browserWindow, scriptParser));
+  bindService(new NodeScriptService(app, browserWindow, scriptCache));
   bindService(new NodeProfileService());
   bindService(new NodeBrowseDialogService(browserWindow));
 

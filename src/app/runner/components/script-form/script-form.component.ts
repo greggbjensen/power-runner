@@ -2,8 +2,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IScript, IScriptParam, IScriptProfile, IScriptRun, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
-import { ProfileService, StatusService } from 'src/app/core/services';
+import { IScript, IScriptFile, IScriptParam, IScriptProfile, IScriptRun, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
+import { ProfileService, ScriptService, StatusService } from 'src/app/core/services';
 import { ScriptFormatter } from 'src/app/core/utils';
 import * as _ from 'underscore';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
@@ -25,6 +25,7 @@ export class ScriptFormComponent implements OnInit {
   });
   public profiles: IScriptProfile[] = [];
   public selectedProfile: IScriptProfile;
+  public script: IScript;
 
   // tslint:disable-next-line:naming-convention
   public ScriptStatus = ScriptStatus;
@@ -32,37 +33,36 @@ export class ScriptFormComponent implements OnInit {
   // tslint:disable-next-line:naming-convention
   public SaveAsType = SaveAsType;
 
-  @Input() public set script(value: IScript) {
+  @Input() public set file(value: IScriptFile) {
 
     // Create a copy to modify.
     if (value) {
-      this._script = Object.assign({ }, value);
-      this._script.params = value.params.map(p => Object.assign({ }, p));
-      this.form = this.createFormGroup(this._script.params);
-      this._profileService.listAsync(this._script.directory, this._script.name)
-        .then(profiles => this.updateProfiles(profiles), err => console.error(err));
+      this._file = value;
+      this.refreshAsync();
     } else {
-      this._script = null;
+      this._file = null;
+      this.script = null;
       this.form = null;
       this.selectedProfile = null;
       this.updateProfiles([]);
     }
   }
 
-  public get script(): IScript {
-    return this._script;
+  public get file(): IScriptFile {
+    return this._file;
   }
 
   @Output() public run = new EventEmitter<IScriptRun>();
   @Output() public stop = new EventEmitter<IScript>();
   @Output() public edit = new EventEmitter<IScript>();
 
-  private _script: IScript;
+  private _file: IScriptFile;
 
   constructor(
     public dialog: MatDialog,
     private _profileService: ProfileService,
     private _statusService: StatusService,
+    private _scriptService: ScriptService,
     private _clipboard: Clipboard
   ) {
   }
@@ -83,7 +83,7 @@ export class ScriptFormComponent implements OnInit {
 
     this.updateParamValues();
     const paramList = this.script.params.map(p => ScriptFormatter.formatParam(p)).join(' ');
-    const command = `${this.script.directory}\\${this._script.name} ${paramList}`;
+    const command = `${this._file.directory}\\${this._file.name} ${paramList}`;
     this._clipboard.copy(command);
   }
 
@@ -126,6 +126,17 @@ export class ScriptFormComponent implements OnInit {
     this.edit.emit(this.script);
   }
 
+  public async refreshAsync(): Promise<void> {
+
+    // Clear out for loading.
+    this.script = null;
+
+    this.script = await this._scriptService.parseAsync(this._file);
+    this.form = this.createFormGroup(this.script.params);
+    this._profileService.listAsync(this._file.directory, this._file.name)
+      .then(profiles => this.updateProfiles(profiles), err => console.error(err));
+  }
+
   public addProfile(): void {
     const dialogRef = this.dialog.open(AddProfileDialogComponent, {
       width: '50rem',
@@ -160,8 +171,8 @@ export class ScriptFormComponent implements OnInit {
 
     const profileSaveAsType = this.selectedProfile.saveAsType;
     const profileName = this.selectedProfile.name;
-    this._profileService.deleteAsync(this.script.directory, this.script.name, this.selectedProfile.name, this.selectedProfile.saveAsType)
-      .then(() => this._profileService.listAsync(this.script.directory, this.script.name))
+    this._profileService.deleteAsync(this._file.directory, this._file.name, this.selectedProfile.name, this.selectedProfile.saveAsType)
+      .then(() => this._profileService.listAsync(this._file.directory, this._file.name))
       .then(profiles => {
         this.updateProfiles(profiles);
         this._statusService.setStatus(`${profileSaveAsType} profile "${profileName}" removed`);
@@ -172,8 +183,8 @@ export class ScriptFormComponent implements OnInit {
     this._statusService.setStatus(`Saving profile "${profileName}"`);
 
     const profile = this.gatherProfile(profileName, saveAsType);
-    await this._profileService.updateAsync(this._script.directory, this._script.name, profile, saveAsType);
-    const profiles = await this._profileService.listAsync(this.script.directory, this.script.name);
+    await this._profileService.updateAsync(this._file.directory, this._file.name, profile, saveAsType);
+    const profiles = await this._profileService.listAsync(this._file.directory, this._file.name);
     this.updateProfiles(profiles, profile.id);
 
     this._statusService.setStatus(`Profile "${profileName}" saved`);
@@ -243,7 +254,7 @@ export class ScriptFormComponent implements OnInit {
     let applyParams: { [name: string]: any };
     if (profile.id === 'default') {
       applyParams = { };
-      this._script.params.forEach(p => applyParams[p.name] = p.default);
+      this.script.params.forEach(p => applyParams[p.name] = p.default);
     } else {
       applyParams = profile.params;
     }

@@ -1,11 +1,13 @@
-import { spawn } from 'child_process';
-import { BrowserWindow, clipboard, ipcMain } from 'electron';
+import { exec, spawn } from 'child_process';
+import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
 import * as globby from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
-import { IScript, IScriptExit } from '../../app/core/models';
+import * as path from 'path';
+import { IScript, IScriptExit, IScriptFile, ScriptStatus } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
-import { ScriptParser } from './script.parser';
+import { RunSettings } from '../../app/run-settings';
+import { NodeScriptCacheService } from './node-script-cache.service';
 
 // Initialize node-pty with an appropriate shell
 const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
@@ -15,6 +17,7 @@ export class NodeScriptService {
   private static readonly Pause = '\x13';   // XOFF
   private static readonly Resume = '\x11';  // XON
   private static readonly FileExtensionRegex = /.ps1$/i;
+  private static readonly NodeModulesRegex = /node_modules/i;
 
   // TODO GBJ: Make compatible with Linux.
   private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
@@ -23,8 +26,9 @@ export class NodeScriptService {
   private _childProcesses = new Map<string, pty.IPty>();
 
   constructor(
+    private _app: App,
     private _browserWindow: BrowserWindow,
-    private _scriptParser: ScriptParser
+    private _cache: NodeScriptCacheService
   ) {
     ipcMain.on('script:data-ack', (event: any, scriptId: string) => {
       const child = this._childProcesses.get(scriptId);
@@ -34,15 +38,15 @@ export class NodeScriptService {
     });
   }
 
-  public async listAsync(fileGlobs: string[]): Promise<IScript[]> {
+  public async listAsync(fileGlobs: string[]): Promise<IScriptFile[]> {
 
     const files = await globby(fileGlobs);
-    const scripts = await Promise.all(files.map(f => this._scriptParser.parseScript(f)));
+    const scripts = await Promise.all(files.map(f => this.getScriptFile(f)));
 
     return scripts;
   }
 
-  public editAsync(script: IScript): Promise<void>  {
+  public editAsync(script: IScriptFile): Promise<void>  {
 
     spawn('Code.exe', [`${script.directory}/${script.name}`], {
       cwd: `${process.env.LOCALAPPDATA}\\Programs\\Microsoft VS Code`, // TODO GBJ: Make compatible with Linux.
@@ -108,7 +112,7 @@ export class NodeScriptService {
     });
   }
 
-  public async stopAsync(script: IScript): Promise<void> {
+  public async stopAsync(script: IScriptFile): Promise<void> {
     const child = this._childProcesses.get(script.id);
     if (child) {
       try {
@@ -118,5 +122,99 @@ export class NodeScriptService {
         // Do nothing.
       }
     }
+  }
+
+  public async parseAsync(file: IScriptFile): Promise<IScript> {
+
+    let script: IScript;
+    if (!RunSettings.Cache) {
+      script = await this.internalParseAsync(file);
+      return script;
+    }
+
+    const hash = await this._cache.getFileHashAsync(file);
+    script = await this._cache.getAsync(file.module, file.name);
+    if (!script || script.hash !== hash) {
+      script = await this.internalParseAsync(file);
+      script.hash = hash;
+      await this._cache.setAsync(script);
+    }
+
+    script.status = ScriptStatus.Stopped;
+
+    return script;
+  }
+
+  public async preCacheAsync(files: IScriptFile[]): Promise<void> {
+
+    const uncachedFiles = await this._cache.listUncachedFilesAsync(files);
+
+    for (const entry of uncachedFiles) {
+      const script = await this.internalParseAsync(entry.file);
+      script.hash = entry.hash;
+      await this._cache.setAsync(script);
+    }
+  }
+
+  public async disposeAsync(): Promise<void> {
+    await this._cache.disposeAsync();
+  }
+
+  private internalParseAsync(file: IScriptFile): Promise<IScript> {
+
+    return new Promise((resolve, reject) => {
+
+      const filePath = `${file.directory}\\${file.name}`;
+      const resourcesPath = !NodeScriptService.NodeModulesRegex.test(process.resourcesPath)
+        ? `${process.resourcesPath}\\app`
+        : path.dirname(this._app.getAppPath());
+      const workingDirectory = `${resourcesPath}\\electron\\powershell`;
+      const command = `"${NodeScriptService.PowerShellPath}" "${workingDirectory}\\GetCommandMetadata.ps1" "${filePath}"`;
+      exec(command, { cwd: workingDirectory }, (error, stdout, stderr) => {
+
+        if (error) {
+          console.error(error);
+          reject(error);
+        } else if (stdout) {
+
+          try {
+            // Ensure result is always an array.
+            const metadata = JSON.parse(stdout);
+            const script = Object.assign({ }, file, metadata) as IScript;
+            resolve(script);
+          } catch (err) {
+            console.error(err, stdout);
+            reject(err);
+          }
+        } else if (stderr) {
+          console.error(stderr);
+          reject(stderr);
+        } else {
+          // No parameters available.
+          const script = Object.assign({ }, file) as IScript;
+          script.params = [];
+          resolve(script);
+        }
+      });
+    });
+  }
+
+  private getScriptFile(filePath: string): IScriptFile {
+
+    let directory = path.dirname(filePath);
+    if (os.platform() === 'win32') {
+      directory = directory.replace(/\//g, '\\');
+    }
+
+    const name = path.basename(filePath);
+    const id = `${directory.replace(/\//g, '_')}_${name}`;
+    const file: IScriptFile = {
+      id,
+      directory,
+      module: path.basename(directory),
+      name
+    };
+
+    return file;
   }
 }

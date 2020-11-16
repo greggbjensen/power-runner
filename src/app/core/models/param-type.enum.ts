@@ -6,5 +6,6 @@ export enum ParamType {
   Set = 'Set',
   Boolean = 'Boolean',
   Directory = 'Directory',
-  File = 'File'
+  File = 'File',
+  Array = 'Array'
 }

@@ -1,7 +1,7 @@
 {
   "name": "powerrunner",
   "productName": "PowerRunner",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "electron/main.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "yarn build && SET NODE_ENV=dev && electron ./dist/electron/main.js",
     "build": "tsc -p tsconfig.electron.json && ng build --base-href ./",
     "build-prod": "tsc -p tsconfig.electron.json && ng build --prod --base-href ./",
-    "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./node_modules/**/*.* ./dist",
+    "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./src/electron/powershell/*.ps1 ./dist --up 1 && copyfiles ./node_modules/**/*.* ./dist",
     "package": "yarn copy-deps && yarn build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
     "package-installer": "yarn package && yarn installer",
@@ -47,6 +47,7 @@
     "node-pty": "^0.9.0",
     "node-yaml": "^4.0.1",
     "rxjs": "~6.5.5",
+    "sqlite3": "^4.1.1",
     "ts-md5": "^1.2.7",
     "tslib": "^1.10.0",
     "underscore": "^1.9.1",
@@ -65,6 +66,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
+    "@types/sqlite3": "^3.1.6",
     "codelyzer": "^5.1.2",
     "copyfiles": "^2.1.1",
     "electron": "^9.0.3",
@@ -84,5 +86,10 @@
     "tslint": "~5.15.0",
     "tslint-consistent-codestyle": "^1.15.1",
     "typescript": "3.8.3"
+  },
+  "build": {
+    "extraResources": [
+      "./electron/powershell/**"
+    ]
   }
 }

@@ -1,11 +1,12 @@
-import { Component, HostBinding, ViewEncapsulation, NgZone } from '@angular/core';
+import { Component, HostBinding, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { IpcRenderer } from 'electron';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as _ from 'underscore';
 const electron = (window as any).require('electron');
-import { IScript, IScriptNode, ISettings, IAppUpdate } from './core/models';
-import { AppService, ScriptService, SettingsService } from './core/services';
 import { MatDialog } from '@angular/material/dialog';
+import { IAppUpdate, IScriptFile, IScriptNode, ISettings } from './core/models';
+import { AppService, ScriptService, SettingsService, StatusService } from './core/services';
+import { RunSettings } from './run-settings';
 import { AppUpdateDialogComponent } from './runner/components';
 
 
@@ -15,14 +16,14 @@ import { AppUpdateDialogComponent } from './runner/components';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   private static readonly ExcludeRegex = /^\!/;
 
   @HostBinding('class.pru') public className = true;
   public title = 'powerrunner';
   public nodes$: Observable<IScriptNode[]>;
-  public openScripts: IScript[] = [];
-  public selectedScript: IScript;
+  public openFiles: IScriptFile[] = [];
+  public selectedFile: IScriptFile;
   public showSettings = false;
   public isMaximized = false;
   public settings: ISettings;
@@ -34,6 +35,7 @@ export class AppComponent {
     private _scriptService: ScriptService,
     private _appService: AppService,
     private _settingsService: SettingsService,
+    private _statusService: StatusService,
     private _dialog: MatDialog,
     private _ngZone: NgZone
   ) {
@@ -49,14 +51,18 @@ export class AppComponent {
       .then(status => this.elevatedStatus = status, err => console.error(err));
   }
 
-  public scriptOpened(script: IScript): void {
+  public ngOnDestroy(): void {
+    this._scriptService.disposeAsync();
+  }
 
-    const alreadyOpenScript = this.openScripts.find(s => s.id === script.id);
+  public fileOpened(file: IScriptFile): void {
+
+    const alreadyOpenScript = this.openFiles.find(s => s.id === file.id);
     if (!alreadyOpenScript) {
-      this.selectedScript = script;
-      this.openScripts.push(script);
+      this.selectedFile = file;
+      this.openFiles.push(file);
     } else {
-      this.selectedScript = alreadyOpenScript;
+      this.selectedFile = alreadyOpenScript;
     }
   }
 
@@ -119,13 +125,24 @@ export class AppComponent {
     this.settings = await this._settingsService.readAsync();
     if (this.settings && this.settings.basePath && this.settings.searchPaths && this.settings.searchPaths.length > 0) {
       const fullPaths = this.settings.searchPaths.map(p => this.getFullPath(p));
-      this._scriptService.listAsync(fullPaths).then((scripts) => {
-        this._nodes.next(this.nodeTransform(scripts));
+      this._scriptService.listAsync(fullPaths).then((files) => {
+        this._nodes.next(this.nodeTransform(files));
+
+        if (RunSettings.PreCache) {
+          setTimeout(() => this.preCacheAsync(files), 1);
+        }
       }, err => console.error(err));
 
     } else {
       // Show settings so they can be setup for the first time.
       this.showSettings = true;
+    }
+  }
+
+  private async preCacheAsync(files: IScriptFile[]): Promise<void> {
+    if (files.length > 0) {
+      await this._scriptService.preCacheAsync(files);
+      this._statusService.setStatus(`Pre-cache complete`);
     }
   }
 
@@ -145,7 +162,7 @@ export class AppComponent {
     return updatedPath;
   }
 
-  private nodeTransform(scripts: IScript[]): IScriptNode[] {
+  private nodeTransform(scripts: IScriptFile[]): IScriptNode[] {
     const grouped = _.groupBy(scripts, s => s.module);
     return _.keys(grouped).map(key => ({
       name: key,

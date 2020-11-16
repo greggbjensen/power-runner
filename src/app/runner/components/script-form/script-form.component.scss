@@ -8,6 +8,7 @@
   .mat-form-field {
     min-width: 15rem;
     margin-left: $space-15;
+    max-width: 98%;
   }
 
   .mat-checkbox {
@@ -18,7 +19,32 @@
 .script-form-path {
   font-size: $font-size-11;
   display: block;
-  margin: 0 0 $space-10 $space-15;
+  margin: 0 0 $space-10 0.3rem;
+}
+
+.script-form-description {
+  padding: $space-6 $space-10;
+  background-color: $blue-100;
+  border: solid 0.1rem $blue-500;
+  border-left-width: 0.5rem;
+  font-size: $font-size-11;
+  color: $gray-900;
+  margin-left: $space-20;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+
+  p {
+    margin-left: $space-10;
+  }
+
+  .mat-icon {
+    color: $blue-500;
+  }
+}
+
+.script-form-refresh {
+  margin-top: -0.8rem;
 }
 
 .script-form-container {
@@ -39,6 +65,18 @@
 
   .script-profile-name {
     padding-left: $space-25;
+  }
+
+  .script-loading {
+    display: flex;
+    margin-top: 5rem;
+    font-size: $font-size-16;
+    justify-content: center;
+    align-items: center;
+
+    .mat-spinner {
+      margin-right: 1.5rem;
+    }
   }
 }
 

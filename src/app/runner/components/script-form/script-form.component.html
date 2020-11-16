@@ -1,6 +1,14 @@
-<div *ngIf="script" class="script-form-container">
-  <span class=script-form-path>{{script.directory}}\{{script.name}}</span>
-  <form class="script-form-form" *ngIf="form" [formGroup]="form">
+<div *ngIf="file" class="script-form-container">
+  <div class="script-form-header">
+    <button class="script-form-refresh" mat-icon-button (click)="refreshAsync()" matTooltip="Refresh" matTooltipPosition="left">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <span class="script-form-path">{{file.directory}}\{{file.name}}</span>
+    <div class="script-form-description" *ngIf="script?.description">
+      <mat-icon>info</mat-icon><p>{{script.description}}</p>
+    </div>
+  </div>
+  <form class="script-form-form" *ngIf="form && script; else loading" [formGroup]="form">
     <div class="script-form-header" [formGroup]="profileForm">
       <mat-form-field class="script-profile" appearance="standard">
         <mat-label>Profile</mat-label>
@@ -53,7 +61,7 @@
     <ng-container *ngFor="let param of script.params; let i = index">
       <ng-container [ngSwitch]="param.type">
 
-        <mat-form-field *ngSwitchCase="ParamType.String">
+        <mat-form-field *ngSwitchCase="ParamType.Array">
           <mat-label>{{param.name}}</mat-label>
           <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
@@ -79,8 +87,19 @@
 
         <mat-checkbox *ngSwitchCase="ParamType.Boolean" [formControlName]="param.name" value="true">{{param.name}}</mat-checkbox>
 
+        <mat-form-field *ngSwitchDefault>
+          <mat-label>{{param.name}}</mat-label>
+          <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
+        </mat-form-field>
+
       </ng-container>
     </ng-container>
 
   </form>
+
+  <ng-template #loading>
+    <div class="script-loading">
+      <mat-spinner diameter="30"></mat-spinner><span>Loading...</span>
+    </div>
+  </ng-template>
 </div>
