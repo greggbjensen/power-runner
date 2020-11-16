@@ -24,8 +24,11 @@
 
 .script-form-description {
   padding: $space-6 $space-10;
-  background-color: $gray-600;
+  background-color: $blue-100;
+  border: solid 0.1rem $blue-500;
+  border-left-width: 0.5rem;
   font-size: $font-size-11;
+  color: $gray-900;
   margin-left: $space-20;
   flex-grow: 1;
   display: flex;
