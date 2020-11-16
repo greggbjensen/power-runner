@@ -19,11 +19,12 @@ $directory = [System.IO.Path]::GetDirectoryName($scriptPath)
 $metadata = Get-Command $scriptPath
 $parameters = [System.Collections.ArrayList]::new()
 foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
-  $name = $param.Name.ToString().TrimStart("$")
+  $name = $param.Name.ToString().TrimStart('$')
 
   $default = $null
-  if ($param.DefaultValue.Extent.Text -ne $null) {
-    $defaultText = $scriptRootRegex.Replace($param.DefaultValue.Extent.Text, $directory)
+  $defaultText = $param.DefaultValue.Extent.Text
+  if (($defaultText -ne $null) -and ($defaultText -ne '@()')) {
+    $defaultText = $scriptRootRegex.Replace($defaultText, $directory)
     $default = Invoke-Expression $defaultText
   }
 
