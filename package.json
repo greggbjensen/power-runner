@@ -31,7 +31,7 @@
     "@angular/platform-browser-dynamic": "~9.1.9",
     "@angular/router": "~9.1.9",
     "@types/underscore": "^1.9.2",
-    "@w11k/ngx-componentdestroyed": "^4.1.4",
+    "@w11k/ngx-componentdestroyed": "^5.0.2",
     "angular-split": "^3.0.2",
     "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
