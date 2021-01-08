@@ -1,7 +1,6 @@
-import { Component, HostBinding, OnInit, ViewEncapsulation, NgZone, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, HostBinding, OnInit, ViewEncapsulation, NgZone } from '@angular/core';
 import { AppService, StatusService } from 'src/app/core/services';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import { OnDestroyMixin, untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 
 @Component({
   selector: 'pru-status-bar',
@@ -9,7 +8,7 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
   styleUrls: ['./status-bar.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class StatusBarComponent implements OnInit, OnDestroy {
+export class StatusBarComponent extends OnDestroyMixin implements OnInit {
   @HostBinding('class.status-bar') public className = true;
   public version: string = '';
   public status: string;
@@ -19,6 +18,7 @@ export class StatusBarComponent implements OnInit, OnDestroy {
     private _statusService: StatusService,
     private _ngZone: NgZone
   ) {
+    super();
   }
 
   public ngOnInit(): void {

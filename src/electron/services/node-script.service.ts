@@ -24,6 +24,8 @@ export class NodeScriptService {
   private static readonly CommandPath = `${process.env.SYSTEMROOT}\\system32\\cmd.exe`;
 
   private _childProcesses = new Map<string, pty.IPty>();
+  private _outputColumns = 120;
+  private _outputRows = 30;
 
   constructor(
     private _app: App,
@@ -35,6 +37,11 @@ export class NodeScriptService {
       if (child) {
         child.write(NodeScriptService.Resume);
       }
+    });
+    ipcMain.on('output:resize', (event: any, columns: number, rows: number) => {
+      this._outputColumns = columns;
+      this._outputRows = rows;
+      this._childProcesses.forEach(p => p.resize(columns, rows));
     });
   }
 
@@ -75,8 +82,8 @@ export class NodeScriptService {
 
         const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
           name: 'xterm-color',
-          cols: 120,
-          rows: 30,
+          cols: this._outputColumns,
+          rows: this._outputRows,
           cwd: script.directory,
           env: process.env,
           handleFlowControl: true

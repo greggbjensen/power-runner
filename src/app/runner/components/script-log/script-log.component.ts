@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input, OnInit, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import { OnDestroyMixin, untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { ScriptRef } from 'src/app/core/models';
 import { ScriptLogWriterDirective } from '../../directives/script-log-writer.directive';
 
@@ -11,7 +11,7 @@ import { ScriptLogWriterDirective } from '../../directives/script-log-writer.dir
   encapsulation: ViewEncapsulation.None,
   exportAs: 'scriptLog'
 })
-export class ScriptLogComponent implements OnInit, OnDestroy {
+export class ScriptLogComponent extends OnDestroyMixin implements OnInit {
 
   @HostBinding('class.script-log') public className = true;
 
@@ -26,7 +26,9 @@ export class ScriptLogComponent implements OnInit, OnDestroy {
     }
   );
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   public ngOnInit(): void {
     this.formGroup.get('searchText').valueChanges
