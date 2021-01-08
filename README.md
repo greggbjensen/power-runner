@@ -74,14 +74,16 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 6. Make any changes and submit a pull request
 
 # Creating a Release
-1. Start a new feature branch
+1. Start a new `feature/` branch from `develop`
 2. Update the package.json to have the desired version
-3. Complete a pull request for the feature branch into the develop branch
-4. Delete the `release\PowerRunner-win32-x64` folder if it exists
-5. Remove any versions you no longer want to support as an upgrade from `release\installers\PowerRunner-win32-x64`
-6. Run `yarn package-installer`
-7. Create a new release on GitHub
-8. Copy the files from `release\installers\PowerRunner-win32-x64` to that release
+3. Complete a pull request for the `feature/` branch into the `develop` branch
+4. Create a `release/` version branch from `develop`
+5. Merge the `release/` branch into `master`
+6. Delete the `release\PowerRunner-win32-x64` folder if it exists
+7. Remove any versions you no longer want to support as an upgrade from `release\installers\PowerRunner-win32-x64`
+8. Run `yarn package-installer`
+9. Create a new release on GitHub
+10. Copy the files from `release\installers\PowerRunner-win32-x64` to that release
 
 # Troubleshooting
 - `.yarnrc` must always reflect the same `target` as the `electron` version in the `package.json`
