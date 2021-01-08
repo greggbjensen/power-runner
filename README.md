@@ -26,11 +26,14 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 
 # Features
 - Set all command parameters using inputs, drop downs, and checkboxes that auto-size
+- Displays script description and details
 - Keep track of many instances in a tabbed experience
 - Scans requested directories to show heirarchical scripts in one place
 - Double click a script to quickly edit and run
 - Store and share saved command line parameters as a profile
+- Copy current command and parameters to clipboard
 - Run as administrator to execute elevated scripts
+- Run scripts in their own window
 - Quickly stop and start runs with a button
 - Search and browse console output
 - Click Edit to go directly to source
