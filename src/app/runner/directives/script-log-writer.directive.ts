@@ -56,6 +56,7 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   @HostListener('window:resize') public onResize(): void {
     if (this._fitAddon) {
       this._fitAddon.fit();
+      setTimeout(() => this.updateOutputColumns(), 1);
     }
   }
 
@@ -120,6 +121,10 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
     if (this._exitSubscription) {
       this._dataSubscription.unsubscribe();
     }
+  }
+
+  private updateOutputColumns() {
+    this._ipcRenderer.send('output:resize', this._terminal.cols, this._terminal.rows);
   }
 
   private scrollToBottom(): void {
