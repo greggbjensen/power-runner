@@ -1,7 +1,7 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import { OnDestroyMixin, untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { SaveAsType } from 'src/app/core/models';
 import { IAddProfileData } from './iadd-profile-data';
 
@@ -11,7 +11,7 @@ import { IAddProfileData } from './iadd-profile-data';
   styleUrls: ['./add-profile-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AddProfileDialogComponent implements OnInit, OnDestroy {
+export class AddProfileDialogComponent extends OnDestroyMixin implements OnInit {
   @HostBinding('class.add-profile-dialog') public className = true;
 
   public hasExistingName = false;
@@ -25,7 +25,9 @@ export class AddProfileDialogComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<AddProfileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IAddProfileData
-  ) { }
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
     this.form.patchValue(this.data.profile);

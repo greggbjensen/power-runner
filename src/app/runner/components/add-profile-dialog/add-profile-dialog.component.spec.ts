@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AddProfileDialogComponent } from './add-profile-dialog.component';
 
@@ -6,7 +6,7 @@ describe('AddProfileDialogComponent', () => {
   let component: AddProfileDialogComponent;
   let fixture: ComponentFixture<AddProfileDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddProfileDialogComponent ]
     })

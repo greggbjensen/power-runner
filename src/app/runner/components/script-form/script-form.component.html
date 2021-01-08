@@ -63,17 +63,17 @@
 
         <mat-form-field *ngSwitchCase="ParamType.Array">
           <mat-label>{{param.name}}</mat-label>
-          <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
+          <input autoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="ParamType.SecureString">
           <mat-label>{{param.name}}</mat-label>
-          <input AutoSizeInput matInput type="password" [formControlName]="param.name" [setParentWidth]="true">
+          <input autoSizeInput matInput type="password" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="ParamType.Number">
           <mat-label>{{param.name}}</mat-label>
-          <input AutoSizeInput matInput type="number" [formControlName]="param.name" [setParentWidth]="true">
+          <input autoSizeInput matInput type="number" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="ParamType.Set">
@@ -89,7 +89,7 @@
 
         <mat-form-field *ngSwitchDefault>
           <mat-label>{{param.name}}</mat-label>
-          <input AutoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
+          <input autoSizeInput matInput type="text" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
       </ng-container>
