@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as fs from 'fs';
+import * as fsx from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
 import { Database } from 'sqlite3';
@@ -239,7 +240,12 @@ export class NodeScriptCacheService {
     });
   }
 
-  private connectDbAsync(): Promise<Database> {
+  private async connectDbAsync(): Promise<Database> {
+
+    // Verify the directory exists or the Sqlite database will not be able to be created.
+    const cacheDirectory = path.dirname(this._cacheFile);
+    await fsx.ensureDir(cacheDirectory);
+
     return new Promise((resolve, reject) => {
       const database = new Database(this._cacheFile, (err) => {
         if (err) {
