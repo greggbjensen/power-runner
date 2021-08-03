@@ -1,6 +1,6 @@
 import { exec, spawn } from 'child_process';
 import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
-import * as globby from 'globby';
+import { globby } from 'globby';
 import * as pty from 'node-pty';
 import * as os from 'os';
 import * as path from 'path';
