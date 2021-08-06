@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { IpcRenderer } from 'electron';
 import { BehaviorSubject, Observable } from 'rxjs';
-const electron = (window as any).require('electron');
+import { IProxyApi } from '../models';
+const proxyApi: IProxyApi = (window as any).proxyApi;
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +11,11 @@ export class StatusService {
 
   public status$: Observable<string>;
   private _status = new BehaviorSubject('');
-  private _ipcRenderer: IpcRenderer;
   private _clearStatusTimeout: any;
 
   constructor() {
     this.status$ = this._status.asObservable();
-    this._ipcRenderer = electron.ipcRenderer;
-    this._ipcRenderer.on(`status:message`, (event, message: string) => {
+    proxyApi.receive(`status:message`, (message: string) => {
       this._status.next(message);
     });
   }

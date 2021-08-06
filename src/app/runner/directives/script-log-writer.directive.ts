@@ -1,13 +1,12 @@
 import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
-import { IpcRenderer } from 'electron';
 import { Subscription } from 'rxjs';
-import { IScriptExit, ScriptRef } from 'src/app/core/models';
+import { IProxyApi, IScriptExit, ScriptRef } from 'src/app/core/models';
 import { StatusService } from 'src/app/core/services';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { WebLinksAddon } from 'xterm-addon-web-links';
-const electron = (window as any).require('electron');
+const proxyApi: IProxyApi = (window as any).proxyApi;
 
 @Directive({
   selector: '[pruScriptLogWriter]',
@@ -21,7 +20,6 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   private _terminal: Terminal;
   private _fitAddon: FitAddon;
   private _searchAddon: SearchAddon;
-  private _ipcRenderer: IpcRenderer | undefined;
 
   @Input() public set scriptRef(value: ScriptRef) {
     this.unsubscribeAll();
@@ -50,7 +48,6 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
     private _element: ElementRef,
     private _statusService: StatusService
   ) {
-    this._ipcRenderer = electron.ipcRenderer;
   }
 
   @HostListener('window:resize') public onResize(): void {
@@ -88,7 +85,7 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
       return handle;
     });
     this._terminal.onKey(event => {
-      this._ipcRenderer.send('terminal.key', event.key);
+      proxyApi.send('terminal.key', event.key);
     });
     this._fitAddon = new FitAddon();
     this._searchAddon = new SearchAddon();
@@ -106,7 +103,7 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   }
 
   private dataAcknowlege(): void {
-    this._ipcRenderer.send('script:data-ack', this.scriptRef.script.id);
+    proxyApi.send('script:data-ack', this.scriptRef.script.id);
   }
 
   private copyToClipboard(): void {
@@ -124,7 +121,7 @@ export class ScriptLogWriterDirective implements AfterViewInit, OnDestroy {
   }
 
   private updateOutputColumns() {
-    this._ipcRenderer.send('output:resize', this._terminal.cols, this._terminal.rows);
+    proxyApi.send('output:resize', this._terminal.cols, this._terminal.rows);
   }
 
   private scrollToBottom(): void {

@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
-import { IpcRenderer } from 'electron';
 import _ from 'underscore';
-import { NodeProxy, ScriptRef, IScript } from '../models';
+import { NodeProxy, ScriptRef, IScript, IProxyApi } from '../models';
 import { IResolvable } from '../models/iresolvable';
 import { ProxyNodeService } from './proxy-node-service';
-const electron = (window as any).require('electron');
+const proxyApi: IProxyApi = (window as any).proxyApi;
 
 @Injectable({
   providedIn: 'root'
 })
 export class NodeProxyFactory {
 
-  private _ipcRenderer: IpcRenderer | undefined;
-
   constructor() {
-    this._ipcRenderer = electron.ipcRenderer;
   }
 
   public create(serviceName: string, proxyService: ProxyNodeService): NodeProxy {
@@ -31,16 +27,16 @@ export class NodeProxyFactory {
   }
 
   public createScriptRef(script: IScript, scriptChannel: string): ScriptRef {
-    return new ScriptRef(script, this._ipcRenderer, scriptChannel);
+    return new ScriptRef(script, proxyApi, scriptChannel);
   }
 
   public createCall(serviceName: string, functionName: string): (...args: any[]) => Promise<any> {
     const resolveable = { } as IResolvable;
-    this._ipcRenderer.on(`${serviceName}.${functionName}:resolve`, (event, result) => {
+    proxyApi.receive(`${serviceName}.${functionName}:resolve`, (result) => {
       resolveable.resolve(result);
     });
 
-    this._ipcRenderer.on(`${serviceName}.${functionName}:reject`, (event, error) => {
+    proxyApi.receive(`${serviceName}.${functionName}:reject`, (error) => {
       const err = new Error(error.message);
       err.stack = error.stack;
       resolveable.reject(err);
@@ -48,7 +44,7 @@ export class NodeProxyFactory {
 
     return (...args: any[]) => {
 
-      this._ipcRenderer.send(`${serviceName}.${functionName}`, ...args);
+      proxyApi.send(`${serviceName}.${functionName}`, ...args);
 
       return new Promise((resolve, reject) => {
         resolveable.resolve = resolve;

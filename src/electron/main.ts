@@ -1,7 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import unhandled = require('electron-unhandled');
+import unhandled from 'electron-unhandled';
 import path from 'path';
-import url from 'url';
 import electronReload from 'electron-reload';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 import {
@@ -32,26 +31,21 @@ let updater: Updater;
 
 function createWindow(): void {
 
+  const appRoot = isDev ? 'dist' : 'app';
   browserWindow = new BrowserWindow({
       width: 1280,
       height: 924,
       darkTheme: true,
       frame: false,
       webPreferences: {
-        nodeIntegration: true,
-        nodeIntegrationInWorker: true,
-        webSecurity: true
+        nodeIntegration: false,
+        contextIsolation: true,
+        enableRemoteModule: false,
+        preload: path.join(__dirname, `/../../${appRoot}/powerrunner/preload.js`) // use a preload script
       }
     });
 
-  const appRoot = isDev ? 'dist' : 'app';
-  browserWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, `/../../${appRoot}/powerrunner/index.html`),
-      protocol: 'file:',
-      slashes: true
-    })
-  );
+  browserWindow.loadFile(path.join(__dirname, `/../../${appRoot}/powerrunner/index.html`));
 
   browserWindow.on('closed', () => {
     browserWindow = null;
