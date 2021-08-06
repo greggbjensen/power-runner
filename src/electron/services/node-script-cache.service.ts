@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import * as fs from 'fs';
-import * as fsx from 'fs-extra';
-import * as os from 'os';
-import * as path from 'path';
+import fs from 'fs';
+import fsx from 'fs-extra';
+import os from 'os';
+import path from 'path';
 import { Database } from 'sqlite3';
 import { Md5 } from 'ts-md5/dist/md5';
 import { IScript, IScriptFile } from '../../app/core/models';

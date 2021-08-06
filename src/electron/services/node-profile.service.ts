@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import * as fs from 'fs-extra';
-import * as yaml from 'node-yaml';
-import * as os from 'os';
-import * as path from 'path';
-import * as _ from 'underscore';
+import fs from 'fs-extra';
+import yaml from 'node-yaml';
+import os from 'os';
+import path from 'path';
+import _ from 'underscore';
 import { IScriptProfile, IScriptProfileMap, SaveAsType } from '../../app/core/models';
 
 @Injectable({

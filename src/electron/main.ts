@@ -1,7 +1,9 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import * as unhandled from 'electron-unhandled';
-import * as path from 'path';
-import * as url from 'url';
+import unhandled = require('electron-unhandled');
+import path from 'path';
+import url from 'url';
+import electronReload from 'electron-reload';
+import electronSquirrelStartup from 'electron-squirrel-startup';
 import {
   NodeAppService,
   NodeBrowseDialogService,
@@ -16,7 +18,6 @@ unhandled();
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().trim() === 'dev';
 if (isDev) {
-  const electronReload = require('electron-reload');
   electronReload(path.resolve(__dirname, '../../src'), {
     electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
   });
@@ -81,7 +82,7 @@ function createWindow(): void {
   } else {
 
     // Handle squirrel event. Avoid calling for updates when install
-    if (require('electron-squirrel-startup')) {
+    if (electronSquirrelStartup) {
       app.quit();
       process.exit(0);
     }

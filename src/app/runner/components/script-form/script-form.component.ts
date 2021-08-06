@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { IScript, IScriptFile, IScriptParam, IScriptProfile, IScriptRun, ParamType, SaveAsType, ScriptStatus } from 'src/app/core/models';
 import { ProfileService, ScriptService, StatusService } from 'src/app/core/services';
 import { ScriptFormatter } from 'src/app/core/utils';
-import * as _ from 'underscore';
+import _ from 'underscore';
 import { AddProfileDialogComponent } from '../add-profile-dialog/add-profile-dialog.component';
 
 

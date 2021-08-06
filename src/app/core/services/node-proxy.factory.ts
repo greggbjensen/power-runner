@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IpcRenderer } from 'electron';
-import * as _ from 'underscore';
+import _ from 'underscore';
 import { NodeProxy, ScriptRef, IScript } from '../models';
 import { IResolvable } from '../models/iresolvable';
 import { ProxyNodeService } from './proxy-node-service';

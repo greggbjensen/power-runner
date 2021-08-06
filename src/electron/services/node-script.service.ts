@@ -1,9 +1,11 @@
+require = require("esm")(module);
+
 import { exec, spawn } from 'child_process';
 import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
-import { globby } from 'globby';
-import * as pty from 'node-pty';
-import * as os from 'os';
-import * as path from 'path';
+import globby from 'globby';
+import pty from 'node-pty';
+import os from 'os';
+import path from 'path';
 import { IScript, IScriptExit, IScriptFile, ScriptStatus } from '../../app/core/models';
 import { ScriptFormatter } from '../../app/core/utils/script-formatter';
 import { RunSettings } from '../../app/run-settings';

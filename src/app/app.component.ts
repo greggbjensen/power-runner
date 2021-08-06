@@ -1,7 +1,7 @@
 import { Component, HostBinding, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { IpcRenderer } from 'electron';
 import { BehaviorSubject, Observable } from 'rxjs';
-import * as _ from 'underscore';
+import _ from 'underscore';
 const electron = (window as any).require('electron');
 import { MatDialog } from '@angular/material/dialog';
 import { IAppUpdate, IScriptFile, IScriptNode, ISettings } from './core/models';
