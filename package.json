@@ -7,9 +7,9 @@
   "scripts": {
     "ng": "ng",
     "start": "yarn build && SET NODE_ENV=dev && electron ./dist/electron/main.js",
-    "build": "tsc -p tsconfig.electron.json && ng build --base-href ./",
+    "build": "tsc -p tsconfig.electron.json && ng build --base-href ./ && copyfiles ./src/electron/preload.js ./dist/powerrunner --up 2",
     "build-prod": "tsc -p tsconfig.electron.json && ng build --prod --base-href ./",
-    "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./src/electron/powershell/*.ps1 ./dist --up 1 && copyfiles ./node_modules/**/*.* ./dist",
+    "copy-deps": "copyfiles ./package.json ./dist && copyfiles ./src/electron/powershell/*.ps1 ./dist --up 1 && copyfiles ./node_modules/**/*.* ./dist && copyfiles ./src/electron/preload.js ./dist/powerrunner --up 2",
     "package": "yarn copy-deps && yarn build-prod && electron-packager ./dist --overwrite --out=./release",
     "installer": "node installer.js",
     "package-installer": "yarn package && yarn installer",

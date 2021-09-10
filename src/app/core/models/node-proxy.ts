@@ -11,6 +11,11 @@ export class NodeProxy {
     }
 
     public async invoke(functionName: string, ...args: any[]): Promise<any> {
-        return this._proxies.get(functionName)(...args);
+      const proxy = this._proxies.get(functionName);
+      if (!proxy) {
+        throw new Error(`No proxy has been created for ${functionName}`);
+      }
+
+      return this._proxies.get(functionName)(...args);
     }
 }
