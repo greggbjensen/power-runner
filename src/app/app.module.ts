@@ -21,7 +21,8 @@ import { SharedModule } from './shared/shared.module';
     AngularSplitModule.forRoot(),
   ],
   providers: [
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill', float: 'always' } }
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill', float: 'always' } },
+    { provide: 'IS_DEV', useValue: false }
   ],
   bootstrap: [AppComponent]
 })

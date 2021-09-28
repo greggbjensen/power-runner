@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NodeProxyFactory } from './node-proxy.factory';
+import { NodeProxyRegistry } from './node-proxy.registry';
 import { ProxyNodeService } from './proxy-node-service';
 
 @Injectable({
@@ -8,9 +8,8 @@ import { ProxyNodeService } from './proxy-node-service';
 export class AppService extends ProxyNodeService {
 
   constructor(
-    proxyFactory: NodeProxyFactory
   ) {
-    super('NodeAppService', proxyFactory);
+    super('NodeAppService');
   }
 
   public reloadWindowAsync(): Promise<void> {

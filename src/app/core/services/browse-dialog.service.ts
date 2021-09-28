@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NodeProxy } from '../models';
-import { NodeProxyFactory } from './node-proxy.factory';
 import { ProxyNodeService } from './proxy-node-service';
 
 @Injectable({
@@ -9,9 +7,8 @@ import { ProxyNodeService } from './proxy-node-service';
 export class BrowseDialogService extends ProxyNodeService {
 
   constructor(
-    proxyFactory: NodeProxyFactory
   ) {
-    super('NodeBrowseDialogService', proxyFactory);
+    super('NodeBrowseDialogService');
   }
 
   public async selectDirectoryAsync(): Promise<string> {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { IScriptProfile, SaveAsType } from '../models';
-import { NodeProxyFactory } from './node-proxy.factory';
 import { ProxyNodeService } from './proxy-node-service';
 
 @Injectable({
@@ -9,9 +8,8 @@ import { ProxyNodeService } from './proxy-node-service';
 export class ProfileService extends ProxyNodeService {
 
   constructor(
-    proxyFactory: NodeProxyFactory,
   ) {
-    super('NodeProfileService', proxyFactory);
+    super('NodeProfileService');
   }
 
   public listAsync(directory: string, scriptName: string): Promise<IScriptProfile[]> {

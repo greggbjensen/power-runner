@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IScript, IScriptFile } from '../models';
-import { NodeProxyFactory } from './node-proxy.factory';
+import { NodeProxyRegistry } from './node-proxy.registry';
 import { ProxyNodeService } from './proxy-node-service';
 import { StatusService } from './status.service';
 
@@ -10,10 +10,9 @@ import { StatusService } from './status.service';
 export class ScriptService extends ProxyNodeService {
 
   constructor(
-    proxyFactory: NodeProxyFactory,
     private _statusService: StatusService
   ) {
-    super('NodeScriptService', proxyFactory);
+    super('NodeScriptService');
   }
 
   public async listAsync(fileGlobs: string[]): Promise<IScriptFile[]> {

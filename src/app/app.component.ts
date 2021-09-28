@@ -1,4 +1,4 @@
-import { Component, HostBinding, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, HostBinding, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import _ from 'underscore';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,7 +14,7 @@ const proxyApi: IProxyApi = (window as any).proxyApi;
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   private static readonly ExcludeRegex = /^\!/;
 
   @HostBinding('class.pru') public className = true;
@@ -36,14 +36,16 @@ export class AppComponent implements OnDestroy {
     private _dialog: MatDialog,
     private _ngZone: NgZone
   ) {
-    console.log('proxy', proxyApi);
     proxyApi.receive(`update:available`, (update: IAppUpdate) => {
       this.promptForAppUpdate(update);
     });
 
     this.nodes$ = this._nodes.asObservable();
-    this.initialize();
+  }
 
+  public ngOnInit(): void {
+
+    this.initialize();
     this._appService.getElevatedStatusAsync()
       .then(status => this.elevatedStatus = status, err => console.error(err));
   }
