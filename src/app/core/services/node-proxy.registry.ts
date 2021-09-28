@@ -25,7 +25,6 @@ export class NodeProxyRegistry {
       // Loop through all prototype
       const names = [];
       NodeProxyRegistry.listFunctionNames(proxyService, names);
-      console.log(names);
       names.forEach(name => {
         proxy.add(name, this.createCall(proxyService.name, name));
       });
