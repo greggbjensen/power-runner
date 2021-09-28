@@ -1,14 +1,12 @@
-import { Component, HostBinding, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { IpcRenderer } from 'electron';
+import { Component, HostBinding, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import * as _ from 'underscore';
-const electron = (window as any).require('electron');
+import _ from 'underscore';
 import { MatDialog } from '@angular/material/dialog';
-import { IAppUpdate, IScriptFile, IScriptNode, ISettings } from './core/models';
+import { IAppUpdate, IProxyApi, IScriptFile, IScriptNode, ISettings } from './core/models';
 import { AppService, ScriptService, SettingsService, StatusService } from './core/services';
 import { RunSettings } from './run-settings';
 import { AppUpdateDialogComponent } from './runner/components';
-
+const proxyApi: IProxyApi = (window as any).proxyApi;
 
 @Component({
   selector: 'pru-root',
@@ -16,7 +14,7 @@ import { AppUpdateDialogComponent } from './runner/components';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   private static readonly ExcludeRegex = /^\!/;
 
   @HostBinding('class.pru') public className = true;
@@ -28,7 +26,6 @@ export class AppComponent implements OnDestroy {
   public isMaximized = false;
   public settings: ISettings;
   public elevatedStatus: string;
-  private _ipcRenderer: IpcRenderer;
   private _nodes = new BehaviorSubject<IScriptNode[]>([]);
 
   constructor(
@@ -39,14 +36,16 @@ export class AppComponent implements OnDestroy {
     private _dialog: MatDialog,
     private _ngZone: NgZone
   ) {
-    this._ipcRenderer = electron.ipcRenderer;
-    this._ipcRenderer.on(`update:available`, (event, update: IAppUpdate) => {
+    proxyApi.receive(`update:available`, (update: IAppUpdate) => {
       this.promptForAppUpdate(update);
     });
 
     this.nodes$ = this._nodes.asObservable();
-    this.initialize();
+  }
 
+  public ngOnInit(): void {
+
+    this.initialize();
     this._appService.getElevatedStatusAsync()
       .then(status => this.elevatedStatus = status, err => console.error(err));
   }
@@ -116,7 +115,7 @@ export class AppComponent implements OnDestroy {
       });
 
       dialogRef.afterClosed().subscribe((result: string) => {
-        this._ipcRenderer.send('update:confirmation', result);
+        proxyApi.send('update:confirmation', result);
       });
     });
   }

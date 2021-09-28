@@ -21,7 +21,7 @@ export class NodeBrowseDialogService {
         if (!result.canceled) {
           resolve(result.filePaths[0]);
         } else {
-          resolve();
+          resolve('');
         }
       }, err => {
         reject(err);
