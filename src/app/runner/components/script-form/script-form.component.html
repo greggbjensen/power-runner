@@ -76,9 +76,9 @@
           <input autoSizeInput matInput type="number" [formControlName]="param.name" [setParentWidth]="true">
         </mat-form-field>
 
-        <mat-form-field *ngSwitchCase="ParamType.Date">
+        <mat-form-field *ngSwitchCase="ParamType.Date" class="small-fixed">
           <mat-label>{{param.name}}</mat-label>
-          <input autoSizeInput matInput [matDatepicker]="picker" [formControlName]="param.name" [setParentWidth]="true">
+          <input matInput [matDatepicker]="picker" [formControlName]="param.name">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>

@@ -14,6 +14,11 @@
   .mat-checkbox {
     margin-left: $space-15;
   }
+
+  .small-fixed {
+    min-width: 13rem;
+    width: 13rem;
+  }
 }
 
 .script-form-path {

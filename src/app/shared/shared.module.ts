@@ -22,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularSplitModule } from 'angular-split';
 import { AutoSizeInputModule } from 'ngx-autosize-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core'
 import { BrowseDirectoryFieldComponent } from './components';
 
 @NgModule({
@@ -41,6 +42,8 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatRadioModule,
     MatSidenavModule,
     MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatMenuModule,
     MatToolbarModule,
     MatTooltipModule,
@@ -64,6 +67,7 @@ import { BrowseDirectoryFieldComponent } from './components';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatMenuModule,
     MatToolbarModule,
     MatTooltipModule,
