@@ -3,7 +3,7 @@ require = require("esm")(module);
 import { exec, spawn } from 'child_process';
 import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
 import globby from 'globby';
-import pty from 'node-pty';
+import { IPty, spawn as ptySpawn } from 'node-pty';
 import os from 'os';
 import path from 'path';
 import { IScript, IScriptExit, IScriptFile, ScriptStatus } from '../../app/core/models';
@@ -25,7 +25,7 @@ export class NodeScriptService {
   private static readonly PowerShellPath = `${process.env.SYSTEMROOT}\\system32\\WindowsPowerShell\\v1.0\\powershell.exe`;
   private static readonly CommandPath = `${process.env.SYSTEMROOT}\\system32\\cmd.exe`;
 
-  private _childProcesses = new Map<string, pty.IPty>();
+  private _childProcesses = new Map<string, IPty>();
   private _outputColumns = 120;
   private _outputRows = 30;
 
@@ -82,7 +82,7 @@ export class NodeScriptService {
           clipboard.writeText(`.\\${script.name} ${paramList}`);
         }
 
-        const child = pty.spawn(NodeScriptService.PowerShellPath, [command], {
+        const child = ptySpawn(NodeScriptService.PowerShellPath, [command], {
           name: 'xterm-color',
           cols: this._outputColumns,
           rows: this._outputRows,
