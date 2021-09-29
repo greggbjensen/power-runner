@@ -42,6 +42,9 @@ foreach ($param in $metadata.ScriptBlock.Ast.ParamBlock.Parameters) {
   elseif ($numberTypes.Contains($type)) {
     $type = 'Number'
   }
+  elseif ($type -eq 'DateTime') {
+    $type = 'Date'
+  }
 
   foreach ($attribute in $x.Attributes) {
     $attributeType = $attribute.TypeId.Name
