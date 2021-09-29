@@ -13,7 +13,7 @@ import { IUncachedScriptFile } from '../models';
 })
 export class NodeScriptCacheService {
 
-  private static readonly MetadataVersion = '1.0.0';
+  private static readonly MetadataVersion = '1.0.1'; // Added datetime support for picker.
   private _cacheFile: string;
   private _db: Promise<Database>;
 
