@@ -10,7 +10,8 @@
     "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es5",
+    "target": "es2020",
+    "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "node_modules/@types"
     ],

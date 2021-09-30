@@ -1,5 +1,5 @@
 import { autoUpdater, BrowserWindow, dialog, ipcMain } from 'electron';
-import * as fetch from 'node-fetch';
+import fetch from 'node-fetch';
 import { IAppUpdate } from '../app/core/models';
 
 const autoUpdateUrl = 'https://github.com/greggbjensen/power-runner/releases/latest/download';

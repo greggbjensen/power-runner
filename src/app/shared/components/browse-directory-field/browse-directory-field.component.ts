@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
 import { BrowseDialogService } from 'src/app/core/services';
-const electron = (window as any).require('electron');
 
 @Component({
   selector: 'pru-browse-directory-field',

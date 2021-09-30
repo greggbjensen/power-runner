@@ -22,6 +22,10 @@ export class ScriptFormatter {
           paramText = `-${param.name} ${param.value}`;
           break;
 
+        case ParamType.Date:
+          paramText = `-${param.name} ${param.value.toISOString().substring(0, 10)}`; // Take off time.
+          break;
+
         case ParamType.SecureString:
           paramText = `-${param.name} (ConvertTo-SecureString ${param.value} -AsPlainText -Force)`;
           break;

@@ -16,4 +16,4 @@ export { IAppUpdate } from './iapp-update';
 export { IScriptRun } from './iscript-run';
 export { IPowerShellParam } from './ipower-shell-param';
 export { IPowerShellAttribute } from './ipower-shell-attribute';
-
+export { IProxyApi } from './iproxy-api';

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NodeProxyFactory } from './node-proxy.factory';
+import { NodeProxyRegistry } from './node-proxy.registry';
 
-describe('NodeProxyFactory', () => {
+describe('NodeProxyRegistry', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: NodeProxyFactory = TestBed.get(NodeProxyFactory);
+    const service: NodeProxyRegistry = TestBed.get(NodeProxyRegistry);
     expect(service).toBeTruthy();
   });
 });

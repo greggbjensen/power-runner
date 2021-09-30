@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { IpcRenderer } from 'electron';
+import { IProxyApi } from './iproxy-api';
 import { IScript } from './iscript';
 import { IScriptExit } from './iscript-exit';
 import { ScriptStatus } from './script-status.enum';
@@ -11,16 +11,16 @@ export class ScriptRef {
 
   constructor(
     public script: IScript,
-    private _ipcRenderer: IpcRenderer,
+    private _proxyApi: IProxyApi,
     private _scriptChannel: string
   ) {
 
-    this._ipcRenderer.on(`${this._scriptChannel}:data`, (event, data: string) => {
+    this._proxyApi.receive(`${this._scriptChannel}:data`, (data: string) => {
       this.script.status = ScriptStatus.Running;
       this.data.emit(data);
     });
 
-    this._ipcRenderer.on(`${this._scriptChannel}:exit`, (event, scriptExit: IScriptExit) => {
+    this._proxyApi.receive(`${this._scriptChannel}:exit`, (scriptExit: IScriptExit) => {
       this.script.status = ScriptStatus.Stopped;
       this.exit.emit(scriptExit);
     });
