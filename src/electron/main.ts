@@ -1,7 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import unhandled from 'electron-unhandled';
 import path from 'path';
-import electronReload from 'electron-reload';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 import {
   NodeAppService,
@@ -17,7 +16,7 @@ unhandled();
 
 const isDev = process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().trim() === 'dev';
 if (isDev) {
-  electronReload(path.resolve(__dirname, '../../src'), {
+  require('electron-reload')(path.resolve(__dirname, '../../src'), {
     electron: path.resolve(__dirname, '../../node_modules/.bin/electron')
   });
 }
