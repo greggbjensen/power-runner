@@ -5,6 +5,7 @@ export enum ParamType {
   Switch = 'Switch',
   Set = 'Set',
   Boolean = 'Boolean',
+  Date = 'Date',
   Directory = 'Directory',
   File = 'File',
   Array = 'Array'

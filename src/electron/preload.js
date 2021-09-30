@@ -7,9 +7,9 @@ const {
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
   "proxyApi", {
-      send: (channel, data) => {
+      send: (channel, ... args) => {
           // TODO: whitelist send channels
-          ipcRenderer.send(channel, data);
+          ipcRenderer.send(channel, ...args);
       },
       receive: (channel, func) => {
           // TODO: whitelist recieve channels

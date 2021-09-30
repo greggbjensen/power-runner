@@ -130,10 +130,10 @@
   dependencies:
     "tslib" "^2.2.0"
 
-"@angular/cdk@^12.1.4", "@angular/cdk@12.1.4":
-  "integrity" "sha512-so8HP7jRNkGfdTkPmFVqyW4pj1vU0ASG1NaZMDXnin44PVjbJpaKhQsArhQ/yOmRP9XzP6TR3zHzmxszfGiaKg=="
-  "resolved" "https://registry.npmjs.org/@angular/cdk/-/cdk-12.1.4.tgz"
-  "version" "12.1.4"
+"@angular/cdk@^12.1.4", "@angular/cdk@12.2.7":
+  "integrity" "sha512-OMPewaE1VxCSFkLDZQLFMkGQCQEvbizuVRzArZBB5xfxl98YMjntNQjlWH4rGbRhF+eZlpOrC+UAVnzTX2BzAw=="
+  "resolved" "https://registry.npmjs.org/@angular/cdk/-/cdk-12.2.7.tgz"
+  "version" "12.2.7"
   dependencies:
     "tslib" "^2.2.0"
   optionalDependencies:
@@ -227,10 +227,17 @@
   "resolved" "https://registry.npmjs.org/@angular/language-service/-/language-service-12.1.4.tgz"
   "version" "12.1.4"
 
-"@angular/material@^12.1.4":
-  "integrity" "sha512-lfBuk+3fxOvyIf9PknVIIC1DxYOimru06FpXq74lNcrNZcX3qCdDe/KmNbR50Wy0aEC4cOPXxJuPqm7wT8z2vg=="
-  "resolved" "https://registry.npmjs.org/@angular/material/-/material-12.1.4.tgz"
-  "version" "12.1.4"
+"@angular/material-moment-adapter@^12.2.7":
+  "integrity" "sha512-nwDTQLP5al5LJ+Sl4fJBnesfRjzaLe4ZJZOy+Yl5F+UU/JJSOZuYs38KqTYb89SJDnWnGsx6SFk9eqjQjGfpXQ=="
+  "resolved" "https://registry.npmjs.org/@angular/material-moment-adapter/-/material-moment-adapter-12.2.7.tgz"
+  "version" "12.2.7"
+  dependencies:
+    "tslib" "^2.2.0"
+
+"@angular/material@^12.1.4", "@angular/material@12.2.7":
+  "integrity" "sha512-uaenRwRywvn0hMvRIsSaFIgUSrfHHZMr/uAC3uDZh7zAVmsbAqgzyrNo7i4L5vZxQa3q1EXn1fFPPOTrPfqdJw=="
+  "resolved" "https://registry.npmjs.org/@angular/material/-/material-12.2.7.tgz"
+  "version" "12.2.7"
   dependencies:
     "tslib" "^2.2.0"
 
@@ -7144,6 +7151,11 @@
   "resolved" "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   "version" "1.0.4"
 
+"moment@^2.18.1":
+  "integrity" "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
+  "version" "2.29.1"
+
 "ms@^2.0.0", "ms@^2.1.1", "ms@2.1.2":
   "integrity" "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w=="
   "resolved" "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
@@ -9319,7 +9331,7 @@
   "resolved" "https://registry.npmjs.org/run-parallel/-/run-parallel-1.1.9.tgz"
   "version" "1.1.9"
 
-"rxjs@^6.5.3", "rxjs@^6.6.0", "rxjs@>=6.0.0", "rxjs@>=6.5.0", "rxjs@~7.3.0":
+"rxjs@^6.5.3", "rxjs@^6.5.3 || ^7.0.0", "rxjs@^6.6.0", "rxjs@>=6.0.0", "rxjs@>=6.5.0", "rxjs@~7.3.0":
   "integrity" "sha512-p2yuGIg9S1epc3vrjKf6iVb3RCaAYjYskkO+jHIaV0IjOPlJop4UnodOoFb2xeNwlguqLYvGw1b1McillYb5Gw=="
   "resolved" "https://registry.npmjs.org/rxjs/-/rxjs-7.3.0.tgz"
   "version" "7.3.0"
