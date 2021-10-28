@@ -1,37 +1,57 @@
-## Welcome to GitHub Pages
+# PowerRunner
 
-You can use the [editor on GitHub](https://github.com/greggbjensen/power-runner/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+PowerShell Script runnner that loads scripts from paths and parses commmand line parameters to present a tabbed form and output window.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# Example
 
-### Markdown
+``` PowerShell
+param (
+  [string]$name = 'MyApp',
+  [string]$connectionString = 'Server=myServerAddress;Database=myDataBase;Trusted_Connection=True;',
+  [string][ValidateSet("Dev", "Test", "Stage", "Prod")]$environment = "Dev",
+  [bool]$configure = $true,
+  [switch]$revert = $false
+)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+$ESC = [char]27
+Write-Host "Deploying $name to $environment environment."
+Write-Host "$ESC[32mConnection:$ESC[0m $connectionString"
+Write-Host "Configure: $configure"
+Write-Host "Revert: $revert" -ForegroundColor Blue
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+<br>
 
-### Jekyll Themes
+![Overview](assets/overview.png)
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/greggbjensen/power-runner/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+# Features
+- Set all command parameters using inputs, drop downs, and checkboxes that auto-size
+- Displays script description and details
+- Keep track of many instances in a tabbed experience
+- Scans requested directories to show heirarchical scripts in one place
+- Double click a script to quickly edit and run
+- Store and share saved command line parameters as a profile
+- Copy current command and parameters to clipboard
+- Run as administrator to execute elevated scripts
+- Run scripts in their own window
+- Quickly stop and start runs with a button
+- Search and browse console output
+- Click Edit to go directly to source
+- Automatically keeps itself up to date
 
-### Support or Contact
+# Setup
+1. Click `PowerRunnerSetup.exe` from [Releases](https://github.com/greggbjensen/power-runner/releases/) to install
+2. Keep the download, and click to launch it
+3. Click on `More info` on the blue Windows prompt, then `Run anyway`
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+    ![Overview](assets/windows-approve-dialog.png) ![Overview](assets/windows-approve-dialog-run-anyway.png)
+    
+
+2. When the application starts for the first time, the settings page will be shown
+3. Click on the folder to browse to your root directory for searching for scripts
+4. Enter a pattern for search for your PowerShell scripts
+    
+    Example:
+    ```
+    MyProject\**\*.ps1
+    ```
