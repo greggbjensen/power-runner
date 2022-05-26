@@ -59,17 +59,16 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 # Contributing
 
 1. Install `Node.js` LTS version from https://nodejs.org/en/
-2. Install `Yarn` from https://classic.yarnpkg.com/en/docs/install/#windows-stable
-3. Install `Visual Studio Code` from https://code.visualstudio.com/
-3. Install `Windows Build Tools` by running the following from an elevated command prompt:
-    ```bash
-    npm install --global --production windows-build-tools
-    ```
+    1. When installing, make sure to select `Automatically install necessary tools.`
+
+        ![Build Tools](docs/images/nodejs-build-tools.png)
+
+2. Install `Visual Studio Code` from https://code.visualstudio.com/
 4. Clone the repository and create a new feature branch
 5. Install project dependencies by running the following from the command line in the repository directory:
 
     ```bash
-    yarn
+    npm install
     ```
 6. Make any changes and submit a pull request
 
@@ -81,9 +80,9 @@ Write-Host "Revert: $revert" -ForegroundColor Blue
 5. Merge the `release/` branch into `master`
 6. Delete the `release\PowerRunner-win32-x64` folder if it exists
 7. Remove any versions you no longer want to support as an upgrade from `release\installers\PowerRunner-win32-x64`
-8. Run `yarn package-installer`
+8. Run `npm run package-installer`
 9. Create a new release on GitHub
 10. Copy the files from `release\installers\PowerRunner-win32-x64` to that release
 
 # Troubleshooting
-- `.yarnrc` must always reflect the same `target` as the `electron` version in the `package.json`
+- `.npmrc` must always reflect the same `target` as the `electron` version in the `package.json`
