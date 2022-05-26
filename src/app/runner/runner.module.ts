@@ -18,37 +18,33 @@ import {
 import { ScriptLogWriterDirective } from './directives/script-log-writer.directive';
 
 @NgModule({
-  declarations: [
-    ScriptTreeComponent,
-    ScriptFormComponent,
-    ScriptLogComponent,
-    ScriptLogWriterDirective,
-    ScriptPageComponent,
-    SettingsPaneComponent,
-    ScriptTabsContainerComponent,
-    StatusBarComponent,
-    AddProfileDialogComponent,
-    AppUpdateDialogComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    ReactiveFormsModule,
-    AngularSplitModule.forChild(),
-    MarkdownModule.forChild()
-  ],
-  entryComponents: [
-    AddProfileDialogComponent,
-    AppUpdateDialogComponent
-  ],
-  exports: [
-    ScriptTreeComponent,
-    ScriptFormComponent,
-    ScriptLogComponent,
-    ScriptPageComponent,
-    SettingsPaneComponent,
-    ScriptTabsContainerComponent,
-    StatusBarComponent
-  ]
+    declarations: [
+        ScriptTreeComponent,
+        ScriptFormComponent,
+        ScriptLogComponent,
+        ScriptLogWriterDirective,
+        ScriptPageComponent,
+        SettingsPaneComponent,
+        ScriptTabsContainerComponent,
+        StatusBarComponent,
+        AddProfileDialogComponent,
+        AppUpdateDialogComponent
+    ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        ReactiveFormsModule,
+        AngularSplitModule.forChild(),
+        MarkdownModule.forChild()
+    ],
+    exports: [
+        ScriptTreeComponent,
+        ScriptFormComponent,
+        ScriptLogComponent,
+        ScriptPageComponent,
+        SettingsPaneComponent,
+        ScriptTabsContainerComponent,
+        StatusBarComponent
+    ]
 })
 export class RunnerModule { }
