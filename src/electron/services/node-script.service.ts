@@ -2,7 +2,7 @@ require = require("esm")(module);
 
 import { exec, spawn } from 'child_process';
 import { App, BrowserWindow, clipboard, ipcMain } from 'electron';
-import globby from 'globby';
+import { globby } from 'globby';
 import { IPty, spawn as ptySpawn } from 'node-pty';
 import os from 'os';
 import path from 'path';

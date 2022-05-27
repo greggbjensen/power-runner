@@ -79,7 +79,7 @@ export class Updater {
     try {
       const url = `${releaseRestUrl}/${releaseName}`;
       const response = await fetch(url);
-      const data = await response.json();
+      const data = await response.json() as any;
       releaseNotes = data.body;
     } catch (err) {
       console.error(err);

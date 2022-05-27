@@ -42,6 +42,7 @@
     "globby": "^13.1.1",
     "is-elevated": "^4.0.0",
     "js-yaml": "^4.1.0",
+    "marked": "^4.0.16",
     "ngx-autosize-input": "^13.1.0",
     "ngx-markdown": "^13.1.0",
     "node-abi": "^3.22.0",

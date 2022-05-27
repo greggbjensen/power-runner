@@ -34,12 +34,14 @@ function createWindow(): void {
   browserWindow = new BrowserWindow({
       width: 1280,
       height: 924,
+      minWidth: 300,
+      minHeight: 300,
       darkTheme: true,
       frame: false,
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        enableRemoteModule: false,
+        backgroundThrottling: false,
         preload: path.join(__dirname, `/../../${appRoot}/powerrunner/preload.js`) // use a preload script
       }
     });
