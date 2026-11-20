@@ -1,10 +1,12 @@
 # PowerRunner
 
-PowerShell Script runnner that loads scripts from paths and parses commmand line parameters to present a tabbed form and output window.
+PowerShell Script Runner — a desktop application that loads PowerShell scripts from configurable paths, parses their command-line parameters, and presents them in a tabbed form with auto-generated inputs and a live output window.
 
-# Example
+![Overview](images/overview.png)
 
-``` PowerShell
+## Example Script
+
+```PowerShell
 param (
   [string]$name = 'MyApp',
   [string]$connectionString = 'Server=myServerAddress;Database=myDataBase;Trusted_Connection=True;',
@@ -13,45 +15,36 @@ param (
   [switch]$revert = $false
 )
 
-$ESC = [char]27
 Write-Host "Deploying $name to $environment environment."
-Write-Host "$ESC[32mConnection:$ESC[0m $connectionString"
+Write-Host "Connection: $connectionString"
 Write-Host "Configure: $configure"
 Write-Host "Revert: $revert" -ForegroundColor Blue
 ```
 
-<br>
+## Features
 
-![Overview](images/overview.png)
+- Auto-generated form inputs, dropdowns, and checkboxes from script parameters
+- Script description and metadata display
+- Tabbed interface for running multiple scripts simultaneously
+- Hierarchical script browsing by directory structure
+- Quick edit and run from the script tree
+- Saved parameter profiles for sharing and reuse
+- Copy command with parameters to clipboard
+- Elevated (administrator) script execution
+- External window execution
+- One-click stop/start for running scripts
+- Searchable and browsable console output
+- Automatic self-updating
 
-# Features
-- Set all command parameters using inputs, drop downs, and checkboxes that auto-size
-- Displays script description and details
-- Keep track of many instances in a tabbed experience
-- Scans requested directories to show heirarchical scripts in one place
-- Double click a script to quickly edit and run
-- Store and share saved command line parameters as a profile
-- Copy current command and parameters to clipboard
-- Run as administrator to execute elevated scripts
-- Run scripts in their own window
-- Quickly stop and start runs with a button
-- Search and browse console output
-- Click Edit to go directly to source
-- Automatically keeps itself up to date
+## Get Started
 
-# Setup
-1. Click `PowerRunnerSetup.exe` from [Releases](https://github.com/greggbjensen/power-runner/releases/) to install
-2. Keep the download, and click to launch it
-3. Click on `More info` on the blue Windows prompt, then `Run anyway`
+| Audience | Guide |
+|---|---|
+| **End users** | [User Guide](user-guide.md) — installation, setup, running scripts, profiles |
+| **Developers** | [Developer Guide](developer-guide.md) — setup, build, test, release |
+| **Architects** | [Architecture](architecture.md) — code structure, IPC bridge, data flow |
 
-    ![Overview](images/windows-approve-dialog.png) ![Overview](images/windows-approve-dialog-run-anyway.png)
-    
+## Quick Links
 
-2. When the application starts for the first time, the settings page will be shown
-3. Click on the folder to browse to your root directory for searching for scripts
-4. Enter a pattern for search for your PowerShell scripts
-    
-    Example:
-    ```
-    MyProject\**\*.ps1
-    ```
+- [GitHub Releases](https://github.com/greggbjensen/power-runner/releases/) — download the installer
+- [Troubleshooting](troubleshooting.md) — common issues and fixes
